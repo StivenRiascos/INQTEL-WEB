@@ -1,0 +1,33 @@
+<header class="header" [class.scrolled]="isScrolled">
+  <div class="container">
+    <div class="logo">
+      <span class="logo-in">IN</span>
+      <span class="logo-q">Q</span>
+      <span class="logo-tel">TEL</span>
+      <span class="logo-sas">S.A.S</span>
+    </div>
+
+    <nav class="nav-links" [ngClass]="{ active: isMenuOpen }">
+      <a
+        routerLink="/"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+        >Inicio</a
+      >
+      <a routerLink="/planes" routerLinkActive="active">Planes</a>
+      <a routerLink="/servicios" routerLinkActive="active">Servicios</a>
+      <a routerLink="/referidos" routerLinkActive="active">Referidos</a>
+      <a routerLink="/cobertura" routerLinkActive="active">Cobertura</a>
+      <a routerLink="/contacto" routerLinkActive="active">Contacto</a>
+    </nav>
+
+    <div class="header-actions">
+      <a routerLink="/contacto" class="btn btn-secondary">Contáctanos</a>
+      <button class="menu-toggle" (click)="toggleMenu()">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </div>
+</header>

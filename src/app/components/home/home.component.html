@@ -1,0 +1,231 @@
+<!-- Hero Section -->
+<section class="hero">
+  <div class="hero-content">
+    <div class="container">
+      <div class="hero-text">
+        <h1 class="animate-text">
+          <span class="text-light">¿Estás preparado para</span>
+          <span class="text-highlight script-font">navegar?</span>
+        </h1>
+        <p class="hero-subtitle">
+          Navega ya, con lo último en tecnología y los planes más rápidos con
+          internet de alta velocidad por fibra óptica.
+        </p>
+        <div class="hero-buttons">
+          <a routerLink="/planes" class="btn btn-primary"
+            >Ver Planes <i class="fas fa-chevron-right"></i
+          ></a>
+          <a routerLink="/contacto" class="btn btn-outline">Contáctanos</a>
+        </div>
+      </div>
+
+      <div class="hero-cards">
+        <div class="speed-card" *ngFor="let plan of plans">
+          <div class="speed-value">{{ plan.name }}</div>
+          <div class="speed-price">
+            {{ plan.price | currency : "COP" : "symbol-narrow" : "1.0-0" }}
+          </div>
+          <div class="speed-period">Mensual</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-wave">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
+      <path
+        fill="#ffffff"
+        fill-opacity="1"
+        d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,122.7C672,117,768,139,864,149.3C960,160,1056,160,1152,138.7C1248,117,1344,75,1392,53.3L1440,32L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"
+      ></path>
+    </svg>
+  </div>
+</section>
+
+<!-- Features Section -->
+<section class="features">
+  <div class="container">
+    <div class="section-title">
+      <h2>¿Por qué elegir INQTEL?</h2>
+      <p>Ofrecemos la mejor experiencia en internet por fibra óptica</p>
+    </div>
+
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i class="fas fa-bolt"></i>
+        </div>
+        <h3>Velocidad Simétrica</h3>
+        <p>Misma velocidad de subida y bajada para una experiencia óptima.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i class="fas fa-wifi"></i>
+        </div>
+        <h3>Fibra Óptica</h3>
+        <p>Tecnología de punta que garantiza estabilidad y velocidad.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i class="fas fa-headset"></i>
+        </div>
+        <h3>Soporte 24/7</h3>
+        <p>Asistencia técnica disponible cuando la necesites.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i class="fas fa-tools"></i>
+        </div>
+        <h3>Instalación Gratuita</h3>
+        <p>Instalación profesional sin costo adicional.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Plans Preview -->
+<section class="plans-preview">
+  <div class="container">
+    <div class="section-title">
+      <h2>Nuestros Planes</h2>
+      <p>
+        Disfruta nuestros Megas reales por fibra óptica, velocidad Simétrica y
+        soporte permanente.
+      </p>
+    </div>
+
+    <div class="plans-grid">
+      <div
+        class="plan-card"
+        *ngFor="let plan of plans"
+        [ngClass]="{ popular: plan.popular }"
+      >
+        <div class="popular-badge" *ngIf="plan.popular">Más Popular</div>
+        <div class="plan-header">
+          <h3>Plan {{ plan.name }}</h3>
+          <div class="plan-price">
+            <span class="price">{{
+              plan.price | currency : "COP" : "symbol-narrow" : "1.0-0"
+            }}</span>
+            <span class="period">Mensual</span>
+          </div>
+        </div>
+        <div class="plan-features">
+          <ul>
+            <li *ngFor="let feature of plan.features">
+              <i class="fas fa-check-circle"></i> {{ feature }}
+            </li>
+          </ul>
+        </div>
+        <div class="plan-footer">
+          <a
+            routerLink="/planes"
+            class="btn"
+            [ngClass]="plan.popular ? 'btn-secondary' : 'btn-primary'"
+            >Contratar Ahora</a
+          >
+        </div>
+      </div>
+    </div>
+
+    <div class="plans-cta">
+      <p>
+        ¿Necesitas más velocidad? Tenemos planes de 490 Mbps y 650 Mbps
+        disponibles.
+      </p>
+      <a routerLink="/planes" class="btn btn-outline">Ver Todos los Planes</a>
+    </div>
+  </div>
+</section>
+
+<!-- Referral Program -->
+<section class="referral">
+  <div class="container">
+    <div class="referral-content">
+      <div class="referral-text">
+        <div class="badge">Programa de Referidos</div>
+        <h2>¡TRAE A TUS AMIGOS PLAN DE REFERIDOS!</h2>
+        <p class="referral-description">
+          Por cada usuario nuevo que refieras obtendrás el aumento de velocidad
+          por un mes.
+        </p>
+        <p class="referral-bonus">
+          Si ya tienes el plan de 150 o 290 Mbps obtendrás
+          <span>400 Mbps</span> de velocidad.
+        </p>
+        <p class="referral-note">Aplica condiciones y restricciones</p>
+        <a routerLink="/referidos" class="btn btn-secondary">Más Información</a>
+      </div>
+      <div class="referral-image">
+        <img src="assets/images/referral-img.jpg" alt="Programa de referidos" />
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Testimonials -->
+<section class="testimonials">
+  <div class="container">
+    <div class="section-title">
+      <h2>Lo que dicen nuestros clientes</h2>
+      <p>Experiencias reales de usuarios satisfechos</p>
+    </div>
+
+    <div class="testimonials-slider">
+      <div class="testimonial-card">
+        <div class="testimonial-content">
+          <p>
+            "Excelente servicio, la velocidad es increíble y nunca he tenido
+            problemas de conexión. El soporte técnico siempre está disponible
+            cuando lo necesito."
+          </p>
+        </div>
+        <div class="testimonial-author">
+          <div class="author-avatar">
+            <img src="assets/images/avatar1.jpg" alt="Cliente" />
+          </div>
+          <div class="author-info">
+            <h4>Carlos Rodríguez</h4>
+            <p>Cliente desde 2021</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="testimonial-card">
+        <div class="testimonial-content">
+          <p>
+            "Desde que contraté INQTEL, mi experiencia de navegación ha mejorado
+            notablemente. La fibra óptica hace una gran diferencia para mi
+            trabajo remoto."
+          </p>
+        </div>
+        <div class="testimonial-author">
+          <div class="author-avatar">
+            <img src="assets/images/avatar2.jpg" alt="Cliente" />
+          </div>
+          <div class="author-info">
+            <h4>María López</h4>
+            <p>Cliente desde 2022</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta">
+  <div class="container">
+    <div class="cta-content">
+      <h2>¿Listo para disfrutar del mejor internet?</h2>
+      <p>Contrata ahora y comienza a navegar a alta velocidad</p>
+      <div class="cta-buttons">
+        <a routerLink="/planes" class="btn btn-primary">Ver Planes</a>
+        <a routerLink="/contacto" class="btn btn-outline">Contáctanos</a>
+      </div>
+    </div>
+  </div>
+</section>

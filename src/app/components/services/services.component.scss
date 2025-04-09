@@ -1,0 +1,310 @@
+@use "../../../styles/variables" as vars;
+@use "../../../styles/mixins" as mix;
+
+.page-header {
+  background: linear-gradient(
+    135deg,
+    vars.$inqtel-blue-dark,
+    vars.$inqtel-blue-light
+  );
+  color: vars.$white;
+  padding: 120px 0 vars.$spacing-8;
+  text-align: center;
+
+  h1 {
+    margin-bottom: vars.$spacing-3;
+  }
+
+  p {
+    max-width: 600px;
+    margin: 0 auto;
+    font-size: 1.25rem;
+    opacity: 0.9;
+  }
+}
+
+.services-section {
+  padding: vars.$spacing-8 0;
+  background-color: vars.$white;
+
+  .services-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: vars.$spacing-6;
+    margin-top: vars.$spacing-6;
+
+    @include mix.respond-to(md) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    @include mix.respond-to(lg) {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  .service-card {
+    background-color: vars.$white;
+    border-radius: vars.$border-radius-lg;
+    overflow: hidden;
+    @include mix.box-shadow(1);
+    padding: vars.$spacing-5;
+    @include mix.transition;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+
+    &:hover {
+      @include mix.box-shadow(2);
+      transform: translateY(-5px);
+
+      .service-icon {
+        background-color: vars.$inqtel-blue-light;
+        color: vars.$white;
+      }
+    }
+
+    .service-icon {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      background-color: rgba(vars.$inqtel-blue-light, 0.1);
+      color: vars.$inqtel-blue-light;
+      @include mix.flex(row, center, center);
+      margin-bottom: vars.$spacing-4;
+      @include mix.transition;
+
+      i {
+        font-size: 1.75rem;
+      }
+    }
+
+    h3 {
+      margin-bottom: vars.$spacing-3;
+      font-size: 1.25rem;
+    }
+
+    p {
+      color: vars.$gray-600;
+      margin-bottom: vars.$spacing-4;
+    }
+
+    .service-features {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 vars.$spacing-4;
+      flex-grow: 1;
+
+      li {
+        padding: vars.$spacing-2 0;
+        @include mix.flex(row, flex-start, flex-start);
+
+        i {
+          color: vars.$inqtel-blue-light;
+          margin-right: vars.$spacing-2;
+          margin-top: 5px;
+        }
+      }
+    }
+
+    .btn {
+      align-self: flex-start;
+    }
+  }
+}
+
+.technology-section {
+  padding: vars.$spacing-8 0;
+  background-color: vars.$gray-100;
+
+  .technology-content {
+    margin-top: vars.$spacing-6;
+
+    @include mix.respond-to(lg) {
+      @include mix.flex(row, space-between, center);
+      gap: vars.$spacing-8;
+    }
+  }
+
+  .technology-image {
+    margin-bottom: vars.$spacing-6;
+
+    @include mix.respond-to(lg) {
+      flex: 1;
+      margin-bottom: 0;
+    }
+
+    img {
+      width: 100%;
+      border-radius: vars.$border-radius-lg;
+      @include mix.box-shadow(2);
+    }
+  }
+
+  .technology-text {
+    @include mix.respond-to(lg) {
+      flex: 1;
+    }
+
+    h3 {
+      margin-bottom: vars.$spacing-4;
+      font-size: 1.75rem;
+    }
+
+    p {
+      margin-bottom: vars.$spacing-5;
+    }
+
+    .technology-features {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: vars.$spacing-4;
+
+      @include mix.respond-to(md) {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .feature {
+        @include mix.flex(row, flex-start, flex-start);
+        gap: vars.$spacing-3;
+
+        .feature-icon {
+          width: 50px;
+          height: 50px;
+          border-radius: 50%;
+          background-color: rgba(vars.$inqtel-blue-light, 0.1);
+          color: vars.$inqtel-blue-light;
+          @include mix.flex(row, center, center);
+          flex-shrink: 0;
+
+          i {
+            font-size: 1.25rem;
+          }
+        }
+
+        .feature-text {
+          h4 {
+            margin-bottom: vars.$spacing-1;
+            font-size: 1.1rem;
+          }
+
+          p {
+            margin-bottom: 0;
+            font-size: 0.95rem;
+            color: vars.$gray-600;
+          }
+        }
+      }
+    }
+  }
+}
+
+.process-section {
+  padding: vars.$spacing-8 0;
+  background-color: vars.$white;
+
+  .process-steps {
+    margin-top: vars.$spacing-6;
+    position: relative;
+
+    &::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 24px;
+      width: 2px;
+      background-color: vars.$inqtel-blue-light;
+
+      @include mix.respond-to(md) {
+        left: 50%;
+        transform: translateX(-50%);
+      }
+    }
+  }
+
+  .process-step {
+    position: relative;
+    padding-left: 60px;
+    margin-bottom: vars.$spacing-6;
+
+    @include mix.respond-to(md) {
+      padding-left: 0;
+      @include mix.flex(row, center, center);
+
+      &:nth-child(even) {
+        flex-direction: row-reverse;
+
+        .step-content {
+          text-align: right;
+        }
+      }
+    }
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    .step-number {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background-color: vars.$inqtel-blue-light;
+      color: vars.$white;
+      @include mix.flex(row, center, center);
+      font-size: 1.5rem;
+      font-weight: 700;
+      z-index: 2;
+
+      @include mix.respond-to(md) {
+        position: relative;
+        margin: 0 vars.$spacing-5;
+      }
+    }
+
+    .step-content {
+      @include mix.respond-to(md) {
+        width: 50%;
+        padding: 0 vars.$spacing-5;
+      }
+
+      h3 {
+        margin-bottom: vars.$spacing-2;
+        font-size: 1.25rem;
+      }
+
+      p {
+        margin-bottom: 0;
+        color: vars.$gray-600;
+      }
+    }
+  }
+}
+
+.cta-section {
+  padding: vars.$spacing-8 0;
+  background: linear-gradient(
+    135deg,
+    vars.$inqtel-blue-dark,
+    vars.$inqtel-blue-light
+  );
+  color: vars.$white;
+
+  .cta-content {
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto;
+
+    h2 {
+      margin-bottom: vars.$spacing-3;
+    }
+
+    p {
+      margin-bottom: vars.$spacing-5;
+      font-size: 1.25rem;
+      opacity: 0.9;
+    }
+  }
+}

@@ -1,0 +1,186 @@
+<section class="page-header">
+  <div class="container">
+    <h1>Nuestros Servicios</h1>
+    <p>Soluciones de internet por fibra óptica para hogares y empresas</p>
+  </div>
+</section>
+
+<section class="services-section">
+  <div class="container">
+    <div class="section-title">
+      <h2>Servicios que Ofrecemos</h2>
+      <p>Conoce nuestras soluciones de conectividad</p>
+    </div>
+
+    <div class="services-grid">
+      <div class="service-card" *ngFor="let service of services">
+        <div class="service-icon">
+          <i [class]="service.icon"></i>
+        </div>
+        <h3>{{ service.title }}</h3>
+        <p>{{ service.description }}</p>
+        <ul class="service-features">
+          <li *ngFor="let feature of service.features">
+            <i class="fas fa-check-circle"></i> {{ feature }}
+          </li>
+        </ul>
+        <a routerLink="/contacto" class="btn btn-primary"
+          >Solicitar Información</a
+        >
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="technology-section">
+  <div class="container">
+    <div class="section-title">
+      <h2>Nuestra Tecnología</h2>
+      <p>Fibra óptica de última generación</p>
+    </div>
+
+    <div class="technology-content">
+      <div class="technology-image">
+        <img src="assets/images/fiber-optic.jpg" alt="Fibra óptica" />
+      </div>
+      <div class="technology-text">
+        <h3>¿Por qué fibra óptica?</h3>
+        <p>
+          La fibra óptica es la tecnología más avanzada para la transmisión de
+          datos, ofreciendo velocidades superiores y mayor estabilidad que otras
+          tecnologías como el cable coaxial o ADSL.
+        </p>
+
+        <div class="technology-features">
+          <div class="feature">
+            <div class="feature-icon">
+              <i class="fas fa-bolt"></i>
+            </div>
+            <div class="feature-text">
+              <h4>Mayor Velocidad</h4>
+              <p>
+                La fibra óptica permite velocidades de hasta 1 Gbps, mucho más
+                rápido que cualquier otra tecnología.
+              </p>
+            </div>
+          </div>
+
+          <div class="feature">
+            <div class="feature-icon">
+              <i class="fas fa-shield-alt"></i>
+            </div>
+            <div class="feature-text">
+              <h4>Mayor Estabilidad</h4>
+              <p>
+                No se ve afectada por interferencias electromagnéticas, lo que
+                garantiza una conexión más estable.
+              </p>
+            </div>
+          </div>
+
+          <div class="feature">
+            <div class="feature-icon">
+              <i class="fas fa-sync-alt"></i>
+            </div>
+            <div class="feature-text">
+              <h4>Conexión Simétrica</h4>
+              <p>
+                Misma velocidad de subida y bajada, ideal para videoconferencias
+                y subir archivos.
+              </p>
+            </div>
+          </div>
+
+          <div class="feature">
+            <div class="feature-icon">
+              <i class="fas fa-clock"></i>
+            </div>
+            <div class="feature-text">
+              <h4>Menor Latencia</h4>
+              <p>
+                Tiempo de respuesta más rápido, esencial para juegos en línea y
+                aplicaciones en tiempo real.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="process-section">
+  <div class="container">
+    <div class="section-title">
+      <h2>Nuestro Proceso</h2>
+      <p>Cómo trabajamos para brindarte el mejor servicio</p>
+    </div>
+
+    <div class="process-steps">
+      <div class="process-step">
+        <div class="step-number">1</div>
+        <div class="step-content">
+          <h3>Contacto Inicial</h3>
+          <p>
+            Nos contactas a través de nuestro formulario, WhatsApp o teléfono
+            para solicitar información.
+          </p>
+        </div>
+      </div>
+
+      <div class="process-step">
+        <div class="step-number">2</div>
+        <div class="step-content">
+          <h3>Verificación de Cobertura</h3>
+          <p>
+            Verificamos si tu dirección está dentro de nuestra zona de
+            cobertura.
+          </p>
+        </div>
+      </div>
+
+      <div class="process-step">
+        <div class="step-number">3</div>
+        <div class="step-content">
+          <h3>Asesoría Personalizada</h3>
+          <p>
+            Te asesoramos para elegir el plan que mejor se adapte a tus
+            necesidades.
+          </p>
+        </div>
+      </div>
+
+      <div class="process-step">
+        <div class="step-number">4</div>
+        <div class="step-content">
+          <h3>Instalación</h3>
+          <p>
+            Nuestros técnicos realizan la instalación de la fibra óptica en tu
+            hogar o negocio.
+          </p>
+        </div>
+      </div>
+
+      <div class="process-step">
+        <div class="step-number">5</div>
+        <div class="step-content">
+          <h3>Soporte Continuo</h3>
+          <p>
+            Te brindamos soporte técnico continuo para garantizar la mejor
+            experiencia.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cta-section">
+  <div class="container">
+    <div class="cta-content">
+      <h2>¿Necesitas más información sobre nuestros servicios?</h2>
+      <p>Nuestro equipo está listo para asesorarte</p>
+      <a routerLink="/contacto" class="btn btn-primary">Contáctanos Ahora</a>
+    </div>
+  </div>
+</section>

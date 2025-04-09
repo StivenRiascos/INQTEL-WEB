@@ -1,0 +1,313 @@
+<section class="page-header">
+  <div class="container">
+    <h1>Contáctanos</h1>
+    <p>Estamos aquí para ayudarte con cualquier consulta</p>
+  </div>
+</section>
+
+<section class="contact-section">
+  <div class="container">
+    <div class="contact-content">
+      <div class="contact-info">
+        <h2>Información de Contacto</h2>
+        <p>
+          Ponte en contacto con nosotros a través de cualquiera de estos medios:
+        </p>
+
+        <div class="contact-methods">
+          <div class="contact-method">
+            <div class="method-icon">
+              <i class="fas fa-map-marker-alt"></i>
+            </div>
+            <div class="method-details">
+              <h3>Dirección</h3>
+              <p>Cll 3 # 9-64, Mocoa, Colombia</p>
+            </div>
+          </div>
+
+          <div class="contact-method">
+            <div class="method-icon">
+              <i class="fas fa-phone"></i>
+            </div>
+            <div class="method-details">
+              <h3>Teléfono</h3>
+              <p>+57 311 2293427</p>
+            </div>
+          </div>
+
+          <div class="contact-method">
+            <div class="method-icon">
+              <i class="fas fa-envelope"></i>
+            </div>
+            <div class="method-details">
+              <h3>Correo Electrónico</h3>
+              <p>inqtelsas&#64;gmail.com</p>
+            </div>
+          </div>
+
+          <div class="contact-method">
+            <div class="method-icon">
+              <i class="fas fa-clock"></i>
+            </div>
+            <div class="method-details">
+              <h3>Horario de Atención</h3>
+              <p>
+                Lunes a Viernes: 8:00 AM - 6:00 PM<br />Sábados: 9:00 AM - 1:00
+                PM
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="social-links">
+          <h3>Síguenos en Redes Sociales</h3>
+          <div class="social-icons">
+            <a
+              href="https://www.facebook.com/inqtelsas"
+              target="_blank"
+              class="social-icon"
+            >
+              <i class="fab fa-facebook-f"></i>
+            </a>
+            <a href="#" class="social-icon">
+              <i class="fab fa-instagram"></i>
+            </a>
+            <a href="#" class="social-icon">
+              <i class="fab fa-whatsapp"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="contact-form-container">
+        <h2>Envíanos un Mensaje</h2>
+        <p *ngIf="selectedPlan">
+          Has seleccionado el plan: <strong>{{ selectedPlan }}</strong>
+        </p>
+
+        <div *ngIf="formSubmitted" class="form-success">
+          <i class="fas fa-check-circle"></i>
+          <h3>¡Mensaje Enviado!</h3>
+          <p>
+            Gracias por contactarnos. Nos pondremos en contacto contigo lo antes
+            posible.
+          </p>
+        </div>
+
+        <form
+          [formGroup]="contactForm"
+          (ngSubmit)="onSubmit()"
+          *ngIf="!formSubmitted"
+        >
+          <div class="form-group">
+            <label for="name">Nombre Completo *</label>
+            <input
+              type="text"
+              id="name"
+              formControlName="name"
+              [ngClass]="{ invalid: f['name'].touched && f['name'].invalid }"
+            />
+            <div
+              class="error-message"
+              *ngIf="f['name'].touched && f['name'].invalid"
+            >
+              <span *ngIf="f['name'].errors?.['required']"
+                >El nombre es requerido.</span
+              >
+              <span *ngIf="f['name'].errors?.['minlength']"
+                >El nombre debe tener al menos 3 caracteres.</span
+              >
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="email">Correo Electrónico *</label>
+              <input
+                type="email"
+                id="email"
+                formControlName="email"
+                [ngClass]="{
+                  invalid: f['email'].touched && f['email'].invalid
+                }"
+              />
+              <div
+                class="error-message"
+                *ngIf="f['email'].touched && f['email'].invalid"
+              >
+                <span *ngIf="f['email'].errors?.['required']"
+                  >El correo es requerido.</span
+                >
+                <span *ngIf="f['email'].errors?.['email']"
+                  >Ingrese un correo válido.</span
+                >
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="phone">Teléfono *</label>
+              <input
+                type="tel"
+                id="phone"
+                formControlName="phone"
+                [ngClass]="{
+                  invalid: f['phone'].touched && f['phone'].invalid
+                }"
+              />
+              <div
+                class="error-message"
+                *ngIf="f['phone'].touched && f['phone'].invalid"
+              >
+                <span *ngIf="f['phone'].errors?.['required']"
+                  >El teléfono es requerido.</span
+                >
+                <span *ngIf="f['phone'].errors?.['pattern']"
+                  >Ingrese un número de 10 dígitos.</span
+                >
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="address">Dirección *</label>
+            <input
+              type="text"
+              id="address"
+              formControlName="address"
+              [ngClass]="{
+                invalid: f['address'].touched && f['address'].invalid
+              }"
+            />
+            <div
+              class="error-message"
+              *ngIf="f['address'].touched && f['address'].invalid"
+            >
+              <span *ngIf="f['address'].errors?.['required']"
+                >La dirección es requerida.</span
+              >
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="plan">Plan de Interés</label>
+            <select id="plan" formControlName="plan">
+              <option value="">Seleccione un plan</option>
+              <option value="150 Mbps">Plan 150 Mbps</option>
+              <option value="290 Mbps">Plan 290 Mbps</option>
+              <option value="395 Mbps">Plan 395 Mbps</option>
+              <option value="490 Mbps">Plan 490 Mbps</option>
+              <option value="650 Mbps">Plan 650 Mbps</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="message">Mensaje *</label>
+            <textarea
+              id="message"
+              rows="5"
+              formControlName="message"
+              [ngClass]="{
+                invalid: f['message'].touched && f['message'].invalid
+              }"
+            ></textarea>
+            <div
+              class="error-message"
+              *ngIf="f['message'].touched && f['message'].invalid"
+            >
+              <span *ngIf="f['message'].errors?.['required']"
+                >El mensaje es requerido.</span
+              >
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-secondary">
+            Enviar Mensaje
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="map-section">
+  <div class="container">
+    <div class="section-title">
+      <h2>Nuestra Ubicación</h2>
+      <p>Visítanos en nuestra oficina</p>
+    </div>
+
+    <div class="map-container">
+      <!-- Aquí iría un mapa de Google Maps o similar -->
+      <div class="map-placeholder">
+        <i class="fas fa-map-marked-alt"></i>
+        <p>Cll 3 # 9-64, Mocoa, Colombia</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="faq-section">
+  <div class="container">
+    <div class="section-title">
+      <h2>Preguntas Frecuentes</h2>
+      <p>Respuestas a las preguntas más comunes</p>
+    </div>
+
+    <div class="faq-grid">
+      <div class="faq-item">
+        <div class="faq-question">
+          <h3>¿Cómo puedo contratar el servicio?</h3>
+          <i class="fas fa-chevron-down"></i>
+        </div>
+        <div class="faq-answer">
+          <p>
+            Puedes contratar nuestro servicio a través de este formulario de
+            contacto, llamándonos al +57 311 2293427 o visitando nuestra oficina
+            en Cll 3 # 9-64, Mocoa.
+          </p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question">
+          <h3>¿Cuánto tiempo tarda la instalación?</h3>
+          <i class="fas fa-chevron-down"></i>
+        </div>
+        <div class="faq-answer">
+          <p>
+            Normalmente realizamos la instalación en un plazo de 24 a 48 horas
+            después de la contratación, dependiendo de la disponibilidad y la
+            zona.
+          </p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question">
+          <h3>¿Qué métodos de pago aceptan?</h3>
+          <i class="fas fa-chevron-down"></i>
+        </div>
+        <div class="faq-answer">
+          <p>
+            Aceptamos pagos en efectivo, transferencias bancarias y pagos a
+            través de aplicaciones móviles como Nequi y Daviplata.
+          </p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question">
+          <h3>¿Cómo reporto un problema técnico?</h3>
+          <i class="fas fa-chevron-down"></i>
+        </div>
+        <div class="faq-answer">
+          <p>
+            Puedes reportar problemas técnicos llamando a nuestro número de
+            soporte, a través de WhatsApp o visitando nuestra oficina. Nuestro
+            equipo técnico estará disponible para ayudarte.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

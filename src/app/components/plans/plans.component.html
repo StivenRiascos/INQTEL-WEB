@@ -1,0 +1,213 @@
+<section class="page-header">
+  <div class="container">
+    <h1>Nuestros Planes</h1>
+    <p>
+      Disfruta nuestros Megas reales por fibra óptica, velocidad Simétrica y
+      soporte permanente.
+    </p>
+  </div>
+</section>
+
+<section class="plans-section">
+  <div class="container">
+    <div class="section-title">
+      <h2>Planes de Internet por Fibra Óptica</h2>
+      <p>Elige el plan que mejor se adapte a tus necesidades</p>
+    </div>
+
+    <div class="plans-grid">
+      <div
+        class="plan-card"
+        *ngFor="let plan of plans"
+        [ngClass]="{ popular: plan.popular }"
+      >
+        <div class="popular-badge" *ngIf="plan.popular">Más Popular</div>
+        <div class="plan-header">
+          <h3>Plan {{ plan.name }}</h3>
+          <div class="plan-price">
+            <span class="price">{{
+              plan.price | currency : "COP" : "symbol-narrow" : "1.0-0"
+            }}</span>
+            <span class="period">Mensual</span>
+          </div>
+        </div>
+        <div class="plan-features">
+          <ul>
+            <li *ngFor="let feature of plan.features">
+              <i class="fas fa-check-circle"></i> {{ feature }}
+            </li>
+          </ul>
+        </div>
+        <div class="plan-footer">
+          <a
+            routerLink="/contacto"
+            [queryParams]="{ plan: plan.name }"
+            class="btn"
+            [ngClass]="plan.popular ? 'btn-secondary' : 'btn-primary'"
+            >Contratar Ahora</a
+          >
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="plan-comparison">
+  <div class="container">
+    <div class="section-title">
+      <h2>Comparativa de Planes</h2>
+      <p>Encuentra el plan perfecto para ti</p>
+    </div>
+
+    <div class="comparison-table-wrapper">
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th>Características</th>
+            <th *ngFor="let plan of plans">{{ plan.name }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Velocidad de Descarga</td>
+            <td *ngFor="let plan of plans">{{ plan.name }}</td>
+          </tr>
+          <tr>
+            <td>Velocidad de Subida</td>
+            <td *ngFor="let plan of plans">{{ plan.name }}</td>
+          </tr>
+          <tr>
+            <td>Fibra Óptica</td>
+            <td *ngFor="let plan of plans">
+              <i class="fas fa-check text-success"></i>
+            </td>
+          </tr>
+          <tr>
+            <td>Instalación Gratuita</td>
+            <td *ngFor="let plan of plans">
+              <i class="fas fa-check text-success"></i>
+            </td>
+          </tr>
+          <tr>
+            <td>Router WiFi</td>
+            <td>Básico</td>
+            <td>Incluido</td>
+            <td>Premium</td>
+            <td>Premium</td>
+            <td>Premium</td>
+          </tr>
+          <tr>
+            <td>Soporte Técnico</td>
+            <td>Estándar</td>
+            <td>Prioritario</td>
+            <td>24/7</td>
+            <td>24/7</td>
+            <td>24/7 VIP</td>
+          </tr>
+          <tr>
+            <td>IP Fija</td>
+            <td><i class="fas fa-times text-danger"></i></td>
+            <td><i class="fas fa-times text-danger"></i></td>
+            <td>Opcional</td>
+            <td><i class="fas fa-check text-success"></i></td>
+            <td><i class="fas fa-check text-success"></i></td>
+          </tr>
+          <tr>
+            <td>Precio Mensual</td>
+            <td *ngFor="let plan of plans">
+              {{ plan.price | currency : "COP" : "symbol-narrow" : "1.0-0" }}
+            </td>
+          </tr>
+          <tr>
+            <td></td>
+            <td *ngFor="let plan of plans">
+              <a
+                routerLink="/contacto"
+                [queryParams]="{ plan: plan.name }"
+                class="btn btn-sm"
+                [ngClass]="plan.popular ? 'btn-secondary' : 'btn-primary'"
+                >Contratar</a
+              >
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section class="faq-section">
+  <div class="container">
+    <div class="section-title">
+      <h2>Preguntas Frecuentes</h2>
+      <p>Resolvemos tus dudas sobre nuestros planes</p>
+    </div>
+
+    <div class="faq-grid">
+      <div class="faq-item">
+        <div class="faq-question">
+          <h3>¿Qué es la velocidad simétrica?</h3>
+          <i class="fas fa-chevron-down"></i>
+        </div>
+        <div class="faq-answer">
+          <p>
+            La velocidad simétrica significa que tienes la misma velocidad de
+            subida y bajada. Esto es ideal para videoconferencias, juegos en
+            línea, y subir archivos a la nube.
+          </p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question">
+          <h3>¿Cuánto tiempo toma la instalación?</h3>
+          <i class="fas fa-chevron-down"></i>
+        </div>
+        <div class="faq-answer">
+          <p>
+            Normalmente realizamos la instalación en un plazo de 24 a 48 horas
+            después de la contratación, dependiendo de la disponibilidad y la
+            zona.
+          </p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question">
+          <h3>¿Hay algún costo de instalación?</h3>
+          <i class="fas fa-chevron-down"></i>
+        </div>
+        <div class="faq-answer">
+          <p>
+            No, la instalación es completamente gratuita en todas nuestras zonas
+            de cobertura.
+          </p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question">
+          <h3>¿Puedo cambiar de plan después de contratar?</h3>
+          <i class="fas fa-chevron-down"></i>
+        </div>
+        <div class="faq-answer">
+          <p>
+            Sí, puedes cambiar a un plan superior o inferior en cualquier
+            momento. El cambio se hará efectivo en tu próximo ciclo de
+            facturación.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cta-section">
+  <div class="container">
+    <div class="cta-content">
+      <h2>¿Listo para disfrutar del mejor internet?</h2>
+      <p>Contrata ahora y comienza a navegar a alta velocidad</p>
+      <a routerLink="/contacto" class="btn btn-primary">Contáctanos Ahora</a>
+    </div>
+  </div>
+</section>

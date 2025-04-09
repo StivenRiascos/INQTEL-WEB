@@ -1,0 +1,185 @@
+@use "../../../styles/variables" as vars;
+@use "../../../styles/mixins" as mix;
+
+@use "sass:color";
+
+.footer {
+  background-color: vars.$inqtel-blue-dark;
+  color: vars.$white;
+}
+
+.footer-top {
+  padding: 4rem 0 3rem;
+}
+
+.footer-grid {
+  @include mix.grid(1, 2rem);
+
+  @include mix.respond-to(md) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @include mix.respond-to(lg) {
+    grid-template-columns: 2fr 1fr 1fr 1.5fr;
+  }
+}
+
+.footer-info {
+  .footer-logo {
+    font-size: 1.8rem;
+    font-weight: 700;
+    display: flex;
+    align-items: baseline;
+    margin-bottom: 0.5rem;
+
+    .logo-in,
+    .logo-tel {
+      color: vars.$white;
+    }
+
+    .logo-q {
+      color: vars.$inqtel-red;
+    }
+
+    .logo-sas {
+      font-size: 0.8rem;
+      margin-left: 0.2rem;
+      color: vars.$gray-300;
+    }
+  }
+
+  .footer-tagline {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: vars.$gray-400;
+    margin-bottom: 1rem;
+  }
+
+  .footer-slogan {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    color: vars.$inqtel-red;
+  }
+
+  .footer-description {
+    color: vars.$gray-300;
+    margin-bottom: 1.5rem;
+    max-width: 90%;
+  }
+}
+
+.footer-links,
+.footer-services,
+.footer-contact {
+  h3 {
+    font-size: 1.2rem;
+    margin-bottom: 1.5rem;
+    position: relative;
+    padding-bottom: 0.75rem;
+
+    &:after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 50px;
+      height: 2px;
+      background-color: vars.$inqtel-red;
+    }
+  }
+
+  ul {
+    li {
+      margin-bottom: 0.75rem;
+
+      a {
+        color: vars.$gray-300;
+        transition: all 0.3s ease;
+
+        &:hover {
+          color: vars.$inqtel-red;
+          padding-left: 5px;
+        }
+      }
+
+      i {
+        color: vars.$inqtel-red;
+        width: 20px;
+        margin-right: 10px;
+      }
+
+      span {
+        color: vars.$gray-300;
+      }
+    }
+  }
+}
+
+.footer-social {
+  display: flex;
+  margin-top: 1.5rem;
+
+  .social-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    margin-right: 10px;
+    transition: all 0.3s ease;
+
+    &:hover {
+      background-color: vars.$inqtel-red;
+      transform: translateY(-3px);
+    }
+
+    i {
+      color: vars.$white;
+      font-size: 1rem;
+    }
+  }
+}
+
+.footer-bottom {
+  padding: 1.5rem 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  background-color: color.adjust(vars.$inqtel-blue-dark, $lightness: -5%);
+
+  .container {
+    @include mix.flex(row, space-between, center, wrap);
+
+    @include mix.respond-to(xs) {
+      flex-direction: column;
+      text-align: center;
+
+      p {
+        margin-bottom: 1rem;
+      }
+    }
+  }
+
+  p {
+    color: vars.$gray-400;
+    font-size: 0.9rem;
+  }
+
+  .footer-legal {
+    a {
+      color: vars.$gray-400;
+      font-size: 0.9rem;
+      margin-left: 1.5rem;
+      transition: all 0.3s ease;
+
+      &:hover {
+        color: vars.$inqtel-red;
+      }
+
+      @include mix.respond-to(xs) {
+        margin: 0 0.75rem;
+      }
+    }
+  }
+}

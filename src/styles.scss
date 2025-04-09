@@ -1,1 +1,194 @@
-/* You can add global styles to this file, and also import other style files */
+/* Importar variables y mixins */
+@use "styles/_variables" as vars;
+@use "styles/_mixins" as mix;
+
+/* Importar fuentes */
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&display=swap");
+
+/* Estilos globales */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "Poppins", sans-serif;
+  font-size: vars.$font-size-base;
+  line-height: 1.6;
+  color: vars.$gray-800;
+  background-color: vars.$white;
+}
+
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 vars.$spacing-4;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin-bottom: vars.$spacing-4;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+h1 {
+  font-size: vars.$font-size-3xl;
+
+  @include mix.respond-to(md) {
+    font-size: vars.$font-size-4xl;
+  }
+}
+
+h2 {
+  font-size: vars.$font-size-2xl;
+
+  @include mix.respond-to(md) {
+    font-size: vars.$font-size-3xl;
+  }
+}
+
+h3 {
+  font-size: vars.$font-size-xl;
+
+  @include mix.respond-to(md) {
+    font-size: vars.$font-size-2xl;
+  }
+}
+
+p {
+  margin-bottom: vars.$spacing-4;
+}
+
+a {
+  color: vars.$inqtel-blue-dark;
+  text-decoration: none;
+  @include mix.transition;
+
+  &:hover {
+    color: vars.$inqtel-blue-light;
+  }
+}
+
+.btn {
+  display: inline-block;
+  padding: vars.$spacing-2 vars.$spacing-5;
+  border-radius: vars.$border-radius;
+  font-weight: 600;
+  text-align: center;
+  cursor: pointer;
+  @include mix.transition;
+
+  &-primary {
+    @include mix.button-variant(
+      vars.$inqtel-blue-light,
+      vars.$white,
+      darken(vars.$inqtel-blue-light, 10%)
+    );
+  }
+
+  &-secondary {
+    @include mix.button-variant(
+      vars.$inqtel-red,
+      vars.$white,
+      darken(vars.$inqtel-red, 10%)
+    );
+  }
+
+  &-outline {
+    background-color: transparent;
+    border: 2px solid vars.$inqtel-blue-dark;
+    color: vars.$inqtel-blue-dark;
+
+    &:hover {
+      background-color: vars.$inqtel-blue-dark;
+      color: vars.$white;
+    }
+  }
+}
+
+.section {
+  padding: vars.$spacing-7 0;
+
+  &-title {
+    text-align: center;
+    margin-bottom: vars.$spacing-6;
+
+    h2 {
+      position: relative;
+      display: inline-block;
+
+      &::after {
+        content: "";
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 3px;
+        background-color: vars.$inqtel-red;
+      }
+    }
+  }
+}
+
+.card {
+  background-color: vars.$white;
+  border-radius: vars.$border-radius-lg;
+  overflow: hidden;
+  @include mix.box-shadow(2);
+  @include mix.transition;
+
+  &:hover {
+    @include mix.box-shadow(3);
+    transform: translateY(-5px);
+  }
+}
+
+.text-primary {
+  color: vars.$inqtel-blue-light;
+}
+
+.text-secondary {
+  color: vars.$inqtel-red;
+}
+
+.text-dark {
+  color: vars.$inqtel-blue-dark;
+}
+
+.bg-primary {
+  background-color: vars.$inqtel-blue-light;
+}
+
+.bg-secondary {
+  background-color: vars.$inqtel-red;
+}
+
+.bg-dark {
+  background-color: vars.$inqtel-blue-dark;
+}
+
+.bg-light {
+  background-color: vars.$gray-100;
+}
+
+.script-font {
+  font-family: "Dancing Script", cursive;
+}
+
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
