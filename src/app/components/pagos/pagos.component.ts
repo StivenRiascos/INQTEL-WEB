@@ -7,6 +7,7 @@ import {
 } from '@angular/forms';
 import { NgIf, NgClass, NgFor } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { FacturaService } from '../../services/factura.service'; // Importamos el servicio
 
 interface MetodoPago {
   id: string;
@@ -35,6 +36,8 @@ export class PagosComponent implements OnInit {
   metodoSeleccionado: string | null = null;
   formSubmitted = false;
   mostrarModal = false;
+  facturaEncontrada: any = null;  // Variable para almacenar la factura encontrada
+  mensajeError: string | null = null; // Mensaje de error si no se encuentra la factura
 
   tiposDocumento = [
     { id: 'cedula', nombre: 'Cédula de ciudadanía' },
@@ -110,7 +113,10 @@ export class PagosComponent implements OnInit {
     },
   ];
 
-  constructor(private fb: FormBuilder) {
+  constructor(
+    private fb: FormBuilder,
+    private facturaService: FacturaService // Inyectamos el servicio
+  ) {
     this.pagoForm = this.fb.group({
       nombre: ['', [Validators.required, Validators.minLength(3)]],
       contrato: ['', [Validators.required]],
@@ -168,10 +174,28 @@ export class PagosComponent implements OnInit {
 
   buscarFactura(): void {
     if (this.busquedaForm.valid) {
-      console.log('Buscando factura:', this.busquedaForm.value);
-      // Aquí iría la lógica para buscar la factura
-      // Por ahora solo cerramos el modal para simular
-      // this.cerrarModal();
+      const numeroDocumento = this.busquedaForm.value.numeroDocumento;
+      console.log('Buscando factura para:', numeroDocumento);
+
+      // Llamada al servicio para obtener la factura
+      this.facturaService.obtenerFacturaPorCedula(numeroDocumento).subscribe({
+        next: (factura) => {
+          if (factura) {
+            console.log('Factura encontrada:', factura);
+            this.facturaEncontrada = factura;  // Almacenar la factura en la variable
+            this.mensajeError = null;  // Limpiar el mensaje de error si se encuentra la factura
+          } else {
+            console.log('Factura no encontrada');
+            this.facturaEncontrada = null;  // Limpiar la factura si no se encuentra
+            this.mensajeError = 'No se encontraron facturas para este documento.'; // Mostrar mensaje de error
+          }
+        },
+        error: (err) => {
+          console.error('Error al obtener la factura:', err);
+          this.facturaEncontrada = null;  // Limpiar la factura en caso de error
+          this.mensajeError = 'Ocurrió un error al intentar obtener la factura.'; // Mostrar mensaje de error
+        }
+      });
     } else {
       // Marcar todos los campos como tocados para mostrar errores
       Object.keys(this.busquedaForm.controls).forEach((key) => {

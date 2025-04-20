@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { HomeComponent } from './components/home/home.component';
 import { PlansComponent } from './components/plans/plans.component';
-import { ServicesComponent } from './components/services/services.component';
+import { ServicesComponent } from './components/servicios/servicios.component';
 import { ReferralComponent } from './components/referral/referral.component';
 import { PagosComponent } from './components/pagos/pagos.component';
 import { ContactComponent } from './components/contact/contact.component';

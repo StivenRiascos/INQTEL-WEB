@@ -278,10 +278,11 @@
       .plan-header {
         background: linear-gradient(
           135deg,
-          lighten(vars.$inqtel-red, 30%),
+          color.adjust(vars.$inqtel-red, $lightness: 30%),
           vars.$white
         );
       }
+      
     }
 
     .popular-badge {
@@ -302,7 +303,7 @@
       text-align: center;
       background: linear-gradient(
         135deg,
-        lighten(vars.$inqtel-blue-light, 35%),
+        color.adjust(vars.$inqtel-blue-light, $lightness: 35%),
         vars.$white
       );
 

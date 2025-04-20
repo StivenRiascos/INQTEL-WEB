@@ -284,8 +284,8 @@
   <div class="modal-container" (click)="$event.stopPropagation()">
     <div class="modal-header">
       <div class="modal-logo">
-        <span class="logo-in">IN</span><span class="logo-q">Q</span
-        ><span class="logo-tel">TEL</span>
+        <span class="logo-in">IN</span><span class="logo-q">Q</span>
+        <span class="logo-tel">TEL</span>
         <span class="logo-sas">S.A.S</span>
       </div>
       <button class="modal-close" (click)="cerrarModal()">
@@ -296,7 +296,7 @@
     <div class="modal-body">
       <h2>Consulta tu Factura</h2>
       <p>Ingresa tus datos para consultar y pagar tu factura</p>
-
+    
       <form [formGroup]="busquedaForm" (ngSubmit)="buscarFactura()">
         <div class="form-group">
           <label for="tipoDocumento">Tipo de búsqueda</label>
@@ -312,7 +312,7 @@
             </option>
           </select>
         </div>
-
+    
         <div class="form-group">
           <label for="numeroDocumento">Búsqueda</label>
           <input
@@ -329,19 +329,35 @@
             class="error-message"
             *ngIf="b['numeroDocumento'].touched && b['numeroDocumento'].invalid"
           >
-            <span *ngIf="b['numeroDocumento'].errors?.['required']"
-              >Este campo es requerido.</span
-            >
-            <span *ngIf="b['numeroDocumento'].errors?.['minlength']"
-              >Ingrese al menos 5 caracteres.</span
-            >
+            <span *ngIf="b['numeroDocumento'].errors?.['required']">
+              Este campo es requerido.
+            </span>
+            <span *ngIf="b['numeroDocumento'].errors?.['minlength']">
+              Ingrese al menos 5 caracteres.
+            </span>
           </div>
         </div>
-
+    
         <button type="submit" class="btn btn-primary btn-block">
           <i class="fas fa-search"></i> Buscar
         </button>
       </form>
-    </div>
-  </div>
-</div>
+    
+      <!-- Mostrar mensaje de error si no se encuentra la factura -->
+      <div *ngIf="mensajeError" class="alert alert-danger mt-4">
+        {{ mensajeError }}
+      </div>
+    
+      <!-- Mostrar la factura encontrada -->
+      <div *ngIf="facturaEncontrada" class="factura-resultado mt-4 p-3 border rounded bg-light">
+        <h3 class="mb-3">Factura Encontrada</h3>
+        <p><strong>Cliente:</strong> {{ facturaEncontrada.nombre }}</p>
+        <p><strong>Concepto:</strong> {{ facturaEncontrada.concepto }}</p>
+        <p><strong>Monto a Pagar:</strong> ${{ facturaEncontrada.valor }}</p>
+        <p><strong>Fecha Límite:</strong> {{ facturaEncontrada.fechaLimite || 'No disponible' }}</p>
+        
+        <button class="btn btn-success mt-3">Pagar Ahora</button>
+      </div>
+    </div> <!-- Cierra modal-body -->
+  </div> <!-- Cierra modal-container -->
+</div> <!-- Cierra modal-overlay -->

@@ -14,8 +14,8 @@ interface Service {
   selector: 'app-services',
   standalone: true,
   imports: [RouterLink, NgFor],
-  templateUrl: './services.component.html',
-  styleUrls: ['./services.component.scss'],
+  templateUrl: './servicios.component.html',
+  styleUrls: ['./servicios.component.scss'],
 })
 export class ServicesComponent implements OnInit {
   services: Service[] = [
