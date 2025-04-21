@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class FacturaService {
-  private apiUrl = 'http://localhost:3000/facturas';  // Cambia a la URL de tu backend
+  private apiUrl = 'http://localhost:3000/facturas';  // URL del backend
 
   constructor(private http: HttpClient) {}
 
@@ -18,8 +18,8 @@ export class FacturaService {
 
   // Método para obtener una factura por cédula
   obtenerFacturaPorCedula(cedula: string): Observable<any> {
-    // Cambia la ruta para que sea directamente '/facturas/{cedula}'
-    return this.http.get<any>(`${this.apiUrl}/${cedula}`);
+    // Cambiar la URL para que apunte al endpoint correcto con la ruta 'consulta'
+    return this.http.get<any>(`${this.apiUrl}/consulta/${cedula}`);
   }
 
   // Método para obtener una factura por contrato

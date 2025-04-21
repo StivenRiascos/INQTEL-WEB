@@ -352,11 +352,13 @@
       <div *ngIf="facturaEncontrada" class="factura-resultado mt-4 p-3 border rounded bg-light">
         <h3 class="mb-3">Factura Encontrada</h3>
         <p><strong>Cliente:</strong> {{ facturaEncontrada.nombre }}</p>
-        <p><strong>Concepto:</strong> {{ facturaEncontrada.concepto }}</p>
-        <p><strong>Monto a Pagar:</strong> ${{ facturaEncontrada.valor }}</p>
+        <p><strong>Concepto:</strong> {{ facturaEncontrada.plan }}</p> <!-- Cambiar 'concepto' por 'plan' -->
+        <p><strong>Monto a Pagar:</strong> ${{ facturaEncontrada.precio }}</p> <!-- Cambiar 'valor' por 'precio' -->
         <p><strong>Fecha Límite:</strong> {{ facturaEncontrada.fechaLimite || 'No disponible' }}</p>
         
-        <button class="btn btn-success mt-3">Pagar Ahora</button>
+        <button class="btn btn-success btn-lg px-5 py-3 rounded-pill shadow-sm">
+          <i class="fas fa-credit-card mr-2"></i> Pagar Ahora
+        </button>
       </div>
     </div> <!-- Cierra modal-body -->
   </div> <!-- Cierra modal-container -->

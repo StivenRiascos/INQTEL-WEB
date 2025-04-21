@@ -20,7 +20,7 @@ interface MetodoPago {
     numero: string;
     titular: string;
     documento?: string;
-  }[];
+  }[];  // Información de cuentas bancarias en algunos métodos de pago
 }
 
 @Component({
@@ -39,6 +39,7 @@ export class PagosComponent implements OnInit {
   facturaEncontrada: any = null;  // Variable para almacenar la factura encontrada
   mensajeError: string | null = null; // Mensaje de error si no se encuentra la factura
 
+  // Tipos de documento que se pueden utilizar para buscar la factura
   tiposDocumento = [
     { id: 'cedula', nombre: 'Cédula de ciudadanía' },
     { id: 'nit', nombre: 'NIT (Con dígito de verificación)' },
@@ -50,6 +51,7 @@ export class PagosComponent implements OnInit {
     { id: 'docExt', nombre: 'Documento de identificación extranjero' },
   ];
 
+  // Métodos de pago disponibles con su respectiva descripción
   metodosPago: MetodoPago[] = [
     {
       id: 'efectivo',
@@ -115,8 +117,9 @@ export class PagosComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private facturaService: FacturaService // Inyectamos el servicio
+    private facturaService: FacturaService // Inyectamos el servicio para manejar las facturas
   ) {
+    // Inicialización de los formularios reactivos
     this.pagoForm = this.fb.group({
       nombre: ['', [Validators.required, Validators.minLength(3)]],
       contrato: ['', [Validators.required]],
@@ -132,9 +135,10 @@ export class PagosComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // Inicializar el componente
+    // Inicialización del componente, si es necesario
   }
 
+  // Selecciona el método de pago y actualiza el formulario
   seleccionarMetodo(metodoId: string): void {
     this.metodoSeleccionado = metodoId;
     this.pagoForm.patchValue({
@@ -142,12 +146,14 @@ export class PagosComponent implements OnInit {
     });
   }
 
+  // Obtiene el método de pago seleccionado
   getMetodoActual(): MetodoPago | undefined {
     return this.metodosPago.find(
       (metodo) => metodo.id === this.metodoSeleccionado
     );
   }
 
+  // Lógica para manejar el envío del formulario de pago
   onSubmit(): void {
     if (this.pagoForm.valid) {
       console.log('Formulario enviado:', this.pagoForm.value);
@@ -162,42 +168,43 @@ export class PagosComponent implements OnInit {
     }
   }
 
+  // Abre el modal para buscar la factura
   abrirModal(): void {
     this.mostrarModal = true;
     document.body.classList.add('modal-open');
   }
 
+  // Cierra el modal
   cerrarModal(): void {
     this.mostrarModal = false;
     document.body.classList.remove('modal-open');
   }
 
+  // Lógica para buscar la factura por el número de documento
   buscarFactura(): void {
     if (this.busquedaForm.valid) {
       const numeroDocumento = this.busquedaForm.value.numeroDocumento;
       console.log('Buscando factura para:', numeroDocumento);
-
-      // Llamada al servicio para obtener la factura
+  
       this.facturaService.obtenerFacturaPorCedula(numeroDocumento).subscribe({
         next: (factura) => {
-          if (factura) {
-            console.log('Factura encontrada:', factura);
-            this.facturaEncontrada = factura;  // Almacenar la factura en la variable
-            this.mensajeError = null;  // Limpiar el mensaje de error si se encuentra la factura
-          } else {
+          if (factura.encontrado === false) {
             console.log('Factura no encontrada');
-            this.facturaEncontrada = null;  // Limpiar la factura si no se encuentra
-            this.mensajeError = 'No se encontraron facturas para este documento.'; // Mostrar mensaje de error
+            this.facturaEncontrada = null;
+            this.mensajeError = 'No se encontraron facturas para este documento.';
+          } else {
+            console.log('Factura encontrada:', factura);
+            this.facturaEncontrada = factura;
+            this.mensajeError = null;
           }
         },
         error: (err) => {
           console.error('Error al obtener la factura:', err);
-          this.facturaEncontrada = null;  // Limpiar la factura en caso de error
-          this.mensajeError = 'Ocurrió un error al intentar obtener la factura.'; // Mostrar mensaje de error
+          this.facturaEncontrada = null;
+          this.mensajeError = 'Ocurrió un error al intentar obtener la factura.';
         }
       });
     } else {
-      // Marcar todos los campos como tocados para mostrar errores
       Object.keys(this.busquedaForm.controls).forEach((key) => {
         const control = this.busquedaForm.get(key);
         control?.markAsTouched();
@@ -205,6 +212,7 @@ export class PagosComponent implements OnInit {
     }
   }
 
+  // Métodos para obtener los controles de los formularios y facilitar la validación
   get f() {
     return this.pagoForm.controls;
   }
