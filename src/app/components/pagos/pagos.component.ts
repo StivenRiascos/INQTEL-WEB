@@ -8,6 +8,7 @@ import {
 import { NgIf, NgClass, NgFor } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FacturaService } from '../../services/factura.service'; // Importamos el servicio
+import { PaymentService } from '../../services/payment.service'; // Importamos el servicio de pago
 
 interface MetodoPago {
   id: string;
@@ -38,6 +39,7 @@ export class PagosComponent implements OnInit {
   mostrarModal = false;
   facturaEncontrada: any = null;  // Variable para almacenar la factura encontrada
   mensajeError: string | null = null; // Mensaje de error si no se encuentra la factura
+  mensajePago: string | null = null; // ✅ Añadida para solucionar el error
 
   // Tipos de documento que se pueden utilizar para buscar la factura
   tiposDocumento = [
@@ -117,7 +119,8 @@ export class PagosComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private facturaService: FacturaService // Inyectamos el servicio para manejar las facturas
+    private facturaService: FacturaService, // Inyectamos el servicio para manejar las facturas
+    private paymentService: PaymentService // Inyectamos el servicio de pago
   ) {
     // Inicialización de los formularios reactivos
     this.pagoForm = this.fb.group({
@@ -153,21 +156,48 @@ export class PagosComponent implements OnInit {
     );
   }
 
-  // Lógica para manejar el envío del formulario de pago
   onSubmit(): void {
-    if (this.pagoForm.valid) {
-      console.log('Formulario enviado:', this.pagoForm.value);
-      this.formSubmitted = true;
-      // Aquí iría la lógica para procesar el pago
-    } else {
-      // Marcar todos los campos como tocados para mostrar errores
-      Object.keys(this.pagoForm.controls).forEach((key) => {
-        const control = this.pagoForm.get(key);
-        control?.markAsTouched();
-      });
-    }
+    this.realizarPago();  // Llamas a la función de pago cuando el formulario es enviado
   }
 
+  realizarPago(): void {
+    console.log('realizarPago() fue llamado');
+  
+    // Verificar si hay una factura seleccionada
+    if (!this.facturaEncontrada) {
+      console.warn('No se encontró ninguna factura para pagar');
+      return;
+    }
+  
+    // Obtener los datos directamente de la factura encontrada
+    const facturaId = Number(this.facturaEncontrada.id);
+    const monto = Number(this.facturaEncontrada.precio);
+    const fechaPago = new Date().toISOString().split('T')[0]; // Formato YYYY-MM-DD
+  
+    const pago = { monto, fechaPago, facturaId };
+    console.log('Datos a enviar:', pago);
+  
+    // Llamada al servicio para realizar el pago
+    this.paymentService.realizarPago(pago).subscribe({
+      next: (response) => {
+        console.log('✅ Pago realizado con éxito:', response);
+        alert('¡Pago realizado exitosamente!');
+        this.mensajePago = response.message || 'Pago exitoso';
+        this.facturaEncontrada = null;
+        this.pagoForm.reset(); // Si no usas el formulario, esta línea es opcional
+      },
+      error: (error) => {
+        console.error('❌ Error al realizar el pago:', error);
+        this.mensajePago = 'Error al procesar el pago';
+        alert('Hubo un error al procesar el pago. Por favor, inténtalo de nuevo.');
+      }
+    });
+  }
+  
+  
+  
+  
+  
   // Abre el modal para buscar la factura
   abrirModal(): void {
     this.mostrarModal = true;

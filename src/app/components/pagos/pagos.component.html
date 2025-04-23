@@ -356,7 +356,7 @@
         <p><strong>Monto a Pagar:</strong> ${{ facturaEncontrada.precio }}</p> <!-- Cambiar 'valor' por 'precio' -->
         <p><strong>Fecha Límite:</strong> {{ facturaEncontrada.fechaLimite || 'No disponible' }}</p>
         
-        <button class="btn btn-success btn-lg px-5 py-3 rounded-pill shadow-sm">
+        <button class="btn btn-success btn-lg px-5 py-3 rounded-pill shadow-sm" (click)="realizarPago()">
           <i class="fas fa-credit-card mr-2"></i> Pagar Ahora
         </button>
       </div>

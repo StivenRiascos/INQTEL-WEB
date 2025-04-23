@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, catchError, throwError } from 'rxjs';
 
-// Definir las interfaces para las respuestas esperadas del backend
-interface PaymentResponse {
+// Interface para respuestas
+export interface PaymentResponse {
   success: boolean;
   message: string;
   data?: any;
@@ -13,19 +13,46 @@ interface PaymentResponse {
   providedIn: 'root',
 })
 export class PaymentService {
-  private baseUrl = 'http://localhost:3000';  // Cambia la URL según la de tu backend
+  private baseUrl = 'http://localhost:3000'; // Mantenemos tu estructura actual
 
   constructor(private http: HttpClient) {}
 
-  // Método para procesar un pago
-  realizarPago(pagoData: any): Observable<PaymentResponse> {
-    const url = `${this.baseUrl}/pagos`;  // Cambia el endpoint según tu backend
-    return this.http.post<PaymentResponse>(url, pagoData);
+  // Método para procesar pagos (POST a /pagos)
+  realizarPago(pagoData: {
+    facturaId: number;
+    monto: number;
+    fechaPago: string;
+  }): Observable<PaymentResponse> {
+    return this.http.post<PaymentResponse>(`${this.baseUrl}/pagos`, pagoData)
+      .pipe(
+        catchError(this.handleError)
+      );
   }
 
-  // Método para buscar factura
-  buscarFactura(busquedaData: any): Observable<PaymentResponse> {
-    const url = `${this.baseUrl}/facturas/buscar`;  // Cambia el endpoint según tu backend
-    return this.http.post<PaymentResponse>(url, busquedaData);
+  // Método para buscar facturas (POST a /facturas/buscar)
+  buscarFactura(params: {
+    tipoDocumento: string;
+    numeroDocumento: string;
+  }): Observable<PaymentResponse> {
+    return this.http.post<PaymentResponse>(`${this.baseUrl}/facturas/buscar`, params)
+      .pipe(
+        catchError(this.handleError)
+      );
+  }
+
+  // Manejo de errores mejorado
+  private handleError(error: any) {
+    let errorMessage = 'Error desconocido';
+    
+    if (error.error instanceof ErrorEvent) {
+      // Error del cliente
+      errorMessage = `Error: ${error.error.message}`;
+    } else if (error.status) {
+      // Error del servidor
+      errorMessage = `Código ${error.status}: ${error.error?.message || error.statusText}`;
+    }
+
+    console.error('Error en el servicio:', errorMessage);
+    return throwError(() => new Error(errorMessage));
   }
 }
