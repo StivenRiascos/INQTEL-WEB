@@ -1,0 +1,51 @@
+<header class="admin-header">
+  <div class="header-left">
+    <button class="toggle-sidebar-btn" (click)="onToggleSidebar()">
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="page-title">
+      <h1>Panel Administrativo</h1>
+    </div>
+  </div>
+
+  <div class="header-right">
+    <div class="header-actions">
+      <div class="action-item">
+        <button class="btn-icon">
+          <i class="fas fa-bell"></i>
+          <span class="badge">3</span>
+        </button>
+      </div>
+
+      <div class="action-item">
+        <button class="btn-icon">
+          <i class="fas fa-envelope"></i>
+          <span class="badge">5</span>
+        </button>
+      </div>
+
+      <div class="action-item user-dropdown">
+        <button class="user-btn">
+          <div class="user-avatar">
+            <i class="fas fa-user-circle"></i>
+          </div>
+          <span class="user-name">Administrador</span>
+          <i class="fas fa-chevron-down"></i>
+        </button>
+
+        <div class="dropdown-menu">
+          <a href="#" class="dropdown-item">
+            <i class="fas fa-user"></i> Perfil
+          </a>
+          <a href="#" class="dropdown-item">
+            <i class="fas fa-cog"></i> Configuración
+          </a>
+          <div class="dropdown-divider"></div>
+          <a href="#" class="dropdown-item">
+            <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>

@@ -1,0 +1,247 @@
+.clientes-container {
+  padding: 20px 0;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+
+  .header-content {
+    h2 {
+      margin: 0;
+      font-size: 1.8rem;
+      font-weight: 600;
+      color: #333;
+    }
+
+    p {
+      margin: 5px 0 0;
+      color: #777;
+      font-size: 1rem;
+    }
+  }
+
+  .header-actions {
+    .btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+
+      i {
+        font-size: 0.9rem;
+      }
+    }
+  }
+}
+
+.card {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  margin-bottom: 20px;
+
+  .card-body {
+    padding: 20px;
+  }
+}
+
+.filters-container {
+  margin-bottom: 20px;
+
+  .form-group {
+    margin-bottom: 15px;
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 500;
+      color: #555;
+      font-size: 0.9rem;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 0.9rem;
+
+      &:focus {
+        border-color: #0056b3;
+        box-shadow: 0 0 0 3px rgba(0, 86, 179, 0.2);
+        outline: none;
+      }
+    }
+
+    .search-input {
+      position: relative;
+
+      i {
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #777;
+      }
+
+      input {
+        padding-left: 35px;
+      }
+    }
+  }
+}
+
+.table {
+  width: 100%;
+  margin-bottom: 0;
+
+  th,
+  td {
+    padding: 12px 15px;
+    vertical-align: middle;
+  }
+
+  thead th {
+    border-bottom: 2px solid #e0e0e0;
+    font-weight: 600;
+    color: #555;
+  }
+
+  tbody tr {
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.02);
+    }
+  }
+
+  .badge {
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-weight: 500;
+    font-size: 0.75rem;
+
+    &.badge-success {
+      background-color: #28a745;
+      color: white;
+    }
+
+    &.badge-warning {
+      background-color: #ffc107;
+      color: #212529;
+    }
+
+    &.badge-danger {
+      background-color: #dc3545;
+      color: white;
+    }
+
+    &.badge-secondary {
+      background-color: #6c757d;
+      color: white;
+    }
+  }
+
+  .actions {
+    display: flex;
+    gap: 5px;
+
+    .btn-icon {
+      width: 30px;
+      height: 30px;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 4px;
+
+      i {
+        font-size: 0.8rem;
+      }
+    }
+  }
+}
+
+.pagination-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+
+  .pagination-info {
+    color: #777;
+    font-size: 0.9rem;
+  }
+
+  .pagination {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+
+    .page-item {
+      margin: 0 2px;
+
+      &.active {
+        .page-link {
+          background-color: #0056b3;
+          border-color: #0056b3;
+          color: white;
+        }
+      }
+
+      &.disabled {
+        .page-link {
+          color: #6c757d;
+          pointer-events: none;
+          background-color: #fff;
+          border-color: #dee2e6;
+        }
+      }
+
+      .page-link {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 35px;
+        height: 35px;
+        border: 1px solid #dee2e6;
+        border-radius: 4px;
+        color: #0056b3;
+        text-decoration: none;
+        transition: all 0.3s ease;
+
+        &:hover {
+          background-color: #e9ecef;
+          border-color: #dee2e6;
+          color: #0056b3;
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+
+    .header-actions {
+      margin-top: 15px;
+    }
+  }
+
+  .pagination-container {
+    flex-direction: column;
+    gap: 15px;
+
+    .pagination-info {
+      text-align: center;
+    }
+
+    .pagination {
+      justify-content: center;
+    }
+  }
+}

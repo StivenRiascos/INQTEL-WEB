@@ -1,0 +1,85 @@
+<div class="login-container">
+  <div class="login-card">
+    <div class="login-header">
+      <div class="logo">
+        <span class="logo-in">IN</span>
+        <span class="logo-q">Q</span>
+        <span class="logo-tel">TEL</span>
+        <span class="logo-sas">S.A.S</span>
+      </div>
+      <h2>Panel Administrativo</h2>
+      <p>Ingrese sus credenciales para acceder</p>
+    </div>
+
+    <div class="login-body">
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        <div class="alert alert-danger" *ngIf="error">
+          {{ error }}
+        </div>
+
+        <div class="form-group">
+          <label for="cedula">Número de Cédula</label>
+          <input
+            type="text"
+            id="cedula"
+            formControlName="cedula"
+            class="form-control"
+            [ngClass]="{ 'is-invalid': submitted && f['cedula'].errors }"
+            placeholder="Ingrese su número de cédula"
+          />
+          <div *ngIf="submitted && f['cedula'].errors" class="invalid-feedback">
+            <div *ngIf="f['cedula'].errors['required']">
+              El número de cédula es requerido
+            </div>
+            <div *ngIf="f['cedula'].errors['minlength']">
+              El número de cédula debe tener al menos 5 caracteres
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="password">Contraseña</label>
+          <div class="password-input">
+            <input
+              [type]="showPassword ? 'text' : 'password'"
+              id="password"
+              formControlName="password"
+              class="form-control"
+              [ngClass]="{ 'is-invalid': submitted && f['password'].errors }"
+              placeholder="Ingrese su contraseña"
+            />
+            <button
+              type="button"
+              class="password-toggle"
+              (click)="togglePasswordVisibility()"
+            >
+              <i [class]="showPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+            </button>
+          </div>
+          <div
+            *ngIf="submitted && f['password'].errors"
+            class="invalid-feedback"
+          >
+            <div *ngIf="f['password'].errors['required']">
+              La contraseña es requerida
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <button [disabled]="loading" class="btn btn-primary btn-block">
+            <span
+              *ngIf="loading"
+              class="spinner-border spinner-border-sm mr-1"
+            ></span>
+            Iniciar Sesión
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <div class="login-footer">
+      <a routerLink="/">Volver al sitio principal</a>
+    </div>
+  </div>
+</div>

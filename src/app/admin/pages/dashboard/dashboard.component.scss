@@ -1,0 +1,507 @@
+// Variables
+$inqtel-blue-dark: #1a237e;
+$inqtel-blue-light: #3f51b5;
+$inqtel-red: #f44336;
+$white: #ffffff;
+$gray-100: #f8f9fa;
+$gray-200: #e9ecef;
+$gray-300: #dee2e6;
+$gray-400: #ced4da;
+$gray-500: #adb5bd;
+$gray-600: #6c757d;
+$gray-700: #495057;
+$gray-800: #343a40;
+$gray-900: #212529;
+
+$spacing-1: 0.25rem;
+$spacing-2: 0.5rem;
+$spacing-3: 1rem;
+$spacing-4: 1.5rem;
+$spacing-5: 2rem;
+$spacing-6: 3rem;
+$spacing-8: 4rem;
+
+$border-radius: 0.375rem;
+$border-radius-lg: 0.5rem;
+
+// Mixins
+@mixin transition($property: all, $duration: 0.3s, $timing: ease) {
+  transition: $property $duration $timing;
+}
+
+@mixin box-shadow($level: 1) {
+  @if $level == 1 {
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  } @else if $level == 2 {
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  } @else if $level == 3 {
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  }
+}
+
+@mixin respond-to($breakpoint) {
+  @if $breakpoint == sm {
+    @media (min-width: 576px) {
+      @content;
+    }
+  } @else if $breakpoint == md {
+    @media (min-width: 768px) {
+      @content;
+    }
+  } @else if $breakpoint == lg {
+    @media (min-width: 992px) {
+      @content;
+    }
+  } @else if $breakpoint == xl {
+    @media (min-width: 1200px) {
+      @content;
+    }
+  }
+}
+
+// Dashboard Styles
+.dashboard-container {
+  padding: $spacing-6 0;
+  // Añadir padding-top para evitar superposición con el menú
+  padding-top: 100px;
+
+  .dashboard-header {
+    margin-bottom: $spacing-6;
+    // Añadir estilos para mejorar la visibilidad del encabezado
+    padding: $spacing-4;
+    background-color: $white;
+    border-radius: $border-radius;
+    @include box-shadow(1);
+
+    h2 {
+      font-size: 2rem;
+      font-weight: 700;
+      color: $inqtel-blue-dark;
+      margin-bottom: $spacing-2;
+      // Añadir un poco de espacio para evitar superposición
+      padding-top: $spacing-2;
+    }
+
+    p {
+      color: $gray-600;
+      font-size: 1.1rem;
+      margin-bottom: 0;
+    }
+  }
+
+  .stats-cards {
+    margin-bottom: $spacing-6;
+
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+      margin: 0 -15px;
+
+      .col-md-3,
+      .col-sm-6 {
+        padding: 0 15px;
+        width: 100%;
+        margin-bottom: $spacing-4;
+
+        @include respond-to(sm) {
+          width: 50%;
+        }
+
+        @include respond-to(md) {
+          width: 25%;
+        }
+      }
+    }
+
+    .stats-card {
+      background-color: $white;
+      border-radius: $border-radius;
+      padding: $spacing-4;
+      height: 100%;
+      @include box-shadow(1);
+      @include transition;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+      position: relative;
+
+      &:hover {
+        @include box-shadow(2);
+        transform: translateY(-3px);
+      }
+
+      &::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 5px;
+        height: 100%;
+      }
+
+      &.card-primary::before {
+        background-color: $inqtel-blue-light;
+      }
+
+      &.card-success::before {
+        background-color: #28a745;
+      }
+
+      &.card-warning::before {
+        background-color: #ffc107;
+      }
+
+      &.card-danger::before {
+        background-color: $inqtel-red;
+      }
+
+      .card-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: $spacing-4;
+        flex-shrink: 0;
+
+        i {
+          font-size: 1.5rem;
+          color: $white;
+        }
+      }
+
+      &.card-primary .card-icon {
+        background-color: $inqtel-blue-light;
+      }
+
+      &.card-success .card-icon {
+        background-color: #28a745;
+      }
+
+      &.card-warning .card-icon {
+        background-color: #ffc107;
+      }
+
+      &.card-danger .card-icon {
+        background-color: $inqtel-red;
+      }
+
+      .card-content {
+        flex-grow: 1;
+
+        .card-title {
+          font-size: 0.875rem;
+          color: $gray-600;
+          margin: 0 0 $spacing-1;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+        }
+
+        .card-value {
+          font-size: 1.75rem;
+          font-weight: 700;
+          color: $inqtel-blue-dark;
+          margin-bottom: $spacing-1;
+        }
+
+        .card-change {
+          font-size: 0.875rem;
+          display: flex;
+          align-items: center;
+
+          i {
+            margin-right: $spacing-1;
+          }
+
+          &.positive {
+            color: #28a745;
+          }
+
+          &.negative {
+            color: $inqtel-red;
+          }
+        }
+      }
+    }
+  }
+
+  .dashboard-content {
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+      margin: 0 -15px;
+
+      .col-lg-8 {
+        padding: 0 15px;
+        width: 100%;
+        margin-bottom: $spacing-4;
+
+        @include respond-to(lg) {
+          width: 66.666667%;
+        }
+      }
+
+      .col-lg-4 {
+        padding: 0 15px;
+        width: 100%;
+        margin-bottom: $spacing-4;
+
+        @include respond-to(lg) {
+          width: 33.333333%;
+        }
+      }
+
+      .col-12 {
+        padding: 0 15px;
+        width: 100%;
+      }
+
+      &.mt-4 {
+        margin-top: $spacing-4;
+      }
+    }
+
+    .card {
+      background-color: $white;
+      border-radius: $border-radius;
+      @include box-shadow(1);
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+
+      .card-header {
+        padding: $spacing-4;
+        border-bottom: 1px solid $gray-200;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        h4 {
+          margin: 0;
+          font-size: 1.25rem;
+          font-weight: 600;
+          color: $inqtel-blue-dark;
+        }
+
+        .card-actions {
+          .btn {
+            margin-left: $spacing-2;
+          }
+        }
+      }
+
+      .card-body {
+        padding: $spacing-4;
+        flex-grow: 1;
+
+        .chart-container {
+          width: 100%;
+          height: 300px;
+          position: relative;
+
+          .chart-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba($gray-200, 0.5);
+            border-radius: $border-radius;
+
+            i {
+              font-size: 3rem;
+              color: $gray-400;
+              margin-bottom: $spacing-3;
+            }
+
+            p {
+              color: $gray-600;
+            }
+          }
+        }
+
+        .table-responsive {
+          overflow-x: auto;
+
+          .table {
+            width: 100%;
+            border-collapse: collapse;
+
+            th,
+            td {
+              padding: $spacing-3;
+              text-align: left;
+              border-bottom: 1px solid $gray-200;
+              white-space: nowrap;
+            }
+
+            thead th {
+              font-weight: 600;
+              color: $inqtel-blue-dark;
+              background-color: rgba($inqtel-blue-light, 0.05);
+            }
+
+            tbody tr {
+              &:hover {
+                background-color: rgba($inqtel-blue-light, 0.05);
+              }
+
+              td {
+                vertical-align: middle;
+              }
+            }
+
+            .badge {
+              padding: $spacing-1 $spacing-2;
+              border-radius: 50px;
+              font-size: 0.75rem;
+              font-weight: 600;
+
+              &.badge-success {
+                background-color: rgba(#28a745, 0.1);
+                color: #28a745;
+              }
+
+              &.badge-warning {
+                background-color: rgba(#ffc107, 0.1);
+                color: darken(#ffc107, 15%);
+              }
+
+              &.badge-danger {
+                background-color: rgba($inqtel-red, 0.1);
+                color: $inqtel-red;
+              }
+
+              &.badge-info {
+                background-color: rgba($inqtel-blue-light, 0.1);
+                color: $inqtel-blue-light;
+              }
+            }
+
+            .actions {
+              display: flex;
+              gap: $spacing-1;
+
+              .btn-icon {
+                width: 32px;
+                height: 32px;
+                padding: 0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 50%;
+
+                i {
+                  font-size: 0.875rem;
+                }
+              }
+            }
+          }
+        }
+      }
+
+      .card-footer {
+        padding: $spacing-3 $spacing-4;
+        border-top: 1px solid $gray-200;
+        background-color: rgba($gray-100, 0.5);
+
+        .btn-link {
+          color: $inqtel-blue-light;
+          text-decoration: none;
+          padding: 0;
+          background: none;
+          border: none;
+          cursor: pointer;
+          font-weight: 500;
+
+          &:hover {
+            text-decoration: underline;
+          }
+        }
+      }
+    }
+  }
+}
+
+// Estilos para los botones
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: $spacing-2 $spacing-4;
+  border-radius: $border-radius;
+  font-weight: 500;
+  cursor: pointer;
+  @include transition;
+  border: none;
+
+  i {
+    margin-right: $spacing-2;
+  }
+
+  &.btn-sm {
+    padding: $spacing-1 $spacing-3;
+    font-size: 0.875rem;
+  }
+
+  &.btn-primary {
+    background-color: $inqtel-blue-light;
+    color: $white;
+
+    &:hover {
+      background-color: darken($inqtel-blue-light, 10%);
+    }
+  }
+
+  &.btn-outline-secondary {
+    background-color: transparent;
+    border: 1px solid $gray-400;
+    color: $gray-700;
+
+    &:hover {
+      background-color: $gray-100;
+    }
+  }
+
+  &.btn-info {
+    background-color: $inqtel-blue-light;
+    color: $white;
+
+    &:hover {
+      background-color: darken($inqtel-blue-light, 10%);
+    }
+  }
+
+  &.btn-warning {
+    background-color: #ffc107;
+    color: darken(#ffc107, 35%);
+
+    &:hover {
+      background-color: darken(#ffc107, 10%);
+    }
+  }
+
+  &.btn-danger {
+    background-color: $inqtel-red;
+    color: $white;
+
+    &:hover {
+      background-color: darken($inqtel-red, 10%);
+    }
+  }
+}
+
+// Función para determinar el color de estado
+@function getStatusClass($status) {
+  @if $status == "Activo" {
+    @return "badge-success";
+  } @else if $status == "Pendiente" {
+    @return "badge-warning";
+  } @else if $status == "Inactivo" {
+    @return "badge-danger";
+  } @else {
+    @return "badge-info";
+  }
+}

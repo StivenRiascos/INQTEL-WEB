@@ -12,8 +12,9 @@
         routerLink="/"
         routerLinkActive="active"
         [routerLinkActiveOptions]="{ exact: true }"
-        >Inicio</a
       >
+        Inicio
+      </a>
       <a routerLink="/planes" routerLinkActive="active">Planes</a>
       <a routerLink="/servicios" routerLinkActive="active">Servicios</a>
       <a routerLink="/referidos" routerLinkActive="active">Referidos</a>
@@ -23,13 +24,16 @@
 
     <div class="header-actions">
       <a routerLink="/contacto" class="btn btn-secondary">Contáctanos</a>
-      <button
+
+      <!-- Botón corregido que redirige a /admin/login -->
+      <a
         class="admin-login-btn"
-        (click)="abrirModalLogin()"
+        routerLink="/admin/login"
         aria-label="Iniciar sesión administrativo"
       >
         <i class="fas fa-user-lock"></i>
-      </button>
+      </a>
+
       <button class="menu-toggle" (click)="toggleMenu()">
         <span></span>
         <span></span>
@@ -38,107 +42,3 @@
     </div>
   </div>
 </header>
-
-<!-- Modal de Login Administrativo -->
-<div
-  class="modal-overlay"
-  *ngIf="mostrarModalLogin"
-  (click)="cerrarModalLogin()"
->
-  <div
-    class="modal-container admin-login-modal"
-    (click)="$event.stopPropagation()"
-  >
-    <div class="modal-header">
-      <div class="modal-logo">
-        <span class="logo-in">IN</span><span class="logo-q">Q</span
-        ><span class="logo-tel">TEL</span>
-        <span class="logo-sas">S.A.S</span>
-      </div>
-      <button class="modal-close" (click)="cerrarModalLogin()">
-        <i class="fas fa-times"></i>
-      </button>
-    </div>
-
-    <div class="modal-body">
-      <h2>Acceso Administrativo</h2>
-      <p>Ingrese sus credenciales para acceder al panel administrativo</p>
-
-      <form [formGroup]="loginForm" (ngSubmit)="iniciarSesion()">
-        <div class="form-group">
-          <label for="cedula">Número de Cédula</label>
-          <input
-            type="text"
-            id="cedula"
-            formControlName="cedula"
-            placeholder="Ingrese su número de cédula"
-            [ngClass]="{
-              invalid:
-                loginForm.get('cedula')?.touched &&
-                loginForm.get('cedula')?.invalid
-            }"
-          />
-          <div
-            class="error-message"
-            *ngIf="
-              loginForm.get('cedula')?.touched &&
-              loginForm.get('cedula')?.invalid
-            "
-          >
-            <span *ngIf="loginForm.get('cedula')?.errors?.['required']"
-              >El número de cédula es requerido.</span
-            >
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label for="password">Contraseña</label>
-          <div class="password-input-container">
-            <input
-              [type]="mostrarPassword ? 'text' : 'password'"
-              id="password"
-              formControlName="password"
-              placeholder="Ingrese su contraseña"
-              [ngClass]="{
-                invalid:
-                  loginForm.get('password')?.touched &&
-                  loginForm.get('password')?.invalid
-              }"
-            />
-            <button
-              type="button"
-              class="toggle-password"
-              (click)="togglePasswordVisibility()"
-              aria-label="Mostrar contraseña"
-            >
-              <i
-                [class]="mostrarPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"
-              ></i>
-            </button>
-          </div>
-          <div
-            class="error-message"
-            *ngIf="
-              loginForm.get('password')?.touched &&
-              loginForm.get('password')?.invalid
-            "
-          >
-            <span *ngIf="loginForm.get('password')?.errors?.['required']"
-              >La contraseña es requerida.</span
-            >
-          </div>
-        </div>
-
-        <button
-          type="submit"
-          class="btn btn-block"
-          [disabled]="loginForm.invalid || isLoading"
-        >
-          <i class="fas fa-sign-in-alt" *ngIf="!isLoading"></i>
-          <i class="fas fa-spinner fa-spin" *ngIf="isLoading"></i>
-          {{ isLoading ? "Iniciando sesión..." : "Iniciar Sesión" }}
-        </button>
-      </form>
-    </div>
-  </div>
-</div>
