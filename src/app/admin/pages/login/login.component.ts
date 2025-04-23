@@ -40,10 +40,14 @@ export class LoginComponent implements OnInit {
     this.loginForm = this.formBuilder.group({
       cedula: ['', [Validators.required, Validators.minLength(5)]],
       password: ['', Validators.required],
+      remember: [false],
     });
 
     // Obtener la URL de retorno de los query params o usar el valor predeterminado
     this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/admin';
+
+    // Cargar credenciales guardadas si existen
+    this.loadSavedCredentials();
   }
 
   // Getter para acceder fácilmente a los campos del formulario
@@ -53,6 +57,24 @@ export class LoginComponent implements OnInit {
 
   togglePasswordVisibility(): void {
     this.showPassword = !this.showPassword;
+  }
+
+  loadSavedCredentials(): void {
+    const savedCedula = localStorage.getItem('savedCedula');
+    if (savedCedula) {
+      this.loginForm.patchValue({
+        cedula: savedCedula,
+        remember: true,
+      });
+    }
+  }
+
+  saveCredentials(): void {
+    if (this.f['remember'].value) {
+      localStorage.setItem('savedCedula', this.f['cedula'].value);
+    } else {
+      localStorage.removeItem('savedCedula');
+    }
   }
 
   onSubmit(): void {
@@ -65,6 +87,9 @@ export class LoginComponent implements OnInit {
 
     this.loading = true;
     this.error = '';
+
+    // Guardar credenciales si se seleccionó "recordar"
+    this.saveCredentials();
 
     this.authService
       .login(this.f['cedula'].value, this.f['password'].value)

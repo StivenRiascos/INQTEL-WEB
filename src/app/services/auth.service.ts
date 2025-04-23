@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, type Observable, of } from 'rxjs';
+import { BehaviorSubject, Observable, of } from 'rxjs';
 import { delay, tap } from 'rxjs/operators';
 
 interface User {
@@ -12,41 +12,44 @@ interface User {
   providedIn: 'root',
 })
 export class AuthService {
+  private tokenKey = 'auth_token';
+  private userKey = 'currentUser';
   private currentUserSubject = new BehaviorSubject<User | null>(null);
   public currentUser = this.currentUserSubject.asObservable();
 
   constructor() {
-    // Verificar si hay un usuario en localStorage al iniciar
-    const storedUser = localStorage.getItem('currentUser');
+    const storedUser = localStorage.getItem(this.userKey);
     if (storedUser) {
       this.currentUserSubject.next(JSON.parse(storedUser));
     }
   }
 
+  // Simula login sin backend
   login(cedula: string, password: string): Observable<User> {
-    // Simulación de autenticación - En producción, esto sería una llamada a la API
-    return of({
+    const mockUser: User = {
       id: 1,
-      name: 'Administrador',
+      name: 'Administrador de Prueba',
       role: 'admin',
-    }).pipe(
-      delay(1000), // Simular retraso de red
+    };
+
+    return of(mockUser).pipe(
+      delay(500), // Simula un pequeño retraso de red
       tap((user) => {
-        // Guardar usuario en localStorage y actualizar el BehaviorSubject
-        localStorage.setItem('currentUser', JSON.stringify(user));
+        localStorage.setItem(this.tokenKey, 'fake-jwt-token');
+        localStorage.setItem(this.userKey, JSON.stringify(user));
         this.currentUserSubject.next(user);
       })
     );
   }
 
   logout(): void {
-    // Eliminar usuario de localStorage y actualizar el BehaviorSubject
-    localStorage.removeItem('currentUser');
+    localStorage.removeItem(this.tokenKey);
+    localStorage.removeItem(this.userKey);
     this.currentUserSubject.next(null);
   }
 
   isLoggedIn(): boolean {
-    return !!this.currentUserSubject.value;
+    return !!localStorage.getItem(this.tokenKey);
   }
 
   get currentUserValue(): User | null {

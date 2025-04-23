@@ -25,14 +25,26 @@
     <div class="header-actions">
       <a routerLink="/contacto" class="btn btn-secondary">Contáctanos</a>
 
-      <!-- Botón corregido que redirige a /admin/login -->
+      <!-- Botón de inicio de sesión (visible cuando NO está logueado) -->
       <a
+        *ngIf="!authService.isLoggedIn()"
         class="admin-login-btn"
         routerLink="/admin/login"
         aria-label="Iniciar sesión administrativo"
       >
         <i class="fas fa-user-lock"></i>
       </a>
+
+      <!-- Botón de cerrar sesión (visible solo cuando está logueado) -->
+      <button
+        *ngIf="authService.isLoggedIn()"
+        class="logout-btn"
+        (click)="logout()"
+        aria-label="Cerrar sesión"
+      >
+        <i class="fas fa-sign-out-alt"></i>
+        <span class="logout-text">Cerrar sesión</span>
+      </button>
 
       <button class="menu-toggle" (click)="toggleMenu()">
         <span></span>

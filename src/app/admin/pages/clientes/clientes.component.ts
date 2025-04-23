@@ -2,6 +2,16 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
+interface HistoryItem {
+  id: number;
+  clientId: number;
+  date: string;
+  type: string;
+  typeLabel: string;
+  description: string;
+  details?: string;
+}
+
 @Component({
   selector: 'app-clientes',
   standalone: true,
@@ -74,10 +84,83 @@ export class ClientesComponent {
     },
   ];
 
+  // Datos de ejemplo para el historial de clientes
+  historyData: HistoryItem[] = [
+    {
+      id: 1,
+      clientId: 1,
+      date: '2023-04-15',
+      type: 'payment',
+      typeLabel: 'Pago',
+      description: 'Pago mensual del servicio',
+      details: 'Valor: $85.000 - Método: Transferencia bancaria',
+    },
+    {
+      id: 2,
+      clientId: 1,
+      date: '2023-03-16',
+      type: 'payment',
+      typeLabel: 'Pago',
+      description: 'Pago mensual del servicio',
+      details: 'Valor: $85.000 - Método: Efectivo',
+    },
+    {
+      id: 3,
+      clientId: 1,
+      date: '2023-02-10',
+      type: 'support',
+      typeLabel: 'Soporte',
+      description: 'Reporte de falla en el servicio',
+      details: 'Problema: Intermitencia en la conexión - Resuelto',
+    },
+    {
+      id: 4,
+      clientId: 1,
+      date: '2023-01-15',
+      type: 'contract',
+      typeLabel: 'Contrato',
+      description: 'Inicio de servicio',
+      details: 'Plan contratado: Plan 250 Mbps',
+    },
+    {
+      id: 5,
+      clientId: 2,
+      date: '2023-04-12',
+      type: 'payment',
+      typeLabel: 'Pago',
+      description: 'Pago mensual del servicio',
+      details: 'Valor: $65.000 - Método: Tarjeta de crédito',
+    },
+    {
+      id: 6,
+      clientId: 2,
+      date: '2023-03-10',
+      type: 'payment',
+      typeLabel: 'Pago',
+      description: 'Pago mensual del servicio',
+      details: 'Valor: $65.000 - Método: Tarjeta de crédito',
+    },
+    {
+      id: 7,
+      clientId: 2,
+      date: '2023-02-10',
+      type: 'contract',
+      typeLabel: 'Contrato',
+      description: 'Inicio de servicio',
+      details: 'Plan contratado: Plan 150 Mbps',
+    },
+  ];
+
   // Filtros
   searchTerm = '';
+  documentSearch = '';
   statusFilter = 'Todos';
   planFilter = 'Todos';
+
+  // Modal de historial
+  showHistoryModal = false;
+  selectedClient: any = null;
+  clientHistory: HistoryItem[] = [];
 
   // Opciones de filtro
   statusOptions = ['Todos', 'Activo', 'Pendiente', 'Inactivo'];
@@ -122,5 +205,39 @@ export class ClientesComponent {
 
       return searchMatch && statusMatch && planMatch;
     });
+  }
+
+  // Método para buscar por cédula específicamente
+  searchByDocument() {
+    if (this.documentSearch.trim()) {
+      // Limpiar otros filtros para enfocarse solo en la búsqueda por cédula
+      this.searchTerm = '';
+      this.statusFilter = 'Todos';
+      this.planFilter = 'Todos';
+
+      // Establecer la búsqueda específica por documento
+      this.searchTerm = this.documentSearch.trim();
+
+      // Si solo hay un resultado, podríamos mostrar directamente su historial
+      const matchingClients = this.filteredClients;
+      if (matchingClients.length === 1) {
+        this.openHistoryModal(matchingClients[0]);
+      }
+    }
+  }
+
+  // Método para abrir el modal de historial
+  openHistoryModal(client: any) {
+    this.selectedClient = client;
+    this.clientHistory = this.historyData.filter(
+      (item) => item.clientId === client.id
+    );
+    this.showHistoryModal = true;
+  }
+
+  // Método para cerrar el modal de historial
+  closeHistoryModal() {
+    this.showHistoryModal = false;
+    this.selectedClient = null;
   }
 }

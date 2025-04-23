@@ -1,17 +1,12 @@
-<div class="admin-container" [class.sidebar-collapsed]="isSidebarCollapsed">
+<div
+  class="admin-container d-flex"
+  [class.sidebar-collapsed]="isSidebarCollapsed"
+>
   <!-- Sidebar -->
-  <app-admin-sidebar [collapsed]="isSidebarCollapsed"></app-admin-sidebar>
+  <app-sidebar class="sidebar"></app-sidebar>
 
-  <div class="main-content">
-    <!-- Header -->
-    <app-admin-header (toggleSidebar)="toggleSidebar()"></app-admin-header>
-
-    <!-- Main Content Area -->
-    <div class="content-wrapper">
-      <router-outlet></router-outlet>
-    </div>
-
-    <!-- Footer -->
-    <app-admin-footer></app-admin-footer>
+  <!-- Main Content -->
+  <div class="main-content flex-grow-1 p-3">
+    <router-outlet></router-outlet>
   </div>
 </div>
