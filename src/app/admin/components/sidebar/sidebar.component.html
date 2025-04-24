@@ -1,35 +1,23 @@
-<div class="sidebar d-flex flex-column bg-white border-end vh-100 p-3">
-  <div class="mb-4 d-flex align-items-center">
-    <img src="assets/logo.png" alt="Logo" height="32" class="me-2" />
-    <span class="fs-5 fw-bold">INQTEL</span>
+<div class="sidebar-wrapper">
+  <div class="sidebar-header">
+    <img src="assets/logo.png" alt="Logo" height="32" />
+    <span class="brand-name">INQTEL</span>
   </div>
 
-  <div class="menu-section mb-3">
-    <p class="text-muted text-uppercase small fw-bold mb-1">Dashboard</p>
-    <a
-      class="nav-link d-flex align-items-center"
-      routerLink="/admin/dashboard"
-      routerLinkActive="active"
-    >
-      <i class="bi bi-speedometer2 me-2"></i> Dashboard
+  <div class="menu-section">
+    <p class="section-title">Dashboard</p>
+    <a class="nav-link" routerLink="/admin/dashboard" routerLinkActive="active">
+      <i class="bi bi-speedometer2"></i> Dashboard
     </a>
-    <a
-      class="nav-link d-flex align-items-center"
-      routerLink="/admin/clientes"
-      routerLinkActive="active"
-    >
-      <i class="bi bi-people me-2"></i> Clientes
+    <a class="nav-link" routerLink="/admin/clientes" routerLinkActive="active">
+      <i class="bi bi-people"></i> Clientes
     </a>
   </div>
 
   <div class="menu-section">
-    <p class="text-muted text-uppercase small fw-bold mb-1">Otras opciones</p>
-    <a
-      class="nav-link d-flex align-items-center"
-      routerLink="/admin/ajustes"
-      routerLinkActive="active"
-    >
-      <i class="bi bi-gear me-2"></i> Ajustes
+    <p class="section-title">Otras opciones</p>
+    <a class="nav-link" routerLink="/admin/ajustes" routerLinkActive="active">
+      <i class="bi bi-gear"></i> Ajustes
     </a>
   </div>
 </div>

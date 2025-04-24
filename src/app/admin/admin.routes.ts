@@ -1,11 +1,12 @@
-import { Routes } from '@angular/router';
+import type { Routes } from '@angular/router';
 import { AuthGuard } from '../guards/auth.guard';
 
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { ClientesComponent } from './pages/clientes/clientes.component';
 import { LoginComponent } from './pages/login/login.component';
 
-export default [
+// Define the routes
+const adminRoutes: Routes = [
   {
     path: '',
     canActivate: [AuthGuard],
@@ -16,4 +17,7 @@ export default [
     ],
   },
   { path: 'login', component: LoginComponent },
-] as Routes;
+];
+
+// Export as default
+export default adminRoutes;

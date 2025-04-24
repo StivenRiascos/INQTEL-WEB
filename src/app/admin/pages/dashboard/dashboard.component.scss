@@ -1,96 +1,35 @@
-// Variables
-$inqtel-blue-dark: #1a237e;
-$inqtel-blue-light: #3f51b5;
-$inqtel-red: #f44336;
-$white: #ffffff;
-$gray-100: #f8f9fa;
-$gray-200: #e9ecef;
-$gray-300: #dee2e6;
-$gray-400: #ced4da;
-$gray-500: #adb5bd;
-$gray-600: #6c757d;
-$gray-700: #495057;
-$gray-800: #343a40;
-$gray-900: #212529;
+@use "../../../../styles/_variables" as vars;
+@use "../../../../styles/_mixins" as mix;
+@use "sass:color";
 
-$spacing-1: 0.25rem;
-$spacing-2: 0.5rem;
-$spacing-3: 1rem;
-$spacing-4: 1.5rem;
-$spacing-5: 2rem;
-$spacing-6: 3rem;
-$spacing-8: 4rem;
-
-$border-radius: 0.375rem;
-$border-radius-lg: 0.5rem;
-
-// Mixins
-@mixin transition($property: all, $duration: 0.3s, $timing: ease) {
-  transition: $property $duration $timing;
-}
-
-@mixin box-shadow($level: 1) {
-  @if $level == 1 {
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  } @else if $level == 2 {
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-  } @else if $level == 3 {
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-  }
-}
-
-@mixin respond-to($breakpoint) {
-  @if $breakpoint == sm {
-    @media (min-width: 576px) {
-      @content;
-    }
-  } @else if $breakpoint == md {
-    @media (min-width: 768px) {
-      @content;
-    }
-  } @else if $breakpoint == lg {
-    @media (min-width: 992px) {
-      @content;
-    }
-  } @else if $breakpoint == xl {
-    @media (min-width: 1200px) {
-      @content;
-    }
-  }
-}
-
-// Dashboard Styles
 .dashboard-container {
-  padding: $spacing-6 0;
-  // Añadir padding-top para evitar superposición con el menú
-  padding-top: 100px;
+  padding: vars.$spacing-4;
+  padding-top: vars.$spacing-4;
 
   .dashboard-header {
-    margin-bottom: $spacing-6;
-    // Añadir estilos para mejorar la visibilidad del encabezado
-    padding: $spacing-4;
-    background-color: $white;
-    border-radius: $border-radius;
-    @include box-shadow(1);
+    margin-bottom: vars.$spacing-6;
+    padding: vars.$spacing-4;
+    background-color: vars.$white;
+    border-radius: vars.$border-radius;
+    @include mix.box-shadow(1);
 
     h2 {
       font-size: 2rem;
       font-weight: 700;
-      color: $inqtel-blue-dark;
-      margin-bottom: $spacing-2;
-      // Añadir un poco de espacio para evitar superposición
-      padding-top: $spacing-2;
+      color: vars.$inqtel-blue-dark;
+      margin-bottom: vars.$spacing-2;
+      padding-top: 0;
     }
 
     p {
-      color: $gray-600;
+      color: vars.$gray-600;
       font-size: 1.1rem;
       margin-bottom: 0;
     }
   }
 
   .stats-cards {
-    margin-bottom: $spacing-6;
+    margin-bottom: vars.$spacing-6;
 
     .row {
       display: flex;
@@ -101,32 +40,32 @@ $border-radius-lg: 0.5rem;
       .col-sm-6 {
         padding: 0 15px;
         width: 100%;
-        margin-bottom: $spacing-4;
+        margin-bottom: vars.$spacing-4;
 
-        @include respond-to(sm) {
+        @include mix.respond-to(sm) {
           width: 50%;
         }
 
-        @include respond-to(md) {
+        @include mix.respond-to(md) {
           width: 25%;
         }
       }
     }
 
     .stats-card {
-      background-color: $white;
-      border-radius: $border-radius;
-      padding: $spacing-4;
+      background-color: vars.$white;
+      border-radius: vars.$border-radius;
+      padding: vars.$spacing-4;
       height: 100%;
-      @include box-shadow(1);
-      @include transition;
+      @include mix.box-shadow(1);
+      @include mix.transition;
       display: flex;
       align-items: center;
       overflow: hidden;
       position: relative;
 
       &:hover {
-        @include box-shadow(2);
+        @include mix.box-shadow(2);
         transform: translateY(-3px);
       }
 
@@ -140,7 +79,7 @@ $border-radius-lg: 0.5rem;
       }
 
       &.card-primary::before {
-        background-color: $inqtel-blue-light;
+        background-color: vars.$inqtel-blue-light;
       }
 
       &.card-success::before {
@@ -152,7 +91,7 @@ $border-radius-lg: 0.5rem;
       }
 
       &.card-danger::before {
-        background-color: $inqtel-red;
+        background-color: vars.$inqtel-red;
       }
 
       .card-icon {
@@ -162,17 +101,17 @@ $border-radius-lg: 0.5rem;
         display: flex;
         align-items: center;
         justify-content: center;
-        margin-right: $spacing-4;
+        margin-right: vars.$spacing-4;
         flex-shrink: 0;
 
         i {
           font-size: 1.5rem;
-          color: $white;
+          color: vars.$white;
         }
       }
 
       &.card-primary .card-icon {
-        background-color: $inqtel-blue-light;
+        background-color: vars.$inqtel-blue-light;
       }
 
       &.card-success .card-icon {
@@ -184,7 +123,7 @@ $border-radius-lg: 0.5rem;
       }
 
       &.card-danger .card-icon {
-        background-color: $inqtel-red;
+        background-color: vars.$inqtel-red;
       }
 
       .card-content {
@@ -192,8 +131,8 @@ $border-radius-lg: 0.5rem;
 
         .card-title {
           font-size: 0.875rem;
-          color: $gray-600;
-          margin: 0 0 $spacing-1;
+          color: vars.$gray-600;
+          margin: 0 0 vars.$spacing-1;
           text-transform: uppercase;
           letter-spacing: 0.5px;
         }
@@ -201,8 +140,8 @@ $border-radius-lg: 0.5rem;
         .card-value {
           font-size: 1.75rem;
           font-weight: 700;
-          color: $inqtel-blue-dark;
-          margin-bottom: $spacing-1;
+          color: vars.$inqtel-blue-dark;
+          margin-bottom: vars.$spacing-1;
         }
 
         .card-change {
@@ -211,7 +150,7 @@ $border-radius-lg: 0.5rem;
           align-items: center;
 
           i {
-            margin-right: $spacing-1;
+            margin-right: vars.$spacing-1;
           }
 
           &.positive {
@@ -219,7 +158,7 @@ $border-radius-lg: 0.5rem;
           }
 
           &.negative {
-            color: $inqtel-red;
+            color: vars.$inqtel-red;
           }
         }
       }
@@ -235,9 +174,9 @@ $border-radius-lg: 0.5rem;
       .col-lg-8 {
         padding: 0 15px;
         width: 100%;
-        margin-bottom: $spacing-4;
+        margin-bottom: vars.$spacing-4;
 
-        @include respond-to(lg) {
+        @include mix.respond-to(lg) {
           width: 66.666667%;
         }
       }
@@ -245,9 +184,9 @@ $border-radius-lg: 0.5rem;
       .col-lg-4 {
         padding: 0 15px;
         width: 100%;
-        margin-bottom: $spacing-4;
+        margin-bottom: vars.$spacing-4;
 
-        @include respond-to(lg) {
+        @include mix.respond-to(lg) {
           width: 33.333333%;
         }
       }
@@ -258,21 +197,21 @@ $border-radius-lg: 0.5rem;
       }
 
       &.mt-4 {
-        margin-top: $spacing-4;
+        margin-top: vars.$spacing-4;
       }
     }
 
     .card {
-      background-color: $white;
-      border-radius: $border-radius;
-      @include box-shadow(1);
+      background-color: vars.$white;
+      border-radius: vars.$border-radius;
+      @include mix.box-shadow(1);
       height: 100%;
       display: flex;
       flex-direction: column;
 
       .card-header {
-        padding: $spacing-4;
-        border-bottom: 1px solid $gray-200;
+        padding: vars.$spacing-4;
+        border-bottom: 1px solid vars.$gray-200;
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -281,18 +220,18 @@ $border-radius-lg: 0.5rem;
           margin: 0;
           font-size: 1.25rem;
           font-weight: 600;
-          color: $inqtel-blue-dark;
+          color: vars.$inqtel-blue-dark;
         }
 
         .card-actions {
           .btn {
-            margin-left: $spacing-2;
+            margin-left: vars.$spacing-2;
           }
         }
       }
 
       .card-body {
-        padding: $spacing-4;
+        padding: vars.$spacing-4;
         flex-grow: 1;
 
         .chart-container {
@@ -307,17 +246,17 @@ $border-radius-lg: 0.5rem;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            background-color: rgba($gray-200, 0.5);
-            border-radius: $border-radius;
+            background-color: rgba(vars.$gray-200, 0.5);
+            border-radius: vars.$border-radius;
 
             i {
               font-size: 3rem;
-              color: $gray-400;
-              margin-bottom: $spacing-3;
+              color: vars.$gray-400;
+              margin-bottom: vars.$spacing-3;
             }
 
             p {
-              color: $gray-600;
+              color: vars.$gray-600;
             }
           }
         }
@@ -331,21 +270,21 @@ $border-radius-lg: 0.5rem;
 
             th,
             td {
-              padding: $spacing-3;
+              padding: vars.$spacing-3;
               text-align: left;
-              border-bottom: 1px solid $gray-200;
+              border-bottom: 1px solid vars.$gray-200;
               white-space: nowrap;
             }
 
             thead th {
               font-weight: 600;
-              color: $inqtel-blue-dark;
-              background-color: rgba($inqtel-blue-light, 0.05);
+              color: vars.$inqtel-blue-dark;
+              background-color: rgba(vars.$inqtel-blue-light, 0.05);
             }
 
             tbody tr {
               &:hover {
-                background-color: rgba($inqtel-blue-light, 0.05);
+                background-color: rgba(vars.$inqtel-blue-light, 0.05);
               }
 
               td {
@@ -354,7 +293,7 @@ $border-radius-lg: 0.5rem;
             }
 
             .badge {
-              padding: $spacing-1 $spacing-2;
+              padding: vars.$spacing-1 vars.$spacing-2;
               border-radius: 50px;
               font-size: 0.75rem;
               font-weight: 600;
@@ -366,23 +305,23 @@ $border-radius-lg: 0.5rem;
 
               &.badge-warning {
                 background-color: rgba(#ffc107, 0.1);
-                color: darken(#ffc107, 15%);
+                color: color.adjust(#ffc107, $lightness: -35%);
               }
 
               &.badge-danger {
-                background-color: rgba($inqtel-red, 0.1);
-                color: $inqtel-red;
+                background-color: rgba(vars.$inqtel-red, 0.1);
+                color: vars.$inqtel-red;
               }
 
               &.badge-info {
-                background-color: rgba($inqtel-blue-light, 0.1);
-                color: $inqtel-blue-light;
+                background-color: rgba(vars.$inqtel-blue-light, 0.1);
+                color: vars.$inqtel-blue-light;
               }
             }
 
             .actions {
               display: flex;
-              gap: $spacing-1;
+              gap: vars.$spacing-1;
 
               .btn-icon {
                 width: 32px;
@@ -403,12 +342,12 @@ $border-radius-lg: 0.5rem;
       }
 
       .card-footer {
-        padding: $spacing-3 $spacing-4;
-        border-top: 1px solid $gray-200;
-        background-color: rgba($gray-100, 0.5);
+        padding: vars.$spacing-3 vars.$spacing-4;
+        border-top: 1px solid vars.$gray-200;
+        background-color: rgba(vars.$gray-100, 0.5);
 
         .btn-link {
-          color: $inqtel-blue-light;
+          color: vars.$inqtel-blue-light;
           text-decoration: none;
           padding: 0;
           background: none;
@@ -423,85 +362,77 @@ $border-radius-lg: 0.5rem;
       }
     }
   }
-}
 
-// Estilos para los botones
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: $spacing-2 $spacing-4;
-  border-radius: $border-radius;
-  font-weight: 500;
-  cursor: pointer;
-  @include transition;
-  border: none;
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: vars.$spacing-2 vars.$spacing-4;
+    border-radius: vars.$border-radius;
+    font-weight: 500;
+    cursor: pointer;
+    @include mix.transition;
+    border: none;
 
-  i {
-    margin-right: $spacing-2;
-  }
-
-  &.btn-sm {
-    padding: $spacing-1 $spacing-3;
-    font-size: 0.875rem;
-  }
-
-  &.btn-primary {
-    background-color: $inqtel-blue-light;
-    color: $white;
-
-    &:hover {
-      background-color: darken($inqtel-blue-light, 10%);
+    i {
+      margin-right: vars.$spacing-2;
     }
-  }
 
-  &.btn-outline-secondary {
-    background-color: transparent;
-    border: 1px solid $gray-400;
-    color: $gray-700;
-
-    &:hover {
-      background-color: $gray-100;
+    &.btn-sm {
+      padding: vars.$spacing-1 vars.$spacing-3;
+      font-size: 0.875rem;
     }
-  }
 
-  &.btn-info {
-    background-color: $inqtel-blue-light;
-    color: $white;
+    &.btn-primary {
+      background-color: vars.$inqtel-blue-light;
+      color: vars.$white;
 
-    &:hover {
-      background-color: darken($inqtel-blue-light, 10%);
+      &:hover {
+        background-color: color.adjust(
+          vars.$inqtel-blue-light,
+          $lightness: -10%
+        );
+      }
     }
-  }
 
-  &.btn-warning {
-    background-color: #ffc107;
-    color: darken(#ffc107, 35%);
+    &.btn-outline-secondary {
+      background-color: transparent;
+      border: 1px solid vars.$gray-400;
+      color: vars.$gray-700;
 
-    &:hover {
-      background-color: darken(#ffc107, 10%);
+      &:hover {
+        background-color: vars.$gray-100;
+      }
     }
-  }
 
-  &.btn-danger {
-    background-color: $inqtel-red;
-    color: $white;
+    &.btn-info {
+      background-color: vars.$inqtel-blue-light;
+      color: vars.$white;
 
-    &:hover {
-      background-color: darken($inqtel-red, 10%);
+      &:hover {
+        background-color: color.adjust(
+          vars.$inqtel-blue-light,
+          $lightness: -10%
+        );
+      }
     }
-  }
-}
 
-// Función para determinar el color de estado
-@function getStatusClass($status) {
-  @if $status == "Activo" {
-    @return "badge-success";
-  } @else if $status == "Pendiente" {
-    @return "badge-warning";
-  } @else if $status == "Inactivo" {
-    @return "badge-danger";
-  } @else {
-    @return "badge-info";
+    &.btn-warning {
+      background-color: #ffc107;
+      color: color.adjust(#ffc107, $lightness: -35%);
+
+      &:hover {
+        background-color: color.adjust(#ffc107, $lightness: -10%);
+      }
+    }
+
+    &.btn-danger {
+      background-color: vars.$inqtel-red;
+      color: vars.$white;
+
+      &:hover {
+        background-color: color.adjust(vars.$inqtel-red, $lightness: -10%);
+      }
+    }
   }
 }
