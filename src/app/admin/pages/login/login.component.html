@@ -1,27 +1,27 @@
 <div class="login-container">
   <div class="login-card">
     <div class="login-header">
-      <div class="logo">
+      <div class="logo" aria-label="Logo INQTEL S.A.S">
         <span class="logo-in">IN</span>
         <span class="logo-q">Q</span>
         <span class="logo-tel">TEL</span>
         <span class="logo-sas">S.A.S</span>
       </div>
-      <h2>Panel Administrativo</h2>
+      <h1>Panel Administrativo</h1>
       <p>Ingrese sus credenciales para acceder</p>
     </div>
 
     <div class="login-body">
       <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-        <div class="alert alert-danger" *ngIf="error">
-          <i class="fas fa-exclamation-circle"></i>
+        <div class="alert alert-danger" *ngIf="error" role="alert">
+          <i class="fas fa-exclamation-circle" aria-hidden="true"></i>
           {{ error }}
         </div>
 
         <div class="form-group">
           <label for="cedula">Número de Cédula</label>
           <div class="input-with-icon">
-            <i class="fas fa-id-card"></i>
+            <i class="fas fa-id-card" aria-hidden="true"></i>
             <input
               type="text"
               id="cedula"
@@ -29,9 +29,14 @@
               class="form-control"
               [ngClass]="{ 'is-invalid': submitted && f['cedula'].errors }"
               placeholder="Ingrese su número de cédula"
+              autocomplete="username"
             />
           </div>
-          <div *ngIf="submitted && f['cedula'].errors" class="invalid-feedback">
+          <div
+            *ngIf="submitted && f['cedula'].errors"
+            class="invalid-feedback"
+            role="alert"
+          >
             <div *ngIf="f['cedula'].errors['required']">
               El número de cédula es requerido
             </div>
@@ -44,7 +49,7 @@
         <div class="form-group">
           <label for="password">Contraseña</label>
           <div class="input-with-icon">
-            <i class="fas fa-lock"></i>
+            <i class="fas fa-lock" aria-hidden="true"></i>
             <input
               [type]="showPassword ? 'text' : 'password'"
               id="password"
@@ -52,18 +57,25 @@
               class="form-control"
               [ngClass]="{ 'is-invalid': submitted && f['password'].errors }"
               placeholder="Ingrese su contraseña"
+              autocomplete="current-password"
             />
             <button
               type="button"
               class="password-toggle"
               (click)="togglePasswordVisibility()"
+              aria-label="Mostrar u ocultar contraseña"
+              [attr.aria-pressed]="showPassword"
             >
-              <i [class]="showPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+              <i
+                [class]="showPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"
+                aria-hidden="true"
+              ></i>
             </button>
           </div>
           <div
             *ngIf="submitted && f['password'].errors"
             class="invalid-feedback"
+            role="alert"
           >
             <div *ngIf="f['password'].errors['required']">
               La contraseña es requerida
@@ -79,13 +91,22 @@
         </div>
 
         <div class="form-group">
-          <button [disabled]="loading" class="btn btn-primary btn-block">
+          <button
+            [disabled]="loading"
+            class="btn btn-primary btn-block"
+            type="submit"
+          >
             <span
               *ngIf="loading"
               class="spinner-border spinner-border-sm mr-1"
+              aria-hidden="true"
             ></span>
-            <i class="fas fa-sign-in-alt" *ngIf="!loading"></i>
-            Iniciar Sesión
+            <i
+              class="fas fa-sign-in-alt"
+              *ngIf="!loading"
+              aria-hidden="true"
+            ></i>
+            <span>Iniciar Sesión</span>
           </button>
         </div>
       </form>
@@ -93,7 +114,8 @@
 
     <div class="login-footer">
       <a routerLink="/" class="back-link">
-        <i class="fas fa-arrow-left"></i> Volver al sitio principal
+        <i class="fas fa-arrow-left" aria-hidden="true"></i> Volver al sitio
+        principal
       </a>
     </div>
   </div>

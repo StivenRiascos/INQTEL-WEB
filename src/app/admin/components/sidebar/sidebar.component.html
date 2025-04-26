@@ -1,23 +1,74 @@
-<div class="sidebar-wrapper">
+<!-- Overlay para cerrar el sidebar en móvil -->
+<div
+  class="sidebar-overlay"
+  [ngClass]="{ active: isSidebarOpen && isMobile }"
+  (click)="toggleSidebar()"
+></div>
+
+<!-- Botón para abrir el sidebar en móvil -->
+<button class="sidebar-toggle" (click)="toggleSidebar()">
+  <fa-icon [icon]="faBars"></fa-icon>
+</button>
+
+<!-- Sidebar -->
+<div class="sidebar" [ngClass]="{ open: isSidebarOpen }">
   <div class="sidebar-header">
-    <img src="assets/logo.png" alt="Logo" height="32" />
-    <span class="brand-name">INQTEL</span>
+    <img src="../../../../assets/images/logo.jpg" alt="Logo" height="32" />
   </div>
 
-  <div class="menu-section">
+  <div class="sidebar-section">
     <p class="section-title">Dashboard</p>
-    <a class="nav-link" routerLink="/admin/dashboard" routerLinkActive="active">
-      <i class="bi bi-speedometer2"></i> Dashboard
+    <a
+      class="sidebar-link"
+      routerLink="/admin/dashboard"
+      routerLinkActive="active"
+      (click)="closeSidebarOnMobile()"
+    >
+      <fa-icon [icon]="faTachometerAlt"></fa-icon>
+      <span>Dashboard</span>
     </a>
-    <a class="nav-link" routerLink="/admin/clientes" routerLinkActive="active">
-      <i class="bi bi-people"></i> Clientes
+    <a
+      class="sidebar-link"
+      routerLink="/admin/clientes"
+      routerLinkActive="active"
+      (click)="closeSidebarOnMobile()"
+    >
+      <fa-icon [icon]="faUsers"></fa-icon>
+      <span>Clientes</span>
     </a>
   </div>
 
-  <div class="menu-section">
-    <p class="section-title">Otras opciones</p>
-    <a class="nav-link" routerLink="/admin/ajustes" routerLinkActive="active">
-      <i class="bi bi-gear"></i> Ajustes
+  <div class="sidebar-section">
+    <p class="section-title" (click)="toggleMenu()">Otras opciones</p>
+    <div *ngIf="isMenuOpen" class="submenu">
+      <a
+        class="sidebar-link"
+        routerLink="/admin/ajustes"
+        routerLinkActive="active"
+        (click)="closeSidebarOnMobile()"
+      >
+        <fa-icon [icon]="faCog"></fa-icon>
+        <span>Ajustes</span>
+      </a>
+    </div>
+  </div>
+
+  <div class="sidebar-footer">
+    <div class="user-info">
+      <img
+        src="../../../../assets/icons/avatar.png"
+        alt="Avatar"
+        class="user-avatar"
+      />
+      <span class="user-name">John Doe</span>
+    </div>
+    <a
+      class="sidebar-link text-danger"
+      routerLink="/logout"
+      (click)="closeSidebarOnMobile()"
+    >
+      <fa-icon [icon]="faRightFromBracket"></fa-icon>
+      <span>Salir</span>
     </a>
   </div>
 </div>

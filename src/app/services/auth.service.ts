@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http'; // Cambio aquí
+import { Router } from '@angular/router'; // Cambio aquí
 
 interface User {
   id: number;
@@ -21,7 +22,7 @@ export class AuthService {
   private currentUserSubject = new BehaviorSubject<User | null>(null);
   public currentUser = this.currentUserSubject.asObservable();
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private router: Router) {
     const token = localStorage.getItem(this.tokenKey);
     if (token) {
       const user = this.decodeToken(token);
@@ -30,23 +31,26 @@ export class AuthService {
   }
 
   login(numeroDocumento: string, password: string): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>('http://localhost:3000/auth/login', {
-      numeroDocumento,
-      password
-    }).pipe(
-      tap(response => {
-        localStorage.setItem(this.tokenKey, response.access_token);
-        const user = this.decodeToken(response.access_token);
-        localStorage.setItem(this.userKey, JSON.stringify(user));
-        this.currentUserSubject.next(user);
+    return this.http
+      .post<LoginResponse>('http://localhost:3000/auth/login', {
+        numeroDocumento,
+        password,
       })
-    );
+      .pipe(
+        tap((response) => {
+          localStorage.setItem(this.tokenKey, response.access_token);
+          const user = this.decodeToken(response.access_token);
+          localStorage.setItem(this.userKey, JSON.stringify(user));
+          this.currentUserSubject.next(user);
+        })
+      );
   }
 
   logout(): void {
     localStorage.removeItem(this.tokenKey);
     localStorage.removeItem(this.userKey);
     this.currentUserSubject.next(null);
+    this.router.navigate(['/admin/login']);
   }
 
   isLoggedIn(): boolean {
@@ -58,10 +62,16 @@ export class AuthService {
   }
 
   private decodeToken(token: string): User {
-    const payload = JSON.parse(atob(token.split('.')[1]));
-    return {
-      id: payload.sub,
-      role: payload.rol,
-    };
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      return {
+        id: payload.sub,
+        role: payload.rol,
+        name: payload.name,
+      };
+    } catch (error) {
+      console.error('Error decodificando token:', error);
+      return { id: 0, role: '' };
+    }
   }
 }

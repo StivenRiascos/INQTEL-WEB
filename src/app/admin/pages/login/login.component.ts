@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule, Router } from '@angular/router';
 import {
   FormBuilder,
   FormGroup,
   Validators,
   ReactiveFormsModule,
 } from '@angular/forms';
-import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
 
 @Component({
@@ -18,22 +18,16 @@ import { AuthService } from '../../../services/auth.service';
 })
 export class LoginComponent implements OnInit {
   loginForm!: FormGroup;
-  loading = false;
   submitted = false;
   error = '';
-  returnUrl = '/admin';
+  loading = false;
   showPassword = false;
 
   constructor(
     private formBuilder: FormBuilder,
-    private route: ActivatedRoute,
-    private router: Router,
-    private authService: AuthService
-  ) {
-    if (this.authService.isLoggedIn()) {
-      this.router.navigate(['/admin']);
-    }
-  }
+    private authService: AuthService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.loginForm = this.formBuilder.group({
@@ -42,7 +36,7 @@ export class LoginComponent implements OnInit {
       remember: [false],
     });
 
-    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/admin';
+    // Cargar credenciales guardadas si existen
     this.loadSavedCredentials();
   }
 
@@ -74,23 +68,28 @@ export class LoginComponent implements OnInit {
 
   onSubmit(): void {
     this.submitted = true;
+    this.error = '';
+
+    // Detener si el formulario es inválido
     if (this.loginForm.invalid) {
       return;
     }
 
     this.loading = true;
-    this.error = '';
     this.saveCredentials();
 
     this.authService
       .login(this.f['cedula'].value, this.f['password'].value)
       .subscribe({
         next: () => {
-          this.router.navigate([this.returnUrl]);
-        },
-        error: () => {
-          this.error = 'Credenciales incorrectas o error de conexión';
           this.loading = false;
+          this.router.navigate(['/admin/dashboard']);
+        },
+        error: (error) => {
+          this.loading = false;
+          this.error =
+            'Credenciales incorrectas. Por favor intente nuevamente.';
+          console.error('Error de login:', error);
         },
       });
   }

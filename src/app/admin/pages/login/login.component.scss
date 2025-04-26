@@ -1,4 +1,8 @@
-// Variables
+@use "../../../../styles/_variables" as vars;
+@use "../../../../styles/_mixins" as mix;
+@use "sass:color";
+
+// Variables (mantenemos las que ya tenías)
 $inqtel-blue: #0056b3;
 $inqtel-blue-dark: #004494;
 $inqtel-blue-light: #00a8e8;
@@ -49,6 +53,7 @@ $gray-900: #212529;
   z-index: 1;
   transform: translateY(0);
   transition: transform 0.3s ease;
+  margin: 0 auto; // Asegura centrado horizontal
 
   &:hover {
     transform: translateY(-5px);
@@ -173,6 +178,33 @@ $gray-900: #212529;
 
       .form-control {
         padding-left: 45px;
+        padding-right: 45px; // Espacio para el botón de mostrar/ocultar contraseña
+      }
+
+      // Arreglo para el botón de mostrar/ocultar contraseña
+      .password-toggle {
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        color: $gray-600;
+        cursor: pointer;
+        padding: 5px;
+        transition: all 0.2s ease;
+        z-index: 2; // Asegura que esté por encima del input
+
+        &:hover {
+          color: $inqtel-blue;
+        }
+
+        i {
+          position: static; // Resetea la posición absoluta heredada
+          left: auto;
+          transform: none;
+          color: inherit;
+        }
       }
     }
 
@@ -207,27 +239,6 @@ $gray-900: #212529;
       font-size: 0.85rem;
       margin-top: 8px;
       padding-left: 5px;
-    }
-
-    .password-input {
-      position: relative;
-    }
-
-    .password-toggle {
-      position: absolute;
-      right: 15px;
-      top: 50%;
-      transform: translateY(-50%);
-      background: none;
-      border: none;
-      color: $gray-600;
-      cursor: pointer;
-      padding: 5px;
-      transition: all 0.2s ease;
-
-      &:hover {
-        color: $inqtel-blue;
-      }
     }
 
     &.remember-me {
@@ -344,28 +355,27 @@ $gray-900: #212529;
   }
 }
 
-// Estilos para el botón de cerrar sesión en el header
-.header-actions {
-  .logout-btn {
-    background-color: transparent;
-    border: 1px solid $white;
-    color: $white;
-    padding: 8px 15px;
-    border-radius: 4px;
-    font-size: 0.9rem;
-    display: flex;
-    align-items: center;
-    transition: all 0.3s ease;
-    margin-left: 10px;
+// Media queries para responsividad
+@media (max-width: 576px) {
+  .login-card {
+    max-width: 100%;
+    margin: 0 10px;
+  }
 
-    i {
-      margin-right: 8px;
+  .login-header {
+    padding: 25px 20px;
+
+    .logo {
+      font-size: 2rem;
     }
 
-    &:hover {
-      background-color: $white;
-      color: $inqtel-blue;
+    h2 {
+      font-size: 1.5rem;
     }
+  }
+
+  .login-body {
+    padding: 25px 20px;
   }
 }
 
