@@ -8,6 +8,7 @@ import {
 import { ActivatedRoute } from '@angular/router';
 import { RouterLink } from '@angular/router';
 import { NgIf, NgClass } from '@angular/common';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-contact',
@@ -21,7 +22,15 @@ export class ContactComponent implements OnInit {
   selectedPlan: string | null = null;
   formSubmitted = false;
 
-  constructor(private fb: FormBuilder, private route: ActivatedRoute) {
+  // 👉 Para el mapa
+  mapLoaded = false;
+  mapUrl!: SafeResourceUrl;
+
+  constructor(
+    private fb: FormBuilder,
+    private route: ActivatedRoute,
+    private sanitizer: DomSanitizer // inyectar DomSanitizer
+  ) {
     this.contactForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(3)]],
       email: ['', [Validators.required, Validators.email]],
@@ -49,7 +58,6 @@ export class ContactComponent implements OnInit {
       this.formSubmitted = true;
       // Aquí iría la lógica para enviar el formulario a un backend
     } else {
-      // Marcar todos los campos como tocados para mostrar errores
       Object.keys(this.contactForm.controls).forEach((key) => {
         const control = this.contactForm.get(key);
         control?.markAsTouched();
@@ -57,7 +65,16 @@ export class ContactComponent implements OnInit {
     }
   }
 
+  // Getter para acceso fácil a controles
   get f() {
     return this.contactForm.controls;
+  }
+
+  // ✅ Método para cargar el mapa al hacer clic
+  loadMap(): void {
+    const url =
+      'https://www.google.com/maps/embed?pb=!4v1746753881734!6m8!1m7!1suXk81gjJRTEzDPkZFqH7VA!2m2!1d1.143136921419192!2d-76.65116834723506!3f48.63200004888046!4f-14.616766014369958!5f0.7820865974627469';
+    this.mapUrl = this.sanitizer.bypassSecurityTrustResourceUrl(url);
+    this.mapLoaded = true;
   }
 }

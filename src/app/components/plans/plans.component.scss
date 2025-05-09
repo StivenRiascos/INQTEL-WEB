@@ -47,18 +47,18 @@
       grid-template-columns: repeat(5, 1fr);
     }
   }
-
+  //planes
   .plan-card {
     background-color: vars.$white;
     border-radius: vars.$border-radius-lg;
-    overflow: hidden;
+    overflow: visible;
     @include mix.box-shadow(1);
     @include mix.transition;
     position: relative;
     border: 2px solid transparent;
-    height: 100%;
     display: flex;
     flex-direction: column;
+    height: auto;
 
     &:hover {
       @include mix.box-shadow(2);
@@ -67,35 +67,61 @@
 
     &.popular {
       border-color: vars.$inqtel-red;
-      @include mix.box-shadow(2);
+      @include mix.box-shadow(3);
       transform: scale(1.05);
       z-index: 2;
+      margin: vars.$spacing-2;
+      overflow: visible;
 
+      // ✅ Aumentar padding-top para evitar que el texto quede debajo del badge
       .plan-header {
         background: linear-gradient(
           135deg,
           color.adjust(vars.$inqtel-red, $lightness: 30%),
           vars.$white
         );
+        padding-top: calc(
+          vars.$spacing-5 + vars.$spacing-2
+        ); // Más espacio para el badge
+        padding-bottom: vars.$spacing-3;
+        padding-left: vars.$spacing-3;
+        padding-right: vars.$spacing-3;
       }
-      
+
+      .plan-features {
+        padding: vars.$spacing-2 vars.$spacing-3;
+
+        ul li {
+          white-space: normal;
+          overflow: visible;
+          text-overflow: clip;
+          word-break: normal;
+        }
+      }
+
+      .plan-footer {
+        padding-bottom: vars.$spacing-3;
+      }
     }
 
     .popular-badge {
       position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
+      top: -1px;
+      left: -2px;
+      right: -2px;
       background-color: vars.$inqtel-red;
       color: vars.$white;
       text-align: center;
       padding: vars.$spacing-1;
       font-size: 0.875rem;
       font-weight: 600;
+      z-index: 3;
+      border-top-left-radius: vars.$border-radius-lg;
+      border-top-right-radius: vars.$border-radius-lg;
     }
 
     .plan-header {
-      padding: vars.$spacing-5;
+      padding: vars.$spacing-3;
       text-align: center;
       background: linear-gradient(
         135deg,
@@ -104,13 +130,13 @@
       );
 
       h3 {
-        margin-bottom: vars.$spacing-3;
-        font-size: 1.5rem;
+        margin-bottom: vars.$spacing-2;
+        font-size: 1.25rem;
       }
 
       .plan-price {
         .price {
-          font-size: 2rem;
+          font-size: 1.75rem;
           font-weight: 700;
           color: vars.$inqtel-blue-dark;
         }
@@ -124,8 +150,9 @@
     }
 
     .plan-features {
-      padding: vars.$spacing-4 vars.$spacing-5;
-      flex-grow: 1;
+      padding: vars.$spacing-2 vars.$spacing-3;
+      overflow-y: visible;
+      flex: 1;
 
       ul {
         list-style: none;
@@ -133,9 +160,14 @@
         margin: 0;
 
         li {
-          padding: vars.$spacing-2 0;
+          padding: vars.$spacing-1 0;
           border-bottom: 1px solid vars.$gray-200;
           @include mix.flex(row, flex-start, center);
+          font-size: 0.85rem;
+          line-height: 1.2;
+          white-space: normal;
+          overflow: visible;
+          text-overflow: clip;
 
           &:last-child {
             border-bottom: none;
@@ -143,19 +175,44 @@
 
           i {
             color: vars.$inqtel-blue-light;
-            margin-right: vars.$spacing-2;
+            margin-right: vars.$spacing-1;
+            flex-shrink: 0;
           }
         }
       }
     }
 
     .plan-footer {
-      padding: vars.$spacing-4 vars.$spacing-5 vars.$spacing-5;
+      padding: vars.$spacing-2 vars.$spacing-3;
       text-align: center;
 
       .btn {
         width: 100%;
+        padding: vars.$spacing-1 vars.$spacing-2;
+        font-size: 0.9rem;
       }
+    }
+  }
+
+  // Ajustar el contenedor de la grid para dar más espacio al plan popular
+  .plans-grid {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: vars.$spacing-3;
+    margin-top: vars.$spacing-6;
+    position: relative;
+    padding: vars.$spacing-4 0;
+
+    @include mix.respond-to(sm) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    @include mix.respond-to(md) {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    @include mix.respond-to(lg) {
+      grid-template-columns: repeat(5, 1fr);
     }
   }
 }
