@@ -1,6 +1,7 @@
 /* Importar variables, mixins y el módulo de color */
 @use "styles/_variables" as vars;
 @use "styles/_mixins" as mix;
+@use "styles/colors" as col;
 @use "sass:color";
 
 /* Importar fuentes */

@@ -1,5 +1,6 @@
 @use "../../../../styles/_variables" as vars;
 @use "../../../../styles/_mixins" as mix;
+@use "../../../../styles/colors" as colors;
 @use "sass:color";
 
 .dashboard-container {

@@ -111,10 +111,27 @@
     }
   }
 }
-
 .technology-section {
+  position: relative;
   padding: vars.$spacing-8 0;
   background-color: vars.$gray-100;
+
+  // Canvas de partículas
+  #particles-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  // Para que el contenido quede sobre el canvas
+  .container {
+    position: relative;
+    z-index: 2;
+  }
 
   .technology-content {
     margin-top: vars.$spacing-6;
@@ -124,6 +141,7 @@
       gap: vars.$spacing-8;
     }
   }
+
   .technology-image {
     margin-bottom: vars.$spacing-6;
 
@@ -200,6 +218,7 @@
     }
   }
 }
+
 .process-section {
   padding: vars.$spacing-8 0;
   background-color: vars.$white;

@@ -1,0 +1,29 @@
+@use "sass:color";
+// ==== Colores Base ====
+$inqtel-blue-light: #3498db;
+$inqtel-red: #e74c3c;
+$inqtel-blue-dark: #2c3e50;
+$inqtel-blue: #2980b9;
+$white: #ffffff;
+$orange: #ffc107;
+
+// ==== Ajustes de colores reutilizables ====
+$inqtel-blue-light-darken-10: color.adjust(
+  $inqtel-blue-light,
+  $lightness: -10%
+);
+$inqtel-blue-light-lighten-35: color.adjust(
+  $inqtel-blue-light,
+  $lightness: 35%
+);
+$inqtel-blue-light-lighten-30: color.adjust(
+  $inqtel-blue-light,
+  $lightness: 30%
+);
+
+$inqtel-red-darken-10: color.adjust($inqtel-red, $lightness: -10%);
+$inqtel-red-lighten-30: color.adjust($inqtel-red, $lightness: 30%);
+
+$orange-darken-35: color.adjust($orange, $lightness: -35%);
+
+$white-darken-5: color.adjust($white, $lightness: -5%);

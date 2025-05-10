@@ -1,5 +1,6 @@
 @use "../../../styles/variables" as vars;
 @use "../../../styles/mixins" as mix;
+
 @use "sass:color";
 
 // Hero Section
@@ -27,6 +28,52 @@
     background-position: center;
     opacity: 0.2;
     z-index: 1;
+  }
+  .fiber-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: 0;
+
+    &::before,
+    &::after {
+      content: "";
+      position: absolute;
+      width: 200%;
+      height: 200%;
+      background: repeating-linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0.05) 0px,
+        rgba(255, 255, 255, 0.1) 2px,
+        transparent 2px,
+        transparent 4px
+      );
+      animation: fiberMove 15s linear infinite;
+      opacity: 0.2;
+    }
+
+    &::after {
+      background: repeating-linear-gradient(
+        0deg,
+        rgba(0, 255, 255, 0.05) 0px,
+        rgba(0, 255, 255, 0.1) 2px,
+        transparent 2px,
+        transparent 4px
+      );
+      animation-duration: 20s;
+    }
+  }
+
+  @keyframes fiberMove {
+    0% {
+      transform: translateX(0) translateY(0);
+    }
+    100% {
+      transform: translateX(-50%) translateY(-50%);
+    }
   }
 
   .hero-content {

@@ -3,12 +3,12 @@ import { RouterOutlet, Router, NavigationEnd } from '@angular/router';
 import { HeaderComponent } from './components/header/header.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { filter } from 'rxjs/operators';
-import { NgIf } from '@angular/common'; // 👈 Importar NgIf
+import { NgIf } from '@angular/common';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, HeaderComponent, FooterComponent, NgIf], // 👈 Añadir NgIf aquí
+  imports: [RouterOutlet, HeaderComponent, FooterComponent, NgIf],
   template: `
     <ng-container *ngIf="!isAdminRoute; else adminContent">
       <app-header></app-header>
@@ -33,6 +33,9 @@ export class AppComponent {
       .pipe(filter((event) => event instanceof NavigationEnd))
       .subscribe(() => {
         this.isAdminRoute = this.router.url.includes('/admin');
+
+        // Hacer scroll al tope automáticamente al cambiar de ruta
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       });
   }
 }

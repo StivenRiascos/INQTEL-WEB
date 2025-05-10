@@ -1,5 +1,6 @@
 @use "../../../../styles/_variables" as vars;
 @use "../../../../styles/_mixins" as mix;
+@use "../../../../styles/colors" as colors;
 @use "sass:color";
 
 // Variables (mantenemos las que ya tenías)
@@ -24,7 +25,11 @@ $gray-900: #212529;
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background: linear-gradient(135deg, $inqtel-dark, darken($inqtel-blue, 15%));
+  background: linear-gradient(
+    135deg,
+    $inqtel-dark,
+    color.adjust($inqtel-blue, $lightness: -15%)
+  );
   padding: 20px;
   position: relative;
   overflow: hidden;
@@ -61,7 +66,11 @@ $gray-900: #212529;
 }
 
 .login-header {
-  background: linear-gradient(135deg, $inqtel-dark, darken($inqtel-blue, 10%));
+  background: linear-gradient(
+    135deg,
+    $inqtel-dark,
+    color.adjust($inqtel-blue, $lightness: -10%)
+  );
   color: $white;
   padding: 35px 30px;
   text-align: center;
@@ -149,7 +158,7 @@ $gray-900: #212529;
     &.alert-danger {
       background-color: rgba($inqtel-red, 0.1);
       border-left: 4px solid $inqtel-red;
-      color: darken($inqtel-red, 15%);
+      color: color.adjust($inqtel-red, $lightness: -15%);
     }
   }
 
@@ -287,7 +296,7 @@ $gray-900: #212529;
         background: linear-gradient(
           135deg,
           $inqtel-blue,
-          darken($inqtel-blue, 10%)
+          color.adjust($inqtel-blue, $lightness: -10%)
         );
         color: $white;
         box-shadow: 0 4px 15px rgba($inqtel-blue, 0.3);
@@ -295,8 +304,8 @@ $gray-900: #212529;
         &:hover:not(:disabled) {
           background: linear-gradient(
             135deg,
-            darken($inqtel-blue, 5%),
-            darken($inqtel-blue, 15%)
+            color.adjust($inqtel-blue, $lightness: -5%),
+            color.adjust($inqtel-blue, $lightness: -15%)
           );
           box-shadow: 0 6px 20px rgba($inqtel-blue, 0.4);
           transform: translateY(-2px);
@@ -312,8 +321,11 @@ $gray-900: #212529;
           cursor: not-allowed;
           background: linear-gradient(
             135deg,
-            desaturate($inqtel-blue, 30%),
-            desaturate(darken($inqtel-blue, 10%), 30%)
+            color.adjust($inqtel-blue, $saturation: -30%),
+            color.adjust(
+              color.adjust($inqtel-blue, $lightness: -10%),
+              $saturation: -30%
+            )
           );
           box-shadow: none;
         }
@@ -349,7 +361,7 @@ $gray-900: #212529;
     }
 
     &:hover {
-      color: darken($inqtel-blue, 15%);
+      color: color.adjust($inqtel-blue, $lightness: -15%);
       transform: translateX(-3px);
     }
   }
