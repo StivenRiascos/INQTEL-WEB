@@ -1,78 +1,39 @@
+<!-- Modifica la estructura para mejorar la responsividad -->
 <div class="dashboard-container">
   <div class="dashboard-header">
-    <h2>Dashboard</h2>
-    <p>Bienvenido al panel administrativo de INQTEL</p>
+    <h2>Resumen general</h2>
+    <p class="text-muted">
+      Este panel proporciona una visión general del rendimiento actual de la
+      plataforma, incluyendo métricas clave como clientes, ingresos y soporte.
+    </p>
   </div>
 
-  <!-- Tarjetas de estadísticas -->
-  <div class="stats-cards">
-    <div class="row">
-      <div class="col-md-3 col-sm-6" *ngFor="let card of statsCards">
-        <div class="stats-card" [ngClass]="'card-' + card.color">
-          <div class="card-icon">
-            <i [class]="card.icon"></i>
-          </div>
-          <div class="card-content">
-            <h3 class="card-title">{{ card.title }}</h3>
-            <div class="card-value">{{ card.value }}</div>
-            <div
-              class="card-change"
-              [ngClass]="{
-                positive: card.increase > 0,
-                negative: card.increase < 0
-              }"
-            >
-              <i
-                [class]="
-                  card.increase > 0 ? 'fas fa-arrow-up' : 'fas fa-arrow-down'
-                "
-              ></i>
-              {{ card.increase }}% {{ card.period }}
+  <!-- Usar *ngIf para forzar reconstrucción del DOM cuando cambia forceRebuild -->
+  <ng-container *ngIf="!forceRebuild">
+    <!-- Tarjetas de estadísticas -->
+    <div class="stats-cards">
+      <div class="row">
+        <div class="col-md-3 col-sm-6" *ngFor="let card of statsCards">
+          <div class="stats-card" [ngClass]="'card-' + card.color">
+            <div class="card-icon">
+              <i [class]="card.icon"></i>
             </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Gráficos y tablas -->
-  <div class="dashboard-content">
-    <div class="row">
-      <!-- Gráfico de ingresos -->
-      <div class="col-lg-8">
-        <div class="card">
-          <div class="card-header">
-            <h4>Ingresos Mensuales</h4>
-            <div class="card-actions">
-              <button class="btn btn-sm btn-outline-secondary">
-                <i class="fas fa-download"></i> Exportar
-              </button>
-            </div>
-          </div>
-          <div class="card-body">
-            <div class="chart-container">
-              <!-- Aquí iría el gráfico de ingresos -->
-              <div class="chart-placeholder">
-                <i class="fas fa-chart-line"></i>
-                <p>Gráfico de ingresos mensuales</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Distribución de planes -->
-      <div class="col-lg-4">
-        <div class="card">
-          <div class="card-header">
-            <h4>Distribución de Planes</h4>
-          </div>
-          <div class="card-body">
-            <div class="chart-container">
-              <!-- Aquí iría el gráfico de distribución de planes -->
-              <div class="chart-placeholder">
-                <i class="fas fa-chart-pie"></i>
-                <p>Gráfico de distribución de planes</p>
+            <div class="card-content">
+              <h3 class="card-title">{{ card.title }}</h3>
+              <div class="card-value">{{ card.value }}</div>
+              <div
+                class="card-change"
+                [ngClass]="{
+                  positive: card.increase > 0,
+                  negative: card.increase < 0
+                }"
+              >
+                <i
+                  [class]="
+                    card.increase > 0 ? 'fas fa-arrow-up' : 'fas fa-arrow-down'
+                  "
+                ></i>
+                {{ card.increase }}% {{ card.period }}
               </div>
             </div>
           </div>
@@ -80,79 +41,120 @@
       </div>
     </div>
 
-    <div class="row mt-4">
-      <!-- Clientes recientes -->
-      <div class="col-12">
-        <div class="card">
-          <div class="card-header">
-            <h4>Clientes Recientes</h4>
-            <div class="card-actions">
-              <button class="btn btn-sm btn-primary">
-                <i class="fas fa-plus"></i> Nuevo Cliente
-              </button>
+    <!-- Gráficos y tablas -->
+    <div class="dashboard-content">
+      <div class="row">
+        <!-- Gráfico de ingresos -->
+        <div class="col-lg-8">
+          <div class="card">
+            <div class="card-header">
+              <h4>Ingresos Mensuales</h4>
+              <div class="card-actions">
+                <button
+                  class="btn btn-sm btn-outline-secondary"
+                  (click)="exportData()"
+                >
+                  <i class="fas fa-download"></i> Exportar
+                </button>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="chart-container">
+                <!-- Gráfico de ingresos mensuales -->
+                <canvas id="incomeChart"></canvas>
+              </div>
             </div>
           </div>
-          <div class="card-body">
-            <div class="table-responsive">
-              <table class="table table-hover">
-                <thead>
-                  <tr>
-                    <th>ID</th>
-                    <th>Cliente</th>
-                    <th>Plan</th>
-                    <th>Estado</th>
-                    <th>Último Pago</th>
-                    <th>Monto</th>
-                    <th>Acciones</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr *ngFor="let client of recentClients">
-                    <td>{{ client.id }}</td>
-                    <td>{{ client.name }}</td>
-                    <td>{{ client.plan }}</td>
-                    <td>
-                      <span
-                        class="badge"
-                        [ngClass]="getStatusClass(client.status)"
-                      >
-                        {{ client.status }}
-                      </span>
-                    </td>
-                    <td>{{ client.lastPayment }}</td>
-                    <td>{{ client.amount }}</td>
-                    <td>
-                      <div class="actions">
-                        <button
-                          class="btn btn-sm btn-icon btn-info"
-                          title="Ver detalles"
-                        >
-                          <i class="fas fa-eye"></i>
-                        </button>
-                        <button
-                          class="btn btn-sm btn-icon btn-warning"
-                          title="Editar"
-                        >
-                          <i class="fas fa-edit"></i>
-                        </button>
-                        <button
-                          class="btn btn-sm btn-icon btn-danger"
-                          title="Eliminar"
-                        >
-                          <i class="fas fa-trash"></i>
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+        </div>
+
+        <!-- Distribución de planes -->
+        <div class="col-lg-4">
+          <div class="card">
+            <div class="card-header">
+              <h4>Distribución de Planes</h4>
+            </div>
+            <div class="card-body">
+              <div class="chart-container">
+                <!-- Gráfico de distribución de planes -->
+                <canvas id="plansChart"></canvas>
+              </div>
             </div>
           </div>
-          <div class="card-footer">
-            <button class="btn btn-link">Ver todos los clientes</button>
+        </div>
+      </div>
+
+      <div class="row mt-4">
+        <!-- Clientes recientes -->
+        <div class="col-12">
+          <div class="card">
+            <div class="card-header">
+              <h4>Clientes Recientes</h4>
+              <div class="card-actions">
+                <button class="btn btn-sm btn-primary">
+                  <i class="fas fa-plus"></i> Nuevo Cliente
+                </button>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table table-hover">
+                  <thead>
+                    <tr>
+                      <th>Cliente</th>
+                      <th>Plan</th>
+                      <th>Estado</th>
+                      <th>Último Pago</th>
+                      <th>Monto</th>
+                      <th>Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let client of recentClients">
+                      <td>{{ client.name }}</td>
+                      <td>{{ client.plan }}</td>
+                      <td>
+                        <span
+                          class="badge"
+                          [ngClass]="getStatusClass(client.status)"
+                        >
+                          {{ client.status }}
+                        </span>
+                      </td>
+                      <td>{{ client.lastPayment }}</td>
+                      <td>{{ client.amount }}</td>
+                      <td>
+                        <div class="actions">
+                          <button
+                            class="btn btn-sm btn-icon btn-info"
+                            title="Ver detalles"
+                          >
+                            <i class="fas fa-eye"></i>
+                          </button>
+                          <button
+                            class="btn btn-sm btn-icon btn-warning"
+                            title="Editar"
+                          >
+                            <i class="fas fa-edit"></i>
+                          </button>
+                          <button
+                            class="btn btn-sm btn-icon btn-danger"
+                            title="Eliminar"
+                          >
+                            <i class="fas fa-trash"></i>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="card-footer">
+              <button class="btn btn-link">Ver todos los clientes</button>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
+  </ng-container>
 </div>

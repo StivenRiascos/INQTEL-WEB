@@ -3,6 +3,33 @@
 @use "../../../../styles/colors" as colors;
 @use "sass:color";
 
+// Estilos para forzar el layout correcto en escritorio
+@media (min-width: 768px) {
+  .dashboard-container {
+    .stats-cards .row {
+      .col-md-3 {
+        width: 25% !important;
+        flex: 0 0 25% !important;
+        max-width: 25% !important;
+      }
+    }
+
+    .dashboard-content .row {
+      .col-lg-8 {
+        width: 66.666667% !important;
+        flex: 0 0 66.666667% !important;
+        max-width: 66.666667% !important;
+      }
+
+      .col-lg-4 {
+        width: 33.333333% !important;
+        flex: 0 0 33.333333% !important;
+        max-width: 33.333333% !important;
+      }
+    }
+  }
+}
+
 .dashboard-container {
   padding: vars.$spacing-4;
   padding-top: vars.$spacing-4;
@@ -42,13 +69,18 @@
         padding: 0 15px;
         width: 100%;
         margin-bottom: vars.$spacing-4;
+        transition: width 0.3s ease, flex 0.3s ease, max-width 0.3s ease;
 
         @include mix.respond-to(sm) {
           width: 50%;
+          flex: 0 0 50%;
+          max-width: 50%;
         }
 
         @include mix.respond-to(md) {
           width: 25%;
+          flex: 0 0 25%;
+          max-width: 25%;
         }
       }
     }
@@ -64,6 +96,7 @@
       align-items: center;
       overflow: hidden;
       position: relative;
+      transition: all 0.3s ease;
 
       &:hover {
         @include mix.box-shadow(2);
@@ -176,9 +209,12 @@
         padding: 0 15px;
         width: 100%;
         margin-bottom: vars.$spacing-4;
+        transition: width 0.3s ease, flex 0.3s ease, max-width 0.3s ease;
 
         @include mix.respond-to(lg) {
           width: 66.666667%;
+          flex: 0 0 66.666667%;
+          max-width: 66.666667%;
         }
       }
 
@@ -186,9 +222,12 @@
         padding: 0 15px;
         width: 100%;
         margin-bottom: vars.$spacing-4;
+        transition: width 0.3s ease, flex 0.3s ease, max-width 0.3s ease;
 
         @include mix.respond-to(lg) {
           width: 33.333333%;
+          flex: 0 0 33.333333%;
+          max-width: 33.333333%;
         }
       }
 
@@ -209,6 +248,7 @@
       height: 100%;
       display: flex;
       flex-direction: column;
+      transition: all 0.3s ease;
 
       .card-header {
         padding: vars.$spacing-4;
@@ -239,27 +279,6 @@
           width: 100%;
           height: 300px;
           position: relative;
-
-          .chart-placeholder {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            background-color: rgba(vars.$gray-200, 0.5);
-            border-radius: vars.$border-radius;
-
-            i {
-              font-size: 3rem;
-              color: vars.$gray-400;
-              margin-bottom: vars.$spacing-3;
-            }
-
-            p {
-              color: vars.$gray-600;
-            }
-          }
         }
 
         .table-responsive {

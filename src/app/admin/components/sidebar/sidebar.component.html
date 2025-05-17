@@ -6,41 +6,64 @@
 ></div>
 
 <!-- Botón para abrir el sidebar en móvil -->
-<button class="sidebar-toggle" (click)="toggleSidebar()">
+<button class="sidebar-toggle custom-transparent-btn" (click)="toggleSidebar()">
   <fa-icon [icon]="faBars"></fa-icon>
 </button>
 
 <!-- Sidebar -->
-<div class="sidebar" [ngClass]="{ open: isSidebarOpen }">
+<div
+  class="sidebar"
+  [ngClass]="{ open: isSidebarOpen, collapsed: isCollapsed && !isMobile }"
+>
   <div class="sidebar-header">
-    <img src="../../../../assets/images/logo.jpg" alt="Logo" height="32" />
+    <div class="logo-container" *ngIf="!isCollapsed || isMobile">
+      <img
+        src="../../../../assets/images/logo.jpg"
+        alt="Logo"
+        class="logo-img"
+      />
+      <span class="logo-text">
+        <span class="logo-panel">Panel</span><br />
+        <span class="logo-admin">administrativo</span>
+      </span>
+    </div>
+
+    <button
+      class="collapse-toggle"
+      *ngIf="!isMobile"
+      (click)="toggleCollapse()"
+    >
+      <fa-icon [icon]="isCollapsed ? faChevronRight : faChevronLeft"></fa-icon>
+    </button>
   </div>
 
-  <div class="sidebar-section">
-    <p class="section-title">Dashboard</p>
-    <a
-      class="sidebar-link"
-      routerLink="/admin/dashboard"
-      routerLinkActive="active"
-      (click)="closeSidebarOnMobile()"
-    >
-      <fa-icon [icon]="faTachometerAlt"></fa-icon>
-      <span>Dashboard</span>
-    </a>
-    <a
-      class="sidebar-link"
-      routerLink="/admin/clientes"
-      routerLinkActive="active"
-      (click)="closeSidebarOnMobile()"
-    >
-      <fa-icon [icon]="faUsers"></fa-icon>
-      <span>Clientes</span>
-    </a>
-  </div>
+  <div class="sidebar-content">
+    <div class="sidebar-section">
+      <p
+        class="section-title"
+        [class.collapsed-text]="isCollapsed && !isMobile"
+      ></p>
 
-  <div class="sidebar-section">
-    <p class="section-title" (click)="toggleMenu()">Otras opciones</p>
-    <div *ngIf="isMenuOpen" class="submenu">
+      <a
+        class="sidebar-link"
+        routerLink="/admin/dashboard"
+        routerLinkActive="active"
+        (click)="closeSidebarOnMobile()"
+      >
+        <fa-icon [icon]="faTachometerAlt"></fa-icon>
+        <span *ngIf="!isCollapsed || isMobile">Inicio</span>
+      </a>
+
+      <a
+        class="sidebar-link"
+        routerLink="/admin/clientes"
+        routerLinkActive="active"
+        (click)="closeSidebarOnMobile()"
+      >
+        <fa-icon [icon]="faUsers"></fa-icon>
+        <span *ngIf="!isCollapsed || isMobile">Clientes</span>
+      </a>
+
       <a
         class="sidebar-link"
         routerLink="/admin/ajustes"
@@ -48,27 +71,40 @@
         (click)="closeSidebarOnMobile()"
       >
         <fa-icon [icon]="faCog"></fa-icon>
-        <span>Ajustes</span>
+        <span *ngIf="!isCollapsed || isMobile">Ajustes</span>
+      </a>
+
+      <a
+        class="sidebar-link"
+        routerLink="/admin/perfil"
+        routerLinkActive="active"
+        (click)="closeSidebarOnMobile()"
+      >
+        <fa-icon [icon]="faUser"></fa-icon>
+        <span *ngIf="!isCollapsed || isMobile">Perfil</span>
       </a>
     </div>
-  </div>
 
-  <div class="sidebar-footer">
-    <div class="user-info">
-      <img
-        src="../../../../assets/icons/avatar.png"
-        alt="Avatar"
-        class="user-avatar"
-      />
-      <span class="user-name">John Doe</span>
+    <div class="sidebar-footer">
+      <div class="user-info" [class.collapsed-user]="isCollapsed && !isMobile">
+        <img
+          src="../../../../assets/icons/avatar.png"
+          alt="Avatar"
+          class="user-avatar"
+        />
+        <div class="user-details" *ngIf="!isCollapsed || isMobile">
+          <span class="user-name">John Doe</span>
+          <span class="user-role">Administrador</span>
+        </div>
+      </div>
+      <a
+        class="sidebar-link text-danger logout-link"
+        routerLink="/logout"
+        (click)="closeSidebarOnMobile()"
+      >
+        <fa-icon [icon]="faRightFromBracket"></fa-icon>
+        <span *ngIf="!isCollapsed || isMobile">Cerrar sesion</span>
+      </a>
     </div>
-    <a
-      class="sidebar-link text-danger"
-      routerLink="/logout"
-      (click)="closeSidebarOnMobile()"
-    >
-      <fa-icon [icon]="faRightFromBracket"></fa-icon>
-      <span>Salir</span>
-    </a>
   </div>
 </div>

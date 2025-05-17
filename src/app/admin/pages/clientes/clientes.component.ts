@@ -1,6 +1,21 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+
+// Interfaces para tipado
+interface Client {
+  id: number;
+  name: string;
+  documentType: string;
+  documentNumber: string;
+  email: string;
+  location: string;
+  phone: string;
+  status: string;
+  plan: string;
+  registrationDate: string;
+  lastPayment: string;
+}
 
 interface HistoryItem {
   id: number;
@@ -15,20 +30,21 @@ interface HistoryItem {
 @Component({
   selector: 'app-clientes',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule],
   templateUrl: './clientes.component.html',
   styleUrls: ['./clientes.component.scss'],
 })
-export class ClientesComponent {
+export class ClientesComponent implements OnInit {
   // Datos de ejemplo para la tabla de clientes
-  clients = [
+  clients: Client[] = [
     {
       id: 1,
       name: 'Juan Pérez',
-      document: '1234567890',
-      address: 'Calle 123 #45-67',
-      phone: '3101234567',
+      documentType: 'Cédula',
+      documentNumber: '1234567890',
       email: 'juan.perez@example.com',
+      location: 'Calle 123 #45-67, Bogotá',
+      phone: '3101234567',
       plan: 'Plan 250 Mbps',
       status: 'Activo',
       registrationDate: '2023-01-15',
@@ -37,10 +53,11 @@ export class ClientesComponent {
     {
       id: 2,
       name: 'María López',
-      document: '0987654321',
-      address: 'Carrera 45 #12-34',
-      phone: '3157654321',
+      documentType: 'Cédula',
+      documentNumber: '0987654321',
       email: 'maria.lopez@example.com',
+      location: 'Carrera 45 #12-34, Medellín',
+      phone: '3157654321',
       plan: 'Plan 150 Mbps',
       status: 'Activo',
       registrationDate: '2023-02-10',
@@ -49,10 +66,11 @@ export class ClientesComponent {
     {
       id: 3,
       name: 'Carlos Rodríguez',
-      document: '5678901234',
-      address: 'Avenida 67 #89-12',
-      phone: '3209876543',
+      documentType: 'Pasaporte',
+      documentNumber: '5678901234',
       email: 'carlos.rodriguez@example.com',
+      location: 'Avenida 67 #89-12, Cali',
+      phone: '3209876543',
       plan: 'Plan 490 Mbps',
       status: 'Pendiente',
       registrationDate: '2023-03-05',
@@ -61,10 +79,11 @@ export class ClientesComponent {
     {
       id: 4,
       name: 'Ana Martínez',
-      document: '4321098765',
-      address: 'Diagonal 78 #56-34',
-      phone: '3003456789',
+      documentType: 'Cédula',
+      documentNumber: '4321098765',
       email: 'ana.martinez@example.com',
+      location: 'Diagonal 78 #56-34, Barranquilla',
+      phone: '3003456789',
       plan: 'Plan 395 Mbps',
       status: 'Activo',
       registrationDate: '2023-02-20',
@@ -73,10 +92,11 @@ export class ClientesComponent {
     {
       id: 5,
       name: 'Pedro Sánchez',
-      document: '9876543210',
-      address: 'Transversal 23 #45-67',
-      phone: '3112345678',
+      documentType: 'Cédula Extranjería',
+      documentNumber: '9876543210',
       email: 'pedro.sanchez@example.com',
+      location: 'Transversal 23 #45-67, Cartagena',
+      phone: '3112345678',
       plan: 'Plan 650 Mbps',
       status: 'Inactivo',
       registrationDate: '2023-01-25',
@@ -159,8 +179,21 @@ export class ClientesComponent {
 
   // Modal de historial
   showHistoryModal = false;
-  selectedClient: any = null;
+  selectedClient: Client | null = null;
   clientHistory: HistoryItem[] = [];
+
+  // Modal de nuevo/editar cliente
+  showClientModal = false;
+  isEditMode = false;
+  newClient: Client = this.getEmptyClient();
+
+  // Modal de confirmación de eliminación
+  showDeleteModal = false;
+  clientToDelete: Client | null = null;
+
+  // Modal de detalles
+  showDetailsModal = false;
+  clientDetails: Client | null = null;
 
   // Opciones de filtro
   statusOptions = ['Todos', 'Activo', 'Pendiente', 'Inactivo'];
@@ -172,6 +205,13 @@ export class ClientesComponent {
     'Plan 490 Mbps',
     'Plan 650 Mbps',
   ];
+
+  // Opciones de tipo de documento
+  documentTypes = ['Cédula', 'Cédula Extranjería', 'Pasaporte', 'NIT'];
+
+  ngOnInit(): void {
+    console.log('Componente de clientes inicializado');
+  }
 
   getStatusClass(status: string): string {
     switch (status) {
@@ -188,18 +228,16 @@ export class ClientesComponent {
 
   get filteredClients() {
     return this.clients.filter((client) => {
-      // Filtro por término de búsqueda
       const searchMatch =
         client.name.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-        client.document.includes(this.searchTerm) ||
+        client.documentNumber.includes(this.searchTerm) ||
         client.email.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-        client.phone.includes(this.searchTerm);
+        client.phone.includes(this.searchTerm) ||
+        client.location.toLowerCase().includes(this.searchTerm.toLowerCase());
 
-      // Filtro por estado
       const statusMatch =
         this.statusFilter === 'Todos' || client.status === this.statusFilter;
 
-      // Filtro por plan
       const planMatch =
         this.planFilter === 'Todos' || client.plan === this.planFilter;
 
@@ -207,18 +245,14 @@ export class ClientesComponent {
     });
   }
 
-  // Método para buscar por cédula específicamente
   searchByDocument() {
     if (this.documentSearch.trim()) {
-      // Limpiar otros filtros para enfocarse solo en la búsqueda por cédula
       this.searchTerm = '';
       this.statusFilter = 'Todos';
       this.planFilter = 'Todos';
 
-      // Establecer la búsqueda específica por documento
       this.searchTerm = this.documentSearch.trim();
 
-      // Si solo hay un resultado, podríamos mostrar directamente su historial
       const matchingClients = this.filteredClients;
       if (matchingClients.length === 1) {
         this.openHistoryModal(matchingClients[0]);
@@ -226,8 +260,17 @@ export class ClientesComponent {
     }
   }
 
-  // Método para abrir el modal de historial
-  openHistoryModal(client: any) {
+  openDetailsModal(client: Client) {
+    this.clientDetails = client;
+    this.showDetailsModal = true;
+  }
+
+  closeDetailsModal() {
+    this.showDetailsModal = false;
+    this.clientDetails = null;
+  }
+
+  openHistoryModal(client: Client) {
     this.selectedClient = client;
     this.clientHistory = this.historyData.filter(
       (item) => item.clientId === client.id
@@ -235,9 +278,75 @@ export class ClientesComponent {
     this.showHistoryModal = true;
   }
 
-  // Método para cerrar el modal de historial
   closeHistoryModal() {
     this.showHistoryModal = false;
     this.selectedClient = null;
+  }
+
+  openNewClientModal() {
+    this.isEditMode = false;
+    this.newClient = this.getEmptyClient();
+    this.showClientModal = true;
+  }
+
+  openEditClientModal(client: Client) {
+    this.isEditMode = true;
+    this.newClient = { ...client };
+    this.showClientModal = true;
+  }
+
+  closeClientModal() {
+    this.showClientModal = false;
+  }
+
+  saveClient() {
+    if (this.isEditMode) {
+      const index = this.clients.findIndex((c) => c.id === this.newClient.id);
+      if (index !== -1) {
+        this.clients[index] = { ...this.newClient };
+      }
+    } else {
+      const newId = Math.max(...this.clients.map((c) => c.id), 0) + 1;
+      this.newClient.id = newId;
+      this.newClient.registrationDate = new Date().toISOString().split('T')[0];
+      this.clients.push({ ...this.newClient });
+    }
+
+    this.closeClientModal();
+  }
+
+  openDeleteModal(client: Client) {
+    this.clientToDelete = client;
+    this.showDeleteModal = true;
+  }
+
+  closeDeleteModal() {
+    this.showDeleteModal = false;
+    this.clientToDelete = null;
+  }
+
+  deleteClient() {
+    if (this.clientToDelete) {
+      this.clients = this.clients.filter(
+        (c) => c.id !== this.clientToDelete!.id
+      );
+      this.closeDeleteModal();
+    }
+  }
+
+  private getEmptyClient(): Client {
+    return {
+      id: 0,
+      name: '',
+      documentType: 'Cédula',
+      documentNumber: '',
+      email: '',
+      location: '',
+      phone: '',
+      status: 'Activo',
+      plan: 'Plan 250 Mbps',
+      registrationDate: '',
+      lastPayment: '',
+    };
   }
 }
