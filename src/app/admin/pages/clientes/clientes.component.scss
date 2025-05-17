@@ -63,10 +63,12 @@ $font-family-base: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
 }
 
 @mixin badge-variant($bg, $color: #fff) {
-  background-color: rgba($bg, 0.15);
-  color: color.adjust($bg, $lightness: -15%);
-  border: 1px solid rgba($bg, 0.2);
+  background-color: rgba($bg, 0.7); // fondo con 70% opacidad para mejor visibilidad
+  color: color.adjust($bg, $lightness: -50%); // texto más oscuro
+  border: 1px solid rgba($bg, 0.8);
 }
+
+
 
 // Base Styles
 body {

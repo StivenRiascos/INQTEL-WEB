@@ -108,18 +108,18 @@
           <tbody>
             <tr *ngFor="let client of filteredClients">
               <td>{{ client.id }}</td>
-              <td>{{ client.name }}</td>
-              <td>{{ client.documentType }}</td>
-              <td>{{ client.documentNumber }}</td>
+              <td>{{ client.nombre }}</td>
+              <td>{{ client.tipoDocumento }}</td>
+              <td>{{ client.numeroDocumento }}</td>
               <td>{{ client.email }}</td>
-              <td>{{ client.location }}</td>
-              <td>{{ client.phone }}</td>
+              <td>{{ client.direccion }}</td>
+              <td>{{ client.telefono }}</td>
               <td>
-                <span class="badge" [ngClass]="getStatusClass(client.status)">
-                  {{ client.status }}
+                <span class="badge" [ngClass]="getStatusClass(client.estado)">
+                  {{ client.estado }}
                 </span>
               </td>
-              <td>{{ client.plan }}</td>
+              <td>{{ client.plan?.nombre }}</td>
               <td>{{ client.lastPayment }}</td>
               <td>
                 <div class="actions">
@@ -208,7 +208,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">
-          Detalles del Cliente: {{ clientDetails?.name }}
+          Detalles del Cliente: {{ clientDetails?.nombre }}
         </h5>
         <button type="button" class="close" (click)="closeDetailsModal()">
           <span>&times;</span>
@@ -222,13 +222,13 @@
           </div>
           <div class="detail-row">
             <div class="detail-label">Nombre:</div>
-            <div class="detail-value">{{ clientDetails.name }}</div>
+            <div class="detail-value">{{ clientDetails.nombre }}</div>
           </div>
           <div class="detail-row">
             <div class="detail-label">Documento:</div>
             <div class="detail-value">
-              {{ clientDetails.documentType }} -
-              {{ clientDetails.documentNumber }}
+              {{ clientDetails.tipoDocumento }} -
+              {{ clientDetails.numeroDocumento }}
             </div>
           </div>
           <div class="detail-row">
@@ -237,11 +237,11 @@
           </div>
           <div class="detail-row">
             <div class="detail-label">Teléfono:</div>
-            <div class="detail-value">{{ clientDetails.phone }}</div>
+            <div class="detail-value">{{ clientDetails.telefono }}</div>
           </div>
           <div class="detail-row">
             <div class="detail-label">Ubicación:</div>
-            <div class="detail-value">{{ clientDetails.location }}</div>
+            <div class="detail-value">{{ clientDetails.direccion }}</div>
           </div>
           <div class="detail-row">
             <div class="detail-label">Plan:</div>
@@ -252,9 +252,9 @@
             <div class="detail-value">
               <span
                 class="badge"
-                [ngClass]="getStatusClass(clientDetails.status)"
+                [ngClass]="getStatusClass(clientDetails.estado)"
               >
-                {{ clientDetails.status }}
+                {{ clientDetails.estado }}
               </span>
             </div>
           </div>
@@ -295,7 +295,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">
-          Historial de Cliente: {{ selectedClient?.name }}
+          Historial de Cliente: {{ selectedClient?.nombre }}
         </h5>
         <button type="button" class="close" (click)="closeHistoryModal()">
           <span>&times;</span>
@@ -361,7 +361,7 @@
                   type="text"
                   id="clientName"
                   class="form-control"
-                  [(ngModel)]="newClient.name"
+                  [(ngModel)]="newClient.nombre"
                   name="name"
                   required
                 />
@@ -373,7 +373,7 @@
                 <select
                   id="documentType"
                   class="form-control"
-                  [(ngModel)]="newClient.documentType"
+                  [(ngModel)]="newClient.tipoDocumento"
                   name="documentType"
                   required
                 >
@@ -390,7 +390,7 @@
                   type="text"
                   id="documentNumber"
                   class="form-control"
-                  [(ngModel)]="newClient.documentNumber"
+                  [(ngModel)]="newClient.numeroDocumento"
                   name="documentNumber"
                   required
                 />
@@ -419,7 +419,7 @@
                   type="tel"
                   id="phone"
                   class="form-control"
-                  [(ngModel)]="newClient.phone"
+                  [(ngModel)]="newClient.telefono"
                   name="phone"
                   required
                 />
@@ -435,7 +435,7 @@
                   type="text"
                   id="location"
                   class="form-control"
-                  [(ngModel)]="newClient.location"
+                  [(ngModel)]="newClient.direccion"
                   name="location"
                   required
                 />
@@ -470,7 +470,7 @@
                 <select
                   id="status"
                   class="form-control"
-                  [(ngModel)]="newClient.status"
+                  [(ngModel)]="newClient.estado"
                   name="status"
                   required
                 >
@@ -532,7 +532,7 @@
       <div class="modal-body">
         <p>
           ¿Está seguro que desea eliminar al cliente
-          <strong>{{ clientToDelete?.name }}</strong
+          <strong>{{ clientToDelete?.nombre }}</strong
           >?
         </p>
         <p class="text-danger">Esta acción no se puede deshacer.</p>

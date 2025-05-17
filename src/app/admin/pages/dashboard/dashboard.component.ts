@@ -8,7 +8,8 @@ import {
   AfterViewInit,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Chart, registerables } from 'chart.js';
+import { Chart, registerables, ChartData } from 'chart.js';
+import { ClientesService } from '../../../services/client.service';
 
 // Registrar todos los componentes de Chart.js
 Chart.register(...registerables);
@@ -21,11 +22,10 @@ Chart.register(...registerables);
   styleUrls: ['./dashboard.component.scss'],
 })
 export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
-  // Datos de ejemplo para las tarjetas de estadísticas
   statsCards = [
     {
       title: 'Total Clientes',
-      value: 256,
+      value: 0,
       icon: 'fas fa-users',
       color: 'primary',
       increase: 12,
@@ -57,173 +57,145 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     },
   ];
 
-  // Datos de ejemplo para la tabla de clientes recientes
-  recentClients = [
-    {
-      id: 1,
-      name: 'Juan Pérez',
-      plan: 'Plan 250 Mbps',
-      status: 'Activo',
-      lastPayment: '2023-04-15',
-      amount: '$75,000',
-    },
-    {
-      id: 2,
-      name: 'María López',
-      plan: 'Plan 150 Mbps',
-      status: 'Activo',
-      lastPayment: '2023-04-12',
-      amount: '$54,000',
-    },
-    {
-      id: 3,
-      name: 'Carlos Rodríguez',
-      plan: 'Plan 490 Mbps',
-      status: 'Pendiente',
-      lastPayment: '2023-03-28',
-      amount: '$99,000',
-    },
-    {
-      id: 4,
-      name: 'Ana Martínez',
-      plan: 'Plan 395 Mbps',
-      status: 'Activo',
-      lastPayment: '2023-04-10',
-      amount: '$85,000',
-    },
-    {
-      id: 5,
-      name: 'Pedro Sánchez',
-      plan: 'Plan 650 Mbps',
-      status: 'Inactivo',
-      lastPayment: '2023-03-15',
-      amount: '$120,000',
-    },
-  ];
+  recentClients: any[] = [];
 
-  // Datos para los gráficos
-  incomeChartData = {
-    labels: [
-      'Ene',
-      'Feb',
-      'Mar',
-      'Abr',
-      'May',
-      'Jun',
-      'Jul',
-      'Ago',
-      'Sep',
-      'Oct',
-      'Nov',
-      'Dic',
-    ],
+  // Datos iniciales para los gráficos con estructura válida
+  incomeChartData: ChartData<'line'> = {
+    labels: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio'],
     datasets: [
       {
-        label: 'Ingresos 2023',
-        data: [
-          9500000, 10200000, 11000000, 10800000, 11500000, 12000000, 12300000,
-          12580000, 13000000, 13200000, 13500000, 14000000,
-        ],
-        borderColor: '#4895ef',
-        backgroundColor: 'rgba(72, 149, 239, 0.1)',
-        tension: 0.4,
+        label: 'Ingresos',
+        data: [1200000, 1500000, 1800000, 1300000, 1700000, 1900000],
+        borderColor: '#4361ee',
+        backgroundColor: 'rgba(67, 97, 238, 0.2)',
         fill: true,
+        tension: 0.4,
+        pointRadius: 4,
+        pointHoverRadius: 6,
       },
     ],
   };
 
-  plansChartData = {
-    labels: [
-      'Plan 150 Mbps',
-      'Plan 250 Mbps',
-      'Plan 395 Mbps',
-      'Plan 490 Mbps',
-      'Plan 650 Mbps',
-    ],
+  plansChartData: ChartData<'doughnut'> = {
+    labels: ['Plan Básico', 'Plan Premium', 'Plan Pro'],
     datasets: [
       {
-        data: [35, 45, 15, 25, 10],
+        data: [10, 20, 15],
         backgroundColor: [
           '#4361ee',
           '#4895ef',
           '#4cc9f0',
           '#3f37c9',
           '#7209b7',
+          '#b5179e',
         ],
         borderWidth: 1,
       },
     ],
   };
 
-  // Variable para controlar si estamos en modo móvil
   isMobile = false;
-
-  // Variable para forzar reconstrucción del DOM
   forceRebuild = false;
-
-  // Referencias a los gráficos
   incomeChart: Chart | null = null;
   plansChart: Chart | null = null;
-
-  // Referencia al ResizeObserver
   private resizeObserver: ResizeObserver | null = null;
-
-  // Referencia al timer para debounce
   private resizeTimer: any = null;
 
   constructor(
     private cdr: ChangeDetectorRef,
     private renderer: Renderer2,
-    private el: ElementRef
+    private el: ElementRef,
+    private clientesService: ClientesService
   ) {}
 
   ngOnInit(): void {
-    // Detectar si estamos en modo móvil al iniciar
     this.checkIfMobile();
 
-    // Usar ResizeObserver para un mejor rendimiento
     if (typeof ResizeObserver !== 'undefined') {
-      this.resizeObserver = new ResizeObserver(
-        this.handleResizeObserver.bind(this)
-      );
+      this.resizeObserver = new ResizeObserver(this.handleResizeObserver.bind(this));
       this.resizeObserver.observe(document.body);
     } else {
-      // Fallback para navegadores que no soportan ResizeObserver
       window.addEventListener('resize', this.handleResize.bind(this));
     }
 
-    // Aplicar estilos iniciales
     this.applyLayoutStyles();
+    this.loadClientData();
   }
 
   ngAfterViewInit(): void {
-    // Inicializar los gráficos después de que la vista esté lista
     this.initCharts();
   }
 
   ngOnDestroy(): void {
-    // Limpiar los listeners al destruir el componente
     if (this.resizeObserver) {
       this.resizeObserver.disconnect();
     } else {
       window.removeEventListener('resize', this.handleResize.bind(this));
     }
-
-    // Limpiar el timer si existe
-    if (this.resizeTimer) {
-      clearTimeout(this.resizeTimer);
-    }
-
-    // Destruir los gráficos si existen
-    if (this.incomeChart) {
-      this.incomeChart.destroy();
-    }
-    if (this.plansChart) {
-      this.plansChart.destroy();
-    }
+    if (this.resizeTimer) clearTimeout(this.resizeTimer);
+    this.incomeChart?.destroy();
+    this.plansChart?.destroy();
   }
 
-  // Inicializar los gráficos
+  loadClientData(): void {
+  this.clientesService.getClientes().subscribe({
+    next: (clientes: any[]) => {
+      // Mapear clientes con las propiedades que usabas antes
+      const clientesMapeados = clientes.map(client => ({
+        ...client,
+        name: client.nombre,
+        documentType: client.tipoDocumento,
+        documentNumber: client.numeroDocumento,
+        location: client.direccion,
+        phone: client.telefono,
+        status: client.estado,
+      }));
+
+      // Obtener los 5 clientes más recientes (últimos 5 del array)
+      this.recentClients = clientesMapeados.slice(-5).reverse();
+
+      // Actualizar valor total clientes
+      this.statsCards[0].value = clientesMapeados.length;
+
+      // Contar clientes por plan para el gráfico
+      const planCounts: { [plan: string]: number } = {};
+      clientesMapeados.forEach(cliente => {
+        const plan = cliente.plan || 'Otro';
+        planCounts[plan] = (planCounts[plan] || 0) + 1;
+      });
+
+      this.plansChartData = {
+        labels: Object.keys(planCounts),
+        datasets: [
+          {
+            data: Object.values(planCounts),
+            backgroundColor: [
+              '#4361ee',
+              '#4895ef',
+              '#4cc9f0',
+              '#3f37c9',
+              '#7209b7',
+              '#b5179e',
+            ],
+            borderWidth: 1,
+          },
+        ],
+      };
+
+      if (this.plansChart) {
+        this.plansChart.destroy();
+        this.createPlansChart();
+      }
+
+      this.cdr.detectChanges();
+    },
+    error: (error) => {
+      console.error('Error cargando clientes en dashboard:', error);
+    }
+  });
+}
+
+
   initCharts(): void {
     setTimeout(() => {
       this.createIncomeChart();
@@ -231,44 +203,32 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     }, 100);
   }
 
-  // Crear el gráfico de ingresos
   createIncomeChart(): void {
-    const incomeCanvas = document.getElementById(
-      'incomeChart'
-    ) as HTMLCanvasElement;
-    if (!incomeCanvas) return;
+    const canvas = document.getElementById('incomeChart') as HTMLCanvasElement;
+    if (!canvas) return;
 
-    if (this.incomeChart) {
-      this.incomeChart.destroy();
-    }
+    this.incomeChart?.destroy();
 
-    this.incomeChart = new Chart(incomeCanvas, {
+    this.incomeChart = new Chart(canvas, {
       type: 'line',
       data: this.incomeChartData,
       options: {
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
-          legend: {
-            display: false,
-          },
+          legend: { display: false },
           tooltip: {
             mode: 'index',
             intersect: false,
             callbacks: {
               label: (context) => {
-                let label = context.dataset.label || '';
-                if (label) {
-                  label += ': ';
-                }
-                if (context.parsed.y !== null) {
-                  label += new Intl.NumberFormat('es-CO', {
-                    style: 'currency',
-                    currency: 'COP',
-                    maximumFractionDigits: 0,
-                  }).format(context.parsed.y);
-                }
-                return label;
+                const label = context.dataset.label || '';
+                const value = context.parsed.y;
+                return `${label}: ${new Intl.NumberFormat('es-CO', {
+                  style: 'currency',
+                  currency: 'COP',
+                  maximumFractionDigits: 0,
+                }).format(value)}`;
               },
             },
           },
@@ -291,52 +251,52 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 
-  // Crear el gráfico de distribución de planes
-  createPlansChart(): void {
-    const plansCanvas = document.getElementById(
-      'plansChart'
-    ) as HTMLCanvasElement;
-    if (!plansCanvas) return;
+createPlansChart(): void {
+  const canvas = document.getElementById('plansChart') as HTMLCanvasElement;
+  if (!canvas) return;
 
-    if (this.plansChart) {
-      this.plansChart.destroy();
-    }
+  this.plansChart?.destroy();
 
-    this.plansChart = new Chart(plansCanvas, {
-      type: 'doughnut',
-      data: this.plansChartData,
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: {
-            position: 'bottom',
-            labels: {
-              padding: 20,
-              boxWidth: 12,
-            },
+  this.plansChart = new Chart(canvas, {
+    type: 'doughnut',
+    data: this.plansChartData,
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      cutout: '70%', // directo en options
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: {
+            padding: 20,
+            boxWidth: 12,
           },
-          tooltip: {
-            callbacks: {
-              label: (context) => {
-                const label = context.label || '';
-                const value = context.parsed || 0;
-                const total = context.dataset.data.reduce(
-                  (a: number, b: number) => a + b,
-                  0
-                );
-                const percentage = Math.round((value * 100) / total) + '%';
-                return `${label}: ${percentage}`;
-              },
+        },
+        tooltip: {
+          callbacks: {
+            label: (context: { label?: string; parsed: number; dataset: { data: any[] } }) => {
+              const label = context.label || '';
+              const value = context.parsed as number;
+              const total = context.dataset.data
+                .filter((v): v is number => typeof v === 'number')
+                .reduce((a: number, b: number) => a + b, 0);
+
+              const percentage = total
+                ? Math.round((value * 100) / total) + '%'
+                : '0%';
+
+              return `${label}: ${percentage}`;
             },
           },
         },
-        cutout: '70%',
       },
-    });
-  }
+    } as any,
+  });
+}
 
-  // Método para determinar la clase CSS según el estado
+
+
+
   getStatusClass(status: string): string {
     switch (status) {
       case 'Activo':
@@ -350,93 +310,33 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  // Método para exportar datos
   exportData(): void {
     console.log('Exportando datos...');
-    // Implementación básica de exportación
+    // Implementa aquí la lógica para exportar los datos (CSV, Excel, PDF, etc.)
   }
 
-  // Método para verificar si estamos en modo móvil
   private checkIfMobile(): void {
     const wasMobile = this.isMobile;
     this.isMobile = window.innerWidth < 768;
-
-    // Si cambiamos de móvil a escritorio, forzamos reconstrucción
     if (wasMobile && !this.isMobile) {
       this.forceRebuild = true;
-
-      // Forzar reconstrucción después de un pequeño retraso
       setTimeout(() => {
         this.forceRebuild = false;
         this.cdr.detectChanges();
-
-        // Aplicar estilos después de la reconstrucción
-        setTimeout(() => {
-          this.applyLayoutStyles();
-          // Reinicializar los gráficos después de reconstruir el DOM
-          this.initCharts();
-        }, 50);
-      }, 50);
+      }, 100);
     }
   }
 
-  // Método para aplicar estilos de layout
-  private applyLayoutStyles(): void {
-    if (!this.isMobile) {
-      // Obtener todos los elementos de columna
-      const statsCards = this.el.nativeElement.querySelectorAll(
-        '.stats-cards .col-md-3'
-      );
-      const contentCols8 = this.el.nativeElement.querySelectorAll(
-        '.dashboard-content .col-lg-8'
-      );
-      const contentCols4 = this.el.nativeElement.querySelectorAll(
-        '.dashboard-content .col-lg-4'
-      );
-
-      // Aplicar estilos a las tarjetas de estadísticas
-      statsCards.forEach((col: HTMLElement) => {
-        this.renderer.setStyle(col, 'width', '25%');
-        this.renderer.setStyle(col, 'flex', '0 0 25%');
-        this.renderer.setStyle(col, 'max-width', '25%');
-      });
-
-      // Aplicar estilos a las columnas de contenido
-      contentCols8.forEach((col: HTMLElement) => {
-        this.renderer.setStyle(col, 'width', '66.666667%');
-        this.renderer.setStyle(col, 'flex', '0 0 66.666667%');
-        this.renderer.setStyle(col, 'max-width', '66.666667%');
-      });
-
-      contentCols4.forEach((col: HTMLElement) => {
-        this.renderer.setStyle(col, 'width', '33.333333%');
-        this.renderer.setStyle(col, 'flex', '0 0 33.333333%');
-        this.renderer.setStyle(col, 'max-width', '33.333333%');
-      });
-    }
+  private handleResizeObserver(): void {
+    if (this.resizeTimer) clearTimeout(this.resizeTimer);
+    this.resizeTimer = setTimeout(() => this.checkIfMobile(), 200);
   }
 
-  // Manejador para ResizeObserver con debounce
-  private handleResizeObserver(entries: ResizeObserverEntry[]): void {
-    // Usar debounce para evitar múltiples actualizaciones
-    if (this.resizeTimer) {
-      clearTimeout(this.resizeTimer);
-    }
-
-    this.resizeTimer = setTimeout(() => {
-      this.checkIfMobile();
-    }, 150);
-  }
-
-  // Manejador de evento resize (fallback) con debounce
   private handleResize(): void {
-    // Usar debounce para evitar múltiples actualizaciones
-    if (this.resizeTimer) {
-      clearTimeout(this.resizeTimer);
-    }
+    this.checkIfMobile();
+  }
 
-    this.resizeTimer = setTimeout(() => {
-      this.checkIfMobile();
-    }, 150);
+  private applyLayoutStyles(): void {
+    this.renderer.addClass(this.el.nativeElement, 'dashboard-component');
   }
 }
