@@ -4,7 +4,8 @@ import { AuthGuard } from '../guards/auth.guard';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { ClientesComponent } from './pages/clientes/clientes.component';
 import { LoginComponent } from './pages/login/login.component';
-// Importa otros componentes según sea necesario
+import { AjustesComponent } from './pages/ajustes/ajustes.component';
+import { PerfilComponent } from './pages/perfil/perfil.component';
 
 // Define las rutas
 const adminRoutes: Routes = [
@@ -19,6 +20,8 @@ const adminRoutes: Routes = [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       { path: 'dashboard', component: DashboardComponent },
       { path: 'clientes', component: ClientesComponent },
+      { path: 'ajustes', component: AjustesComponent },
+      { path: 'perfil', component: PerfilComponent },
       // Otras rutas protegidas
     ],
   },

@@ -1,0 +1,314 @@
+<div class="perfil-container">
+  <div class="page-header">
+    <div class="header-content">
+      <h2>Mi Perfil</h2>
+      <p>Administra tu información personal y preferencias</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-primary" (click)="saveProfile()">
+        <i class="fas fa-save"></i> Guardar Cambios
+      </button>
+    </div>
+  </div>
+
+  <div class="row">
+    <!-- Columna izquierda - Información del perfil -->
+    <div class="col-lg-8">
+      <div class="card">
+        <div class="card-body">
+          <h4 class="card-title">Información Personal</h4>
+          
+          <form>
+            <div class="row mt-4">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="fullName">Nombre Completo</label>
+                  <input type="text" id="fullName" class="form-control" [(ngModel)]="profile.fullName" name="fullName">
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="email">Email</label>
+                  <input type="email" id="email" class="form-control" [(ngModel)]="profile.email" name="email" readonly>
+                  <small class="form-text text-muted">El email no puede ser modificado</small>
+                </div>
+              </div>
+            </div>
+
+            <div class="row mt-3">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="phone">Teléfono</label>
+                  <input type="tel" id="phone" class="form-control" [(ngModel)]="profile.phone" name="phone">
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="position">Cargo</label>
+                  <input type="text" id="position" class="form-control" [(ngModel)]="profile.position" name="position">
+                </div>
+              </div>
+            </div>
+
+            <div class="row mt-3">
+              <div class="col-md-12">
+                <div class="form-group">
+                  <label for="bio">Biografía</label>
+                  <textarea id="bio" class="form-control" rows="3" [(ngModel)]="profile.bio" name="bio"></textarea>
+                </div>
+              </div>
+            </div>
+
+            <h4 class="mt-4">Cambiar Contraseña</h4>
+            
+            <div class="row mt-3">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="currentPassword">Contraseña Actual</label>
+                  <input type="password" id="currentPassword" class="form-control" [(ngModel)]="passwordChange.current" name="currentPassword">
+                </div>
+              </div>
+            </div>
+
+            <div class="row mt-3">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="newPassword">Nueva Contraseña</label>
+                  <input type="password" id="newPassword" class="form-control" [(ngModel)]="passwordChange.new" name="newPassword">
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="confirmPassword">Confirmar Contraseña</label>
+                  <input type="password" id="confirmPassword" class="form-control" [(ngModel)]="passwordChange.confirm" name="confirmPassword">
+                </div>
+              </div>
+            </div>
+
+            <div class="password-strength mt-2" *ngIf="passwordChange.new">
+              <div class="strength-meter">
+                <div class="strength-bar" [style.width.%]="passwordStrength.percentage" [ngClass]="passwordStrength.class"></div>
+              </div>
+              <div class="strength-text" [ngClass]="passwordStrength.class">
+                {{ passwordStrength.text }}
+              </div>
+            </div>
+
+            <div class="mt-3">
+              <button type="button" class="btn btn-secondary" (click)="changePassword()" [disabled]="!canChangePassword()">
+                Cambiar Contraseña
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div class="card mt-4">
+        <div class="card-body">
+          <h4 class="card-title">Preferencias</h4>
+          
+          <form>
+            <div class="row mt-3">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="language">Idioma</label>
+                  <select id="language" class="form-control" [(ngModel)]="profile.preferences.language" name="language">
+                    <option value="es">Español</option>
+                    <option value="en">Inglés</option>
+                    <option value="pt">Portugués</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="timezone">Zona Horaria</label>
+                  <select id="timezone" class="form-control" [(ngModel)]="profile.preferences.timezone" name="timezone">
+                    <option *ngFor="let zone of timezones" [value]="zone.value">{{ zone.label }}</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="row mt-3">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="dateFormat">Formato de Fecha</label>
+                  <select id="dateFormat" class="form-control" [(ngModel)]="profile.preferences.dateFormat" name="dateFormat">
+                    <option value="DD/MM/YYYY">DD/MM/YYYY</option>
+                    <option value="MM/DD/YYYY">MM/DD/YYYY</option>
+                    <option value="YYYY-MM-DD">YYYY-MM-DD</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="theme">Tema</label>
+                  <select id="theme" class="form-control" [(ngModel)]="profile.preferences.theme" name="theme">
+                    <option value="light">Claro</option>
+                    <option value="dark">Oscuro</option>
+                    <option value="system">Sistema</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <h5 class="mt-4">Notificaciones</h5>
+
+            <div class="row mt-2">
+              <div class="col-md-6">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="emailNotif" [(ngModel)]="profile.preferences.notifications.email" name="emailNotif">
+                  <label class="form-check-label" for="emailNotif">
+                    Recibir notificaciones por email
+                  </label>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="browserNotif" [(ngModel)]="profile.preferences.notifications.browser" name="browserNotif">
+                  <label class="form-check-label" for="browserNotif">
+                    Recibir notificaciones en el navegador
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div class="row mt-2">
+              <div class="col-md-6">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="systemNotif" [(ngModel)]="profile.preferences.notifications.system" name="systemNotif">
+                  <label class="form-check-label" for="systemNotif">
+                    Recibir alertas del sistema
+                  </label>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="marketingNotif" [(ngModel)]="profile.preferences.notifications.marketing" name="marketingNotif">
+                  <label class="form-check-label" for="marketingNotif">
+                    Recibir información de marketing
+                  </label>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Columna derecha - Foto de perfil y actividad -->
+    <div class="col-lg-4">
+      <div class="card">
+        <div class="card-body text-center">
+          <div class="profile-picture-container">
+            <div class="profile-picture">
+              <img [src]="profile.avatarUrl || 'assets/images/default-avatar.png'" alt="Foto de perfil" class="img-fluid rounded-circle">
+              <div class="profile-picture-overlay" (click)="triggerFileInput()">
+                <i class="fas fa-camera"></i>
+                <span>Cambiar foto</span>
+              </div>
+            </div>
+          </div>
+          <input type="file" #fileInput style="display: none" (change)="onAvatarChange($event)" accept="image/*">
+          
+          <h4 class="mt-3">{{ profile.fullName }}</h4>
+          <p class="text-muted">{{ profile.position }}</p>
+          
+          <div class="user-info mt-4">
+            <div class="info-item">
+              <i class="fas fa-envelope"></i>
+              <span>{{ profile.email }}</span>
+            </div>
+            <div class="info-item">
+              <i class="fas fa-phone"></i>
+              <span>{{ profile.phone || 'No especificado' }}</span>
+            </div>
+            <div class="info-item">
+              <i class="fas fa-user-shield"></i>
+              <span>{{ profile.role }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card mt-4">
+        <div class="card-body">
+          <h4 class="card-title">Actividad Reciente</h4>
+          
+          <div class="activity-timeline">
+            <div class="activity-item" *ngFor="let activity of recentActivity">
+              <div class="activity-icon" [ngClass]="'activity-' + activity.type">
+                <i [class]="activity.icon"></i>
+              </div>
+              <div class="activity-content">
+                <div class="activity-time">{{ activity.time }}</div>
+                <div class="activity-text">{{ activity.text }}</div>
+              </div>
+            </div>
+            
+            <div class="no-activity" *ngIf="recentActivity.length === 0">
+              No hay actividad reciente para mostrar.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card mt-4">
+        <div class="card-body">
+          <h4 class="card-title">Sesiones Activas</h4>
+          
+          <div class="sessions-list">
+            <div class="session-item" *ngFor="let session of activeSessions">
+              <div class="session-icon">
+                <i [class]="getDeviceIcon(session.device)"></i>
+              </div>
+              <div class="session-content">
+                <div class="session-device">{{ session.device }}</div>
+                <div class="session-details">
+                  <span>{{ session.location }}</span>
+                  <span>{{ session.lastActive }}</span>
+                </div>
+              </div>
+              <div class="session-actions">
+                <button class="btn btn-sm btn-danger" *ngIf="!session.current" (click)="terminateSession(session.id)">
+                  <i class="fas fa-times"></i>
+                </button>
+                <span class="current-badge" *ngIf="session.current">Actual</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="mt-3 text-center">
+            <button class="btn btn-outline-danger btn-sm" (click)="terminateAllSessions()">
+              Cerrar todas las sesiones
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de confirmación de cambios -->
+<div class="modal" [class.show]="showConfirmModal" *ngIf="showConfirmModal">
+  <div class="modal-backdrop" (click)="closeConfirmModal()"></div>
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Confirmar Cambios</h5>
+        <button type="button" class="close" (click)="closeConfirmModal()">
+          <span>&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>
+          ¿Está seguro que desea guardar los cambios realizados en su perfil?
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeConfirmModal()">Cancelar</button>
+        <button type="button" class="btn btn-primary" (click)="confirmSaveProfile()">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>

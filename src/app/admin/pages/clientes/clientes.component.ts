@@ -1,31 +1,23 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ClientesService } from '../../../services/client.service';
+import { FormsModule } from '@angular/forms';
 
-interface Plan {
-  id: number;
-  nombre: string;
-  precio: number;
-}
-
+// Interfaces
 interface Client {
   id: number;
   nombre: string;
   tipoDocumento: string;
   numeroDocumento: string;
   email: string;
-  direccion: string;
   telefono: string;
+  direccion: string;
   estado: string;
-  plan?: Plan;
-  registrationDate?: string;
+  plan: any; // Puede ser string u objeto con propiedad nombre
   lastPayment?: string;
+  registrationDate?: string;
 }
 
 interface HistoryItem {
-  id: number;
-  clientId: number;
   date: string;
   type: string;
   typeLabel: string;
@@ -35,208 +27,323 @@ interface HistoryItem {
 
 @Component({
   selector: 'app-clientes',
-  standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
   templateUrl: './clientes.component.html',
   styleUrls: ['./clientes.component.scss'],
+  standalone: true, // Si estás usando Angular 14+ con componentes standalone
+  imports: [CommonModule, FormsModule], // Necesario para ngIf, ngFor, ngModel, etc.
 })
 export class ClientesComponent implements OnInit {
+  // Datos de clientes
   clients: Client[] = [];
-  historyData: HistoryItem[] = [];
+  filteredClients: Client[] = [];
 
   // Filtros
-  searchTerm = '';
-  documentSearch = '';
-  statusFilter = 'Todos';
-  planFilter = 'Todos';
+  searchTerm: string = '';
+  documentSearch: string = '';
+  statusFilter: string = 'Todos';
+  planFilter: string = 'Todos';
 
-  // Modales
-  showHistoryModal = false;
-  selectedClient: Client | null = null;
-  clientHistory: HistoryItem[] = [];
-  showClientModal = false;
-  isEditMode = false;
-  newClient: Client = this.getEmptyClient();
-  showDeleteModal = false;
-  clientToDelete: Client | null = null;
-  showDetailsModal = false;
-  clientDetails: Client | null = null;
-
-  // Opciones
-  statusOptions = ['Todos', 'Activo', 'Pendiente', 'Inactivo'];
-  planOptions = [
+  // Opciones para selects
+  statusOptions: string[] = [
     'Todos',
-    'Plan 150 Mbps',
-    'Plan 250 Mbps',
-    'Plan 395 Mbps',
-    'Plan 490 Mbps',
-    'Plan 650 Mbps',
+    'Activo',
+    'Inactivo',
+    'Pendiente',
+    'Suspendido',
   ];
-  documentTypes = ['Cédula', 'Cédula Extranjería', 'Pasaporte', 'NIT'];
+  planOptions: string[] = [
+    'Todos',
+    'Básico',
+    'Estándar',
+    'Premium',
+    'Empresarial',
+  ];
+  documentTypes: string[] = ['CC', 'NIT', 'CE', 'Pasaporte'];
 
-  constructor(private clientesService: ClientesService) {}
+  // Control de modales
+  showDetailsModal: boolean = false;
+  showHistoryModal: boolean = false;
+  showClientModal: boolean = false;
+  showDeleteModal: boolean = false;
+
+  // Cliente seleccionado para diferentes operaciones
+  clientDetails: Client | null = null;
+  selectedClient: Client | null = null;
+  clientToDelete: Client | null = null;
+
+  // Nuevo cliente o cliente en edición
+  newClient: Client = this.getEmptyClient();
+  isEditMode: boolean = false;
+
+  // Historial del cliente
+  clientHistory: HistoryItem[] = [];
+
+  constructor() {}
 
   ngOnInit(): void {
-    this.loadClientes();
+    // Cargar datos de ejemplo
+    this.loadMockData();
+    this.applyFilters();
   }
 
-  loadClientes(): void {
-    this.clientesService.getClientes().subscribe({
-      next: (data: Client[]) => {
-        this.clients = data.map((client: Client) => ({
-          ...client,
-          name: client.nombre,             // Para compatibilidad con la plantilla
-          documentType: client.tipoDocumento,
-          documentNumber: client.numeroDocumento,
-          location: client.direccion,
-          phone: client.telefono,
-          status: client.estado,
-        }));
+  // Inicializa un cliente vacío
+  getEmptyClient(): Client {
+    return {
+      id: 0,
+      nombre: '',
+      tipoDocumento: 'CC',
+      numeroDocumento: '',
+      email: '',
+      telefono: '',
+      direccion: '',
+      estado: 'Activo',
+      plan: 'Básico',
+    };
+  }
+
+  // Carga datos de ejemplo
+  loadMockData(): void {
+    this.clients = [
+      {
+        id: 1,
+        nombre: 'Juan Pérez',
+        tipoDocumento: 'CC',
+        numeroDocumento: '1234567890',
+        email: 'juan@example.com',
+        telefono: '3001234567',
+        direccion: 'Calle 123 #45-67, Bogotá',
+        estado: 'Activo',
+        plan: { nombre: 'Premium' },
+        lastPayment: '2023-04-15',
+        registrationDate: '2022-01-10',
       },
-      error: (error: any) => {
-        console.error('Error cargando clientes:', error);
-      }
-    });
+      {
+        id: 2,
+        nombre: 'María López',
+        tipoDocumento: 'CE',
+        numeroDocumento: '9876543210',
+        email: 'maria@example.com',
+        telefono: '3109876543',
+        direccion: 'Av. Principal #28-14, Medellín',
+        estado: 'Inactivo',
+        plan: 'Básico',
+        lastPayment: '2023-02-20',
+        registrationDate: '2022-03-05',
+      },
+      {
+        id: 3,
+        nombre: 'Empresa XYZ',
+        tipoDocumento: 'NIT',
+        numeroDocumento: '900123456-7',
+        email: 'contacto@xyz.com',
+        telefono: '6013214567',
+        direccion: 'Carrera 7 #76-35, Bogotá',
+        estado: 'Activo',
+        plan: 'Empresarial',
+        lastPayment: '2023-04-28',
+        registrationDate: '2021-11-15',
+      },
+      {
+        id: 4,
+        nombre: 'Carlos Rodríguez',
+        tipoDocumento: 'CC',
+        numeroDocumento: '5678901234',
+        email: 'carlos@example.com',
+        telefono: '3507654321',
+        direccion: 'Calle 45 #23-12, Cali',
+        estado: 'Suspendido',
+        plan: 'Estándar',
+        lastPayment: '2023-01-05',
+        registrationDate: '2022-06-20',
+      },
+      {
+        id: 5,
+        nombre: 'Ana Martínez',
+        tipoDocumento: 'CC',
+        numeroDocumento: '1098765432',
+        email: 'ana@example.com',
+        telefono: '3201234567',
+        direccion: 'Av. Libertador #45-67, Barranquilla',
+        estado: 'Pendiente',
+        plan: 'Premium',
+        lastPayment: '2023-03-10',
+        registrationDate: '2022-09-15',
+      },
+    ];
   }
 
-  // getStatusClass(status: string): string {
-  //   switch (status) {
-  //     case 'Activo':
-  //       return 'badge-success';
-  //     case 'Pendiente':
-  //       return 'badge-warning';
-  //     case 'Inactivo':
-  //       return 'badge-danger';
-  //     default:
-  //       return 'badge-secondary';
-  //   }
-  // }
-
-  get filteredClients() {
-    return this.clients.filter(client => {
+  // Aplica filtros a la lista de clientes
+  applyFilters(): void {
+    this.filteredClients = this.clients.filter((client) => {
+      // Filtro por término de búsqueda
       const searchMatch =
+        !this.searchTerm ||
         client.nombre.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-        client.numeroDocumento.includes(this.searchTerm) ||
-        client.email.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-        client.telefono.includes(this.searchTerm) ||
-        client.direccion.toLowerCase().includes(this.searchTerm.toLowerCase());
+        client.email.toLowerCase().includes(this.searchTerm.toLowerCase());
 
-      const statusMatch = this.statusFilter === 'Todos' || client.estado === this.statusFilter;
-      const planMatch = this.planFilter === 'Todos' || client.plan?.nombre === this.planFilter;
+      // Filtro por estado
+      const statusMatch =
+        this.statusFilter === 'Todos' || client.estado === this.statusFilter;
+
+      // Filtro por plan
+      let planMatch = this.planFilter === 'Todos';
+      if (!planMatch) {
+        if (typeof client.plan === 'object' && client.plan !== null) {
+          planMatch = client.plan.nombre === this.planFilter;
+        } else {
+          planMatch = client.plan === this.planFilter;
+        }
+      }
 
       return searchMatch && statusMatch && planMatch;
     });
   }
 
-  searchByDocument() {
+  // Busca por número de documento
+  searchByDocument(): void {
     if (this.documentSearch.trim()) {
-      this.searchTerm = this.documentSearch.trim();
-      this.statusFilter = 'Todos';
-      this.planFilter = 'Todos';
-
-      const matchingClients = this.filteredClients;
-      if (matchingClients.length === 1) {
-        this.openHistoryModal(matchingClients[0]);
-      }
+      this.filteredClients = this.clients.filter((client) =>
+        client.numeroDocumento.includes(this.documentSearch.trim())
+      );
+    } else {
+      this.applyFilters();
     }
   }
 
-  // Métodos para modales
+  // Retorna la clase CSS según el estado del cliente
+  getStatusClass(status: string): string {
+    switch (status) {
+      case 'Activo':
+        return 'badge-success';
+      case 'Inactivo':
+        return 'badge-secondary';
+      case 'Pendiente':
+        return 'badge-warning';
+      case 'Suspendido':
+        return 'badge-danger';
+      default:
+        return 'badge-info';
+    }
+  }
 
-  openDetailsModal(client: Client) {
-    this.clientDetails = client;
+  // Modal de detalles
+  openDetailsModal(client: Client): void {
+    this.clientDetails = { ...client };
     this.showDetailsModal = true;
   }
 
-  closeDetailsModal() {
+  closeDetailsModal(): void {
     this.showDetailsModal = false;
     this.clientDetails = null;
   }
 
-  openHistoryModal(client: Client) {
-    this.selectedClient = client;
-    this.clientHistory = this.historyData.filter(item => item.clientId === client.id);
+  // Modal de historial
+  openHistoryModal(client: Client): void {
+    this.selectedClient = { ...client };
+    this.loadClientHistory(client.id);
     this.showHistoryModal = true;
   }
 
-getStatusClass(estado: string): string {
-  switch (estado.toLowerCase()) {
-    case 'activo':
-      return 'estado-activo';
-    case 'pendiente':
-      return 'estado-pendiente';
-    case 'inactivo':
-      return 'estado-inactivo';
-    default:
-      return 'estado-desconocido'; // Por si llega un valor no esperado
-  }
-}
-
-
-  closeHistoryModal() {
+  closeHistoryModal(): void {
     this.showHistoryModal = false;
     this.selectedClient = null;
+    this.clientHistory = [];
   }
 
-  openNewClientModal() {
+  // Carga el historial del cliente (datos de ejemplo)
+  loadClientHistory(clientId: number): void {
+    // Aquí normalmente harías una llamada a un servicio
+    this.clientHistory = [
+      {
+        date: '2023-04-15',
+        type: 'payment',
+        typeLabel: 'Pago',
+        description: 'Pago mensual realizado',
+        details: 'Factura #12345 - $50.000',
+      },
+      {
+        date: '2023-03-10',
+        type: 'support',
+        typeLabel: 'Soporte',
+        description: 'Reporte de falla en el servicio',
+        details: 'Ticket #789 - Resuelto',
+      },
+      {
+        date: '2023-02-15',
+        type: 'payment',
+        typeLabel: 'Pago',
+        description: 'Pago mensual realizado',
+        details: 'Factura #12344 - $50.000',
+      },
+      {
+        date: '2023-01-05',
+        type: 'change',
+        typeLabel: 'Cambio',
+        description: 'Cambio de plan',
+        details: 'De Básico a Premium',
+      },
+    ];
+
+    // Filtramos por el ID del cliente (en un caso real)
+    // this.clientHistory = this.clientHistory.filter(item => item.clientId === clientId);
+  }
+
+  // Modal de nuevo/editar cliente
+  openNewClientModal(): void {
     this.isEditMode = false;
     this.newClient = this.getEmptyClient();
     this.showClientModal = true;
   }
 
-  openEditClientModal(client: Client) {
+  openEditClientModal(client: Client): void {
     this.isEditMode = true;
     this.newClient = { ...client };
     this.showClientModal = true;
   }
 
-  closeClientModal() {
+  closeClientModal(): void {
     this.showClientModal = false;
   }
 
-  saveClient() {
+  // Guarda un cliente nuevo o actualiza uno existente
+  saveClient(): void {
     if (this.isEditMode) {
-      const index = this.clients.findIndex(c => c.id === this.newClient.id);
-      if (index !== -1) this.clients[index] = { ...this.newClient };
+      // Actualizar cliente existente
+      const index = this.clients.findIndex((c) => c.id === this.newClient.id);
+      if (index !== -1) {
+        this.clients[index] = { ...this.newClient };
+      }
     } else {
-      const newId = Math.max(...this.clients.map(c => c.id), 0) + 1;
+      // Crear nuevo cliente
+      const newId = Math.max(0, ...this.clients.map((c) => c.id)) + 1;
       this.newClient.id = newId;
       this.newClient.registrationDate = new Date().toISOString().split('T')[0];
       this.clients.push({ ...this.newClient });
     }
+
+    this.applyFilters();
     this.closeClientModal();
   }
 
-  openDeleteModal(client: Client) {
-    this.clientToDelete = client;
+  // Modal de eliminación
+  openDeleteModal(client: Client): void {
+    this.clientToDelete = { ...client };
     this.showDeleteModal = true;
   }
 
-  closeDeleteModal() {
+  closeDeleteModal(): void {
     this.showDeleteModal = false;
     this.clientToDelete = null;
   }
 
-  deleteClient() {
+  // Elimina un cliente
+  deleteClient(): void {
     if (this.clientToDelete) {
-      this.clients = this.clients.filter(c => c.id !== this.clientToDelete!.id);
+      this.clients = this.clients.filter(
+        (c) => c.id !== this.clientToDelete!.id
+      );
+      this.applyFilters();
       this.closeDeleteModal();
     }
-  }
-
-  private getEmptyClient(): Client {
-    return {
-      id: 0,
-      nombre: '',
-      tipoDocumento: 'Cédula',
-      numeroDocumento: '',
-      email: '',
-      direccion: '',
-      telefono: '',
-      estado: 'Activo',
-      plan: { id: 1, nombre: 'Plan 150 Mbps', precio: 54000},
-      registrationDate: '',
-      lastPayment: '',
-    };
   }
 }

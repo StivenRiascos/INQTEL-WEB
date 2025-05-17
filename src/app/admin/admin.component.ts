@@ -68,7 +68,7 @@ export class AdminComponent implements OnInit {
 
     this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
-      .subscribe((event: NavigationEnd) => {
+      .subscribe((event: any) => {
         this.checkIfLoginPage(event.url);
       });
   }
