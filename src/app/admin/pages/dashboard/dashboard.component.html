@@ -110,14 +110,14 @@
                   </thead>
                   <tbody>
                     <tr *ngFor="let client of recentClients">
-                      <td>{{ client.name }}</td>
-                      <td>{{ client.plan }}</td>
+                      <td>{{ client.nombre }}</td>
+                      <td>{{ client.plan.nombre }}</td>
                       <td>
                         <span
                           class="badge"
                           [ngClass]="getStatusClass(client.status)"
                         >
-                          {{ client.status }}
+                          {{ client.estado }}
                         </span>
                       </td>
                       <td>{{ client.lastPayment }}</td>

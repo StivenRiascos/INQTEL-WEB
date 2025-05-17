@@ -115,7 +115,7 @@
               <td>{{ client.direccion }}</td>
               <td>{{ client.telefono }}</td>
               <td>
-                <span class="badge" [ngClass]="getStatusClass(client.estado)">
+                <span [ngClass]="getStatusClass(client.estado)">
                   {{ client.estado }}
                 </span>
               </td>

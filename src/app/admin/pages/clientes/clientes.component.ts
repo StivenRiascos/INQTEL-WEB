@@ -99,18 +99,18 @@ export class ClientesComponent implements OnInit {
     });
   }
 
-  getStatusClass(status: string): string {
-    switch (status) {
-      case 'Activo':
-        return 'badge-success';
-      case 'Pendiente':
-        return 'badge-warning';
-      case 'Inactivo':
-        return 'badge-danger';
-      default:
-        return 'badge-secondary';
-    }
-  }
+  // getStatusClass(status: string): string {
+  //   switch (status) {
+  //     case 'Activo':
+  //       return 'badge-success';
+  //     case 'Pendiente':
+  //       return 'badge-warning';
+  //     case 'Inactivo':
+  //       return 'badge-danger';
+  //     default:
+  //       return 'badge-secondary';
+  //   }
+  // }
 
   get filteredClients() {
     return this.clients.filter(client => {
@@ -158,6 +158,20 @@ export class ClientesComponent implements OnInit {
     this.clientHistory = this.historyData.filter(item => item.clientId === client.id);
     this.showHistoryModal = true;
   }
+
+getStatusClass(estado: string): string {
+  switch (estado.toLowerCase()) {
+    case 'activo':
+      return 'estado-activo';
+    case 'pendiente':
+      return 'estado-pendiente';
+    case 'inactivo':
+      return 'estado-inactivo';
+    default:
+      return 'estado-desconocido'; // Por si llega un valor no esperado
+  }
+}
+
 
   closeHistoryModal() {
     this.showHistoryModal = false;
