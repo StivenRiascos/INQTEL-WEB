@@ -1,21 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ClientesService } from '../../../services/client.service';
+import { Client } from '../../../entities/client.entity';
 
-// Interfaces
-interface Client {
-  id: number;
-  nombre: string;
-  tipoDocumento: string;
-  numeroDocumento: string;
-  email: string;
-  telefono: string;
-  direccion: string;
-  estado: string;
-  plan: any; // Puede ser string u objeto con propiedad nombre
-  lastPayment?: string;
-  registrationDate?: string;
-}
+
+
 
 interface HistoryItem {
   date: string;
@@ -78,13 +68,25 @@ export class ClientesComponent implements OnInit {
   // Historial del cliente
   clientHistory: HistoryItem[] = [];
 
-  constructor() {}
+  constructor(private clientesService: ClientesService) {}
+
 
   ngOnInit(): void {
-    // Cargar datos de ejemplo
-    this.loadMockData();
-    this.applyFilters();
+  this.fetchClientsFromBackend();
   }
+
+  fetchClientsFromBackend(): void {
+  this.clientesService.getClientes().subscribe({
+    next: (data) => {
+      this.clients = data;
+      this.applyFilters();
+    },
+    error: (err) => {
+      console.error('Error al cargar clientes:', err);
+    }
+  });
+}
+
 
   // Inicializa un cliente vacío
   getEmptyClient(): Client {
@@ -97,80 +99,14 @@ export class ClientesComponent implements OnInit {
       telefono: '',
       direccion: '',
       estado: 'Activo',
-      plan: 'Básico',
+      plan: {
+      id: 0,
+      nombre: 'Básico',
+      precio: 0,
+    },
     };
   }
 
-  // Carga datos de ejemplo
-  loadMockData(): void {
-    this.clients = [
-      {
-        id: 1,
-        nombre: 'Juan Pérez',
-        tipoDocumento: 'CC',
-        numeroDocumento: '1234567890',
-        email: 'juan@example.com',
-        telefono: '3001234567',
-        direccion: 'Calle 123 #45-67, Bogotá',
-        estado: 'Activo',
-        plan: { nombre: 'Premium' },
-        lastPayment: '2023-04-15',
-        registrationDate: '2022-01-10',
-      },
-      {
-        id: 2,
-        nombre: 'María López',
-        tipoDocumento: 'CE',
-        numeroDocumento: '9876543210',
-        email: 'maria@example.com',
-        telefono: '3109876543',
-        direccion: 'Av. Principal #28-14, Medellín',
-        estado: 'Inactivo',
-        plan: 'Básico',
-        lastPayment: '2023-02-20',
-        registrationDate: '2022-03-05',
-      },
-      {
-        id: 3,
-        nombre: 'Empresa XYZ',
-        tipoDocumento: 'NIT',
-        numeroDocumento: '900123456-7',
-        email: 'contacto@xyz.com',
-        telefono: '6013214567',
-        direccion: 'Carrera 7 #76-35, Bogotá',
-        estado: 'Activo',
-        plan: 'Empresarial',
-        lastPayment: '2023-04-28',
-        registrationDate: '2021-11-15',
-      },
-      {
-        id: 4,
-        nombre: 'Carlos Rodríguez',
-        tipoDocumento: 'CC',
-        numeroDocumento: '5678901234',
-        email: 'carlos@example.com',
-        telefono: '3507654321',
-        direccion: 'Calle 45 #23-12, Cali',
-        estado: 'Suspendido',
-        plan: 'Estándar',
-        lastPayment: '2023-01-05',
-        registrationDate: '2022-06-20',
-      },
-      {
-        id: 5,
-        nombre: 'Ana Martínez',
-        tipoDocumento: 'CC',
-        numeroDocumento: '1098765432',
-        email: 'ana@example.com',
-        telefono: '3201234567',
-        direccion: 'Av. Libertador #45-67, Barranquilla',
-        estado: 'Pendiente',
-        plan: 'Premium',
-        lastPayment: '2023-03-10',
-        registrationDate: '2022-09-15',
-      },
-    ];
-  }
 
   // Aplica filtros a la lista de clientes
   applyFilters(): void {
