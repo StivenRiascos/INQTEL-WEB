@@ -278,11 +278,20 @@ getPlanNameById(id: number | undefined): string {
   // Elimina un cliente
   deleteClient(): void {
     if (this.clientToDelete) {
-      this.clients = this.clients.filter(
-        (c) => c.id !== this.clientToDelete!.id
-      );
-      this.applyFilters();
-      this.closeDeleteModal();
+    this.clientesService.deleteCliente(this.clientToDelete.id).subscribe({
+      next: () => {
+        // Eliminación exitosa: actualiza la lista local
+        this.clients = this.clients.filter(
+          (c) => c.id !== this.clientToDelete!.id
+        );
+        this.applyFilters();
+        this.closeDeleteModal();
+      },
+      error: (err) => {
+        console.error('Error al eliminar cliente', err);
+        // Aquí puedes mostrar un mensaje de error al usuario
+        }
+      });
     }
   }
 }
