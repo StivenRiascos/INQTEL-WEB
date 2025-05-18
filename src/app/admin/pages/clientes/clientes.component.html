@@ -27,6 +27,7 @@
                   class="form-control"
                   placeholder="Buscar por nombre, email..."
                   [(ngModel)]="searchTerm"
+                  (keyup.enter)="applyFilters()"
                 />
               </div>
             </div>
@@ -44,6 +45,7 @@
                   class="form-control"
                   placeholder="Ingrese número de documento"
                   [(ngModel)]="documentSearch"
+                  (keyup.enter)="searchByDocument()"
                 />
                 <button
                   class="btn-search"
@@ -63,6 +65,7 @@
                 id="statusFilter"
                 class="form-control"
                 [(ngModel)]="statusFilter"
+                (change)="applyFilters()"
               >
                 <option *ngFor="let option of statusOptions" [value]="option">
                   {{ option }}
@@ -74,14 +77,16 @@
             <div class="form-group">
               <label for="planFilter">Plan</label>
               <select
-                id="planFilter"
-                class="form-control"
-                [(ngModel)]="planFilter"
-              >
-                <option *ngFor="let option of planOptions" [value]="option">
-                  {{ option }}
-                </option>
-              </select>
+  id="planFilter"
+  class="form-control"
+  [(ngModel)]="planFilter"
+  (change)="applyFilters()"
+>
+  <option value="Todos">Todos</option>
+  <option *ngFor="let option of planOptions" [value]="option.nombre">
+    {{ option.nombre }}
+  </option>
+</select>
             </div>
           </div>
         </div>
@@ -123,10 +128,8 @@
                 {{ getPlanNameById(client.plan?.id) }}
               </td>
 
-
-
-
               <td>{{ client.lastPayment }}</td>
+              
               <td>
                 <div class="actions">
                   <button
@@ -520,7 +523,7 @@
       </div>
       <div class="modal-body">
         <p>
-          ¿Está seguro que desea eliminar al cliente
+          ¿Está seguro que desea eliminar a este cliente se eliminaran los pagos y facturas asociados a este cliente
           <strong>{{ clientToDelete?.nombre }}</strong
           >?
         </p>

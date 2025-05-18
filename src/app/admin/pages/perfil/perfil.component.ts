@@ -49,58 +49,6 @@ export class PerfilComponent implements OnInit {
     text: '',
   };
 
-  // Actividad reciente
-  recentActivity = [
-    {
-      type: 'login',
-      icon: 'fas fa-sign-in-alt',
-      time: 'Hoy, 10:30 AM',
-      text: 'Inicio de sesión desde Chrome en Windows',
-    },
-    {
-      type: 'update',
-      icon: 'fas fa-user-edit',
-      time: 'Ayer, 3:45 PM',
-      text: 'Actualización de información de perfil',
-    },
-    {
-      type: 'security',
-      icon: 'fas fa-shield-alt',
-      time: '15/05/2023, 11:20 AM',
-      text: 'Cambio de contraseña',
-    },
-    {
-      type: 'system',
-      icon: 'fas fa-cog',
-      time: '10/05/2023, 9:15 AM',
-      text: 'Cambio de preferencias del sistema',
-    },
-  ];
-
-  // Sesiones activas
-  activeSessions = [
-    {
-      id: 1,
-      device: 'Chrome en Windows',
-      location: 'Bogotá, Colombia',
-      lastActive: 'Ahora',
-      current: true,
-    },
-    {
-      id: 2,
-      device: 'Firefox en Windows',
-      location: 'Bogotá, Colombia',
-      lastActive: 'Hace 2 horas',
-      current: false,
-    },
-    {
-      id: 3,
-      device: 'Safari en iPhone',
-      location: 'Medellín, Colombia',
-      lastActive: 'Ayer, 8:30 PM',
-      current: false,
-    },
-  ];
 
   // Datos para selects
   timezones = [
@@ -216,30 +164,8 @@ export class PerfilComponent implements OnInit {
     // Actualizar fortaleza
     this.updatePasswordStrength();
 
-    // Agregar actividad
-    this.addActivity('security', 'fas fa-shield-alt', 'Cambio de contraseña');
   }
 
-  // Métodos para manejo de sesiones
-  terminateSession(sessionId: number): void {
-    // Aquí iría la lógica para terminar la sesión
-    console.log(`Terminando sesión ${sessionId}...`);
-
-    // Actualizar lista de sesiones
-    this.activeSessions = this.activeSessions.filter(
-      (session) => session.id !== sessionId
-    );
-  }
-
-  terminateAllSessions(): void {
-    // Aquí iría la lógica para terminar todas las sesiones excepto la actual
-    console.log('Terminando todas las sesiones...');
-
-    // Actualizar lista de sesiones (mantener solo la actual)
-    this.activeSessions = this.activeSessions.filter(
-      (session) => session.current
-    );
-  }
 
   // Métodos para guardar perfil
   saveProfile(): void {
@@ -260,46 +186,5 @@ export class PerfilComponent implements OnInit {
     // Simular éxito
     alert('Perfil actualizado correctamente');
 
-    // Agregar actividad
-    this.addActivity(
-      'update',
-      'fas fa-user-edit',
-      'Actualización de información de perfil'
-    );
-  }
-
-  // Método para agregar actividad
-  addActivity(type: string, icon: string, text: string): void {
-    const now = new Date();
-    const hours = now.getHours();
-    const minutes = now.getMinutes();
-    const ampm = hours >= 12 ? 'PM' : 'AM';
-    const formattedHours = hours % 12 || 12;
-    const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
-
-    const time = `Hoy, ${formattedHours}:${formattedMinutes} ${ampm}`;
-
-    this.recentActivity.unshift({
-      type,
-      icon,
-      time,
-      text,
-    });
-
-    // Limitar a 5 actividades
-    if (this.recentActivity.length > 5) {
-      this.recentActivity.pop();
-    }
-  }
-
-  // Método para obtener icono de dispositivo
-  getDeviceIcon(device: string): string {
-    if (device.includes('iPhone') || device.includes('iPad')) {
-      return 'fas fa-mobile-alt';
-    } else if (device.includes('Android')) {
-      return 'fas fa-mobile';
-    } else {
-      return 'fas fa-desktop';
-    }
   }
 }

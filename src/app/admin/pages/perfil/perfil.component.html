@@ -231,64 +231,6 @@
         </div>
       </div>
 
-      <div class="card mt-4">
-        <div class="card-body">
-          <h4 class="card-title">Actividad Reciente</h4>
-          
-          <div class="activity-timeline">
-            <div class="activity-item" *ngFor="let activity of recentActivity">
-              <div class="activity-icon" [ngClass]="'activity-' + activity.type">
-                <i [class]="activity.icon"></i>
-              </div>
-              <div class="activity-content">
-                <div class="activity-time">{{ activity.time }}</div>
-                <div class="activity-text">{{ activity.text }}</div>
-              </div>
-            </div>
-            
-            <div class="no-activity" *ngIf="recentActivity.length === 0">
-              No hay actividad reciente para mostrar.
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="card mt-4">
-        <div class="card-body">
-          <h4 class="card-title">Sesiones Activas</h4>
-          
-          <div class="sessions-list">
-            <div class="session-item" *ngFor="let session of activeSessions">
-              <div class="session-icon">
-                <i [class]="getDeviceIcon(session.device)"></i>
-              </div>
-              <div class="session-content">
-                <div class="session-device">{{ session.device }}</div>
-                <div class="session-details">
-                  <span>{{ session.location }}</span>
-                  <span>{{ session.lastActive }}</span>
-                </div>
-              </div>
-              <div class="session-actions">
-                <button class="btn btn-sm btn-danger" *ngIf="!session.current" (click)="terminateSession(session.id)">
-                  <i class="fas fa-times"></i>
-                </button>
-                <span class="current-badge" *ngIf="session.current">Actual</span>
-              </div>
-            </div>
-          </div>
-          
-          <div class="mt-3 text-center">
-            <button class="btn btn-outline-danger btn-sm" (click)="terminateAllSessions()">
-              Cerrar todas las sesiones
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
 <!-- Modal de confirmación de cambios -->
 <div class="modal" [class.show]="showConfirmModal" *ngIf="showConfirmModal">
   <div class="modal-backdrop" (click)="closeConfirmModal()"></div>

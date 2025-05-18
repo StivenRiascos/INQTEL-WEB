@@ -36,9 +36,8 @@ export class ClientesComponent implements OnInit {
   // Opciones para selects
   statusOptions: string[] = [
     'Todos',
-    'Activo',
+    'activo',
     'Inactivo',
-    'Pendiente',
     'Suspendido',
   ];
   planOptions = [
@@ -99,7 +98,7 @@ export class ClientesComponent implements OnInit {
     email: '',
     telefono: '',
     direccion: '',
-    estado: 'Activo',
+    estado: 'activo',
     planId: 1,  // aquí asignas el id del plan por defecto (por ejemplo 1)
   };
 }
@@ -127,15 +126,16 @@ getPlanNameById(id: number | undefined): string {
       let planMatch = this.planFilter === 'Todos';
 
       if (!planMatch) {
-      // Buscar el plan en planOptions que coincida con el nombre del filtro
-      const plan = this.planOptions.find(p => p.nombre === this.planFilter);
-
-      if (plan) {
-        planMatch = client.planId === plan.id;
-        } else {
-        planMatch = false; // No hay plan que coincida, no mostrar
-      }
-    }
+  const plan = this.planOptions.find(p => p.nombre === this.planFilter);
+  console.log('Filtro plan:', this.planFilter);
+  console.log('Plan encontrado:', plan);
+  if (plan) {
+    console.log('Cliente planId:', client.planId, 'Plan id:', plan.id);
+    planMatch = String(client.planId) === String(plan.id);
+  } else {
+    planMatch = false;
+  }
+}
 
 
       return searchMatch && statusMatch && planMatch;
@@ -238,30 +238,67 @@ getPlanNameById(id: number | undefined): string {
     this.showClientModal = true;
   }
 
+  formatEstado(estado: string): string {
+  if (!estado) return 'Activo';
+
+  const normalizado = estado.charAt(0).toUpperCase() + estado.slice(1).toLowerCase();
+  const valido = this.statusOptions.includes(normalizado);
+  return valido ? normalizado : 'Activo';
+}
+
+
   openEditClientModal(client: Client): void {
-    this.isEditMode = true;
-    this.newClient = { ...client };
-    this.showClientModal = true;
-  }
+  this.isEditMode = true;
+
+  this.newClient = {
+    ...client,
+    estado: this.formatEstado(client.estado),
+    planId: client.planId || client.plan?.id || 1,
+  };
+
+  this.showClientModal = true;
+}
+
 
   closeClientModal(): void {
     this.showClientModal = false;
   }
 
+  
+
   // Guarda un cliente nuevo o actualiza uno existente
   saveClient(): void {
-  // Crear nuevo cliente
-  this.clientesService.createCliente(this.newClient).subscribe({
-    next: (createdClient) => {
-      this.clients.push(createdClient);
-      this.applyFilters();
-      this.closeClientModal();
-    },
-    error: (err) => {
-      console.error('Error creando cliente:', err);
-    }
-  });
+  if (this.isEditMode) {
+    // Actualizar cliente existente
+    this.clientesService.updateCliente(this.newClient.id, this.newClient).subscribe({
+      next: (updatedClient) => {
+        // Actualizar la lista local de clientes con el cliente actualizado
+        const index = this.clients.findIndex(c => c.id === updatedClient.id);
+        if (index !== -1) {
+          this.clients[index] = updatedClient;
+          this.applyFilters();  // Si tienes filtros o paginación
+        }
+        this.closeClientModal();
+      },
+      error: (err) => {
+        console.error('Error actualizando cliente:', err);
+      }
+    });
+  } else {
+    // Crear nuevo cliente
+    this.clientesService.createCliente(this.newClient).subscribe({
+      next: (createdClient) => {
+        this.clients.push(createdClient);
+        this.applyFilters();
+        this.closeClientModal();
+      },
+      error: (err) => {
+        console.error('Error creando cliente:', err);
+      }
+    });
+  }
 }
+
 
 
   // Modal de eliminación
