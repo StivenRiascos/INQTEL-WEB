@@ -9,7 +9,8 @@ export interface Client {
   direccion: string;
   telefono: string;
   estado: string;
-  plan?: Plan;
+  planId: number;
   registrationDate?: string;
   lastPayment?: string;
+  plan?: Plan;
 }

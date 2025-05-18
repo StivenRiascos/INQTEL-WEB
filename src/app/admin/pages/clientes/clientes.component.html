@@ -120,8 +120,11 @@
                 </span>
               </td>
               <td>
-                {{ client.plan && typeof client.plan === 'object' ? client.plan.nombre : client.plan }}
+                {{ getPlanNameById(client.plan?.id) }}
               </td>
+
+
+
 
               <td>{{ client.lastPayment }}</td>
               <td>
@@ -451,20 +454,18 @@
               <div class="form-group">
                 <label for="plan">Plan</label>
                 <select
-                  id="plan"
-                  class="form-control"
-                  [(ngModel)]="newClient.plan"
-                  name="plan"
-                  required
+                id="plan"
+                class="form-control"
+                [(ngModel)]="newClient.planId"
+                name="planId"
+                required
                 >
-                  <option
-                    *ngFor="let plan of planOptions"
-                    [value]="plan"
-                    [disabled]="plan === 'Todos'"
-                  >
-                    {{ plan }}
-                  </option>
+                <option *ngFor="let plan of planOptions" [value]="plan.id">
+                {{ plan.nombre }}
+                </option>
                 </select>
+
+
               </div>
             </div>
             <div class="col-md-6">
@@ -485,21 +486,6 @@
                     {{ status }}
                   </option>
                 </select>
-              </div>
-            </div>
-          </div>
-
-          <div class="row mt-3" *ngIf="isEditMode">
-            <div class="col-md-6">
-              <div class="form-group">
-                <label for="lastPayment">Último Pago</label>
-                <input
-                  type="date"
-                  id="lastPayment"
-                  class="form-control"
-                  [(ngModel)]="newClient.lastPayment"
-                  name="lastPayment"
-                />
               </div>
             </div>
           </div>

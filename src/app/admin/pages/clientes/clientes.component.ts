@@ -41,13 +41,14 @@ export class ClientesComponent implements OnInit {
     'Pendiente',
     'Suspendido',
   ];
-  planOptions: string[] = [
-    'Todos',
-    'Básico',
-    'Estándar',
-    'Premium',
-    'Empresarial',
-  ];
+  planOptions = [
+  { id: 1, nombre: 'Plan 150mbps' },
+  { id: 2, nombre: 'Plan 290mbps' },
+  { id: 3, nombre: 'Plan 395mbps' },
+  { id: 4, nombre: 'Plan 490mbps' },
+  { id: 5, nombre: 'Plan 650mbps' },
+];
+
   documentTypes: string[] = ['CC', 'NIT', 'CE', 'Pasaporte'];
 
   // Control de modales
@@ -90,22 +91,23 @@ export class ClientesComponent implements OnInit {
 
   // Inicializa un cliente vacío
   getEmptyClient(): Client {
-    return {
-      id: 0,
-      nombre: '',
-      tipoDocumento: 'CC',
-      numeroDocumento: '',
-      email: '',
-      telefono: '',
-      direccion: '',
-      estado: 'Activo',
-      plan: {
-      id: 0,
-      nombre: 'Básico',
-      precio: 0,
-    },
-    };
-  }
+  return {
+    id: 0,
+    nombre: '',
+    tipoDocumento: 'CC',
+    numeroDocumento: '',
+    email: '',
+    telefono: '',
+    direccion: '',
+    estado: 'Activo',
+    planId: 1,  // aquí asignas el id del plan por defecto (por ejemplo 1)
+  };
+}
+
+getPlanNameById(id: number | undefined): string {
+  const plan = this.planOptions.find(p => p.id === id);
+  return plan ? plan.nombre : 'Desconocido';
+}
 
 
   // Aplica filtros a la lista de clientes
@@ -123,13 +125,18 @@ export class ClientesComponent implements OnInit {
 
       // Filtro por plan
       let planMatch = this.planFilter === 'Todos';
+
       if (!planMatch) {
-        if (typeof client.plan === 'object' && client.plan !== null) {
-          planMatch = client.plan.nombre === this.planFilter;
+      // Buscar el plan en planOptions que coincida con el nombre del filtro
+      const plan = this.planOptions.find(p => p.nombre === this.planFilter);
+
+      if (plan) {
+        planMatch = client.planId === plan.id;
         } else {
-          planMatch = client.plan === this.planFilter;
-        }
+        planMatch = false; // No hay plan que coincida, no mostrar
       }
+    }
+
 
       return searchMatch && statusMatch && planMatch;
     });
@@ -243,23 +250,19 @@ export class ClientesComponent implements OnInit {
 
   // Guarda un cliente nuevo o actualiza uno existente
   saveClient(): void {
-    if (this.isEditMode) {
-      // Actualizar cliente existente
-      const index = this.clients.findIndex((c) => c.id === this.newClient.id);
-      if (index !== -1) {
-        this.clients[index] = { ...this.newClient };
-      }
-    } else {
-      // Crear nuevo cliente
-      const newId = Math.max(0, ...this.clients.map((c) => c.id)) + 1;
-      this.newClient.id = newId;
-      this.newClient.registrationDate = new Date().toISOString().split('T')[0];
-      this.clients.push({ ...this.newClient });
+  // Crear nuevo cliente
+  this.clientesService.createCliente(this.newClient).subscribe({
+    next: (createdClient) => {
+      this.clients.push(createdClient);
+      this.applyFilters();
+      this.closeClientModal();
+    },
+    error: (err) => {
+      console.error('Error creando cliente:', err);
     }
+  });
+}
 
-    this.applyFilters();
-    this.closeClientModal();
-  }
 
   // Modal de eliminación
   openDeleteModal(client: Client): void {
