@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ClientesService } from '../../../services/client.service';
 import { Client } from '../../../entities/client.entity';
+import { PlanService } from '../../../services/plan.service'; // Ajusta la ruta si es diferente
+import { Plan } from '../../../entities/plan.entity';
 
 
 
@@ -40,13 +42,14 @@ export class ClientesComponent implements OnInit {
     'Inactivo',
     'Suspendido',
   ];
-  planOptions = [
+  /*planOptions = [
   { id: 1, nombre: 'Plan 160mbps' },
   { id: 2, nombre: 'Plan 290mbps' },
   { id: 3, nombre: 'Plan 395mbps' },
   { id: 4, nombre: 'Plan 490mbps' },
   { id: 5, nombre: 'Plan 650mbps' },
 ];
+*/
 
   documentTypes: string[] = ['CC', 'NIT', 'CE', 'Pasaporte'];
 
@@ -67,12 +70,18 @@ export class ClientesComponent implements OnInit {
 
   // Historial del cliente
   clientHistory: HistoryItem[] = [];
+  planOptions: Plan[] = [];  // Lista que obtendrás del backend
 
-  constructor(private clientesService: ClientesService) {}
+
+  constructor(
+  private clientesService: ClientesService,
+  private planService: PlanService
+) {}
 
 
   ngOnInit(): void {
   this.fetchClientsFromBackend();
+  this.fetchPlansFromBackend();
   }
 
   fetchClientsFromBackend(): void {
@@ -83,6 +92,16 @@ export class ClientesComponent implements OnInit {
     },
     error: (err) => {
       console.error('Error al cargar clientes:', err);
+    }
+  });
+}
+fetchPlansFromBackend(): void {
+  this.planService.getPlanes().subscribe({
+    next: (planes) => {
+      this.planOptions = planes.sort((a, b) => a.id - b.id); // Ordenar por id asc
+    },
+    error: (err) => {
+      console.error('Error al cargar planes:', err);
     }
   });
 }
