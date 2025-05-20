@@ -41,7 +41,7 @@ export class ClientesComponent implements OnInit {
     'Suspendido',
   ];
   planOptions = [
-  { id: 1, nombre: 'Plan 150mbps' },
+  { id: 1, nombre: 'Plan 160mbps' },
   { id: 2, nombre: 'Plan 290mbps' },
   { id: 3, nombre: 'Plan 395mbps' },
   { id: 4, nombre: 'Plan 490mbps' },
@@ -123,22 +123,22 @@ getPlanNameById(id: number | undefined): string {
         this.statusFilter === 'Todos' || client.estado === this.statusFilter;
 
       // Filtro por plan
-      let planMatch = this.planFilter === 'Todos';
+        let planMatch = this.planFilter === 'Todos';
 
-      if (!planMatch) {
-  const plan = this.planOptions.find(p => p.nombre === this.planFilter);
-  console.log('Filtro plan:', this.planFilter);
-  console.log('Plan encontrado:', plan);
-  if (plan) {
-    console.log('Cliente planId:', client.planId, 'Plan id:', plan.id);
-    planMatch = String(client.planId) === String(plan.id);
-  } else {
-    planMatch = false;
-  }
-}
-
-
-      return searchMatch && statusMatch && planMatch;
+        if (!planMatch) {
+          const plan = this.planOptions.find(p => p.nombre === this.planFilter);
+          console.log('Filtro plan:', this.planFilter);
+          console.log('Plan encontrado:', plan);
+        if (plan) {
+          // Usar directamente client.plan?.id porque planId está undefined
+          const clientPlanId = client.plan?.id;
+            console.log('Cliente planId:', clientPlanId, 'Plan id:', plan.id);
+            planMatch = clientPlanId === plan.id;
+        } else {
+          planMatch = false;
+        }
+        }
+        return searchMatch && statusMatch && planMatch;
     });
   }
 
@@ -155,19 +155,18 @@ getPlanNameById(id: number | undefined): string {
 
   // Retorna la clase CSS según el estado del cliente
   getStatusClass(status: string): string {
-    switch (status) {
-      case 'Activo':
-        return 'badge-success';
-      case 'Inactivo':
-        return 'badge-secondary';
-      case 'Pendiente':
-        return 'badge-warning';
-      case 'Suspendido':
-        return 'badge-danger';
-      default:
-        return 'badge-info';
-    }
+  switch (status) {
+    case 'activo':
+      return 'badge status-active';
+    case 'Inactivo':
+      return 'badge status-inactive';
+    case 'Suspendido':
+    case 'Bloqueado':
+      return 'badge status-blocked';
+    default:
+      return 'badge';
   }
+}
 
   // Modal de detalles
   openDetailsModal(client: Client): void {
@@ -243,7 +242,7 @@ getPlanNameById(id: number | undefined): string {
 
   const normalizado = estado.charAt(0).toUpperCase() + estado.slice(1).toLowerCase();
   const valido = this.statusOptions.includes(normalizado);
-  return valido ? normalizado : 'Activo';
+  return valido ? normalizado : 'activo';
 }
 
 

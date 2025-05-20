@@ -77,16 +77,16 @@
             <div class="form-group">
               <label for="planFilter">Plan</label>
               <select
-  id="planFilter"
-  class="form-control"
-  [(ngModel)]="planFilter"
-  (change)="applyFilters()"
->
-  <option value="Todos">Todos</option>
-  <option *ngFor="let option of planOptions" [value]="option.nombre">
-    {{ option.nombre }}
-  </option>
-</select>
+              id="planFilter"
+              class="form-control"
+              [(ngModel)]="planFilter"
+              (change)="applyFilters()"
+              >
+              <option value="Todos">Todos</option>
+              <option *ngFor="let option of planOptions" [value]="option.nombre">
+              {{ option.nombre }}
+              </option>
+              </select>
             </div>
           </div>
         </div>
@@ -254,22 +254,24 @@
           </div>
           <div class="detail-row">
             <div class="detail-label">Plan:</div>
-            <div class="detail-value">{{ clientDetails.plan }}</div>
+            <div class="detail-value">
+  {{ clientDetails.plan?.nombre }} - {{ clientDetails.plan?.precio | currency:'COP ':'symbol':'1.0-0' }}
+</div>
+
           </div>
           <div class="detail-row">
             <div class="detail-label">Estado:</div>
             <div class="detail-value">
-              <span
-                class="badge"
-                [ngClass]="getStatusClass(clientDetails.estado)"
-              >
-                {{ clientDetails.estado }}
+              <span [ngClass]="getStatusClass(clientDetails.estado)">
+              {{ clientDetails.estado }}
               </span>
             </div>
           </div>
           <div class="detail-row">
             <div class="detail-label">Fecha de Registro:</div>
-            <div class="detail-value">{{ clientDetails.registrationDate }}</div>
+            <div class="detail-value">
+              {{ clientDetails.fechaRegistro | date: 'dd/MM/yyyy HH:mm' }}
+            </div>
           </div>
           <div class="detail-row">
             <div class="detail-label">Último Pago:</div>

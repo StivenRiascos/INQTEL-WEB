@@ -10,7 +10,7 @@ export interface Client {
   telefono: string;
   estado: string;
   planId: number;
-  registrationDate?: string;
+  fechaRegistro?: string;
   lastPayment?: string;
   plan?: Plan;
 }
