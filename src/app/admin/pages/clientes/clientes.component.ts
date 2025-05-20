@@ -5,6 +5,7 @@ import { ClientesService } from '../../../services/client.service';
 import { Client } from '../../../entities/client.entity';
 import { PlanService } from '../../../services/plan.service'; // Ajusta la ruta si es diferente
 import { Plan } from '../../../entities/plan.entity';
+import { FacturaService } from '../../../services/factura.service';
 
 
 
@@ -75,6 +76,7 @@ export class ClientesComponent implements OnInit {
 
   constructor(
   private clientesService: ClientesService,
+  private facturaService: FacturaService,
   private planService: PlanService
 ) {}
 
@@ -211,43 +213,48 @@ getPlanNameById(id: number | undefined): string {
     this.clientHistory = [];
   }
 
-  // Carga el historial del cliente (datos de ejemplo)
-  loadClientHistory(clientId: number): void {
-    // Aquí normalmente harías una llamada a un servicio
-    this.clientHistory = [
-      {
-        date: '2023-04-15',
-        type: 'payment',
-        typeLabel: 'Pago',
-        description: 'Pago mensual realizado',
-        details: 'Factura #12345 - $50.000',
-      },
-      {
-        date: '2023-03-10',
-        type: 'support',
-        typeLabel: 'Soporte',
-        description: 'Reporte de falla en el servicio',
-        details: 'Ticket #789 - Resuelto',
-      },
-      {
-        date: '2023-02-15',
-        type: 'payment',
-        typeLabel: 'Pago',
-        description: 'Pago mensual realizado',
-        details: 'Factura #12344 - $50.000',
-      },
-      {
-        date: '2023-01-05',
-        type: 'change',
-        typeLabel: 'Cambio',
-        description: 'Cambio de plan',
-        details: 'De Básico a Premium',
-      },
-    ];
+  // Carga el historial del cliente
+// Carga el historial del cliente
+loadClientHistory(clienteId: number): void {
+  this.facturaService.obtenerHistorialFacturas(clienteId).subscribe({
+      next: (facturas) => {
+        this.clientHistory = facturas.map((factura) => {
+      let type = 'payment';
+      let typeLabel = 'Pago';
 
-    // Filtramos por el ID del cliente (en un caso real)
-    // this.clientHistory = this.clientHistory.filter(item => item.clientId === clientId);
-  }
+      if (factura.estado === 'pendiente') {
+      type = 'pending';
+      typeLabel = 'Pendiente';
+      } else if (factura.estado === 'cancelado') {
+      type = 'cancel';
+      typeLabel = 'Cancelado';
+      }
+
+      // Extrae el nombre del plan
+      const planNombre = factura.cliente?.plan?.nombre || 'Plan desconocido';
+
+      // Convierte la fecha de la factura a mes y año (ej: "Agosto 2025")
+      const mesFacturado = new Date(factura.fecha).toLocaleDateString('es-ES', {
+      year: 'numeric',
+      month: 'long',
+    });
+
+    return {
+    date: factura.pagos?.[0]?.fechaPago || factura.fechaLimite || factura.fecha,
+    type,
+    typeLabel,
+    description: `Factura ${factura.estado} - ${mesFacturado}`,
+    details: `Factura #${factura.id} - $${factura.valor} - ${planNombre}`,
+  };
+});
+    },
+    error: (error) => {
+      console.error('Error al obtener historial de facturas:', error);
+    },
+  });
+}
+
+
 
   // Modal de nuevo/editar cliente
   openNewClientModal(): void {

@@ -16,14 +16,20 @@ export class FacturaService {
     return this.http.get<any>(this.apiUrl);
   }
 
+    // Método para obtener el historial de facturas por cliente (usando el clienteId)
+  obtenerHistorialFacturas(clienteId: number): Observable<any[]> {
+  return this.http.get<any[]>(`${this.apiUrl}/historial/${clienteId}`);
+  }
+  
   // Método para obtener una factura por cédula
   obtenerFacturaPorCedula(cedula: string): Observable<any> {
     // Cambiar la URL para que apunte al endpoint correcto con la ruta 'consulta'
     return this.http.get<any>(`${this.apiUrl}/consulta/${cedula}`);
   }
 
-  // Método para obtener una factura por contrato
-  obtenerFacturaPorContrato(contrato: string): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/buscar-por-contrato/${contrato}`);
-  }
+  descargarFacturaPDF(id: number): Observable<Blob> {
+  return this.http.get(`${this.apiUrl}/pdf/${id}`, {
+    responseType: 'blob', // ← importante para descargar archivos
+  });
+}
 }
