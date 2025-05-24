@@ -328,6 +328,9 @@
               <div class="history-details" *ngIf="item.details">
                 {{ item.details }}
               </div>
+              <button class="btn-pdf-download" (click)="descargarFacturaPDF(item)">
+                Descargar PDF
+              </button>
             </div>
           </div>
 

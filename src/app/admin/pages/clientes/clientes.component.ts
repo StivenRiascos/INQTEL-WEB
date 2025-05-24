@@ -229,10 +229,6 @@ loadClientHistory(clienteId: number): void {
       type = 'cancel';
       typeLabel = 'Cancelado';
       }
-
-      // Extrae el nombre del plan
-      const planNombre = factura.cliente?.plan?.nombre || 'Plan desconocido';
-
       // Convierte la fecha de la factura a mes y año (ej: "Agosto 2025")
       const mesFacturado = new Date(factura.fecha).toLocaleDateString('es-ES', {
       year: 'numeric',
@@ -244,7 +240,7 @@ loadClientHistory(clienteId: number): void {
     type,
     typeLabel,
     description: `Factura ${factura.estado} - ${mesFacturado}`,
-    details: `Factura #${factura.id} - $${factura.valor} - ${planNombre}`,
+    details: `Factura #${factura.id} - $${factura.valor}`,
   };
 });
     },
@@ -253,6 +249,28 @@ loadClientHistory(clienteId: number): void {
     },
   });
 }
+
+descargarFacturaPDF(item: any): void {
+  const match = item.details?.match(/#(\d+)/);
+  const facturaId = match ? match[1] : null;
+
+  if (!facturaId) {
+    console.error('ID de factura no encontrado');
+    return;
+  }
+
+  const url = `http://localhost:3000/facturas/pdf/${facturaId}`;
+
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `factura_${facturaId}.pdf`;
+  a.target = '_blank';
+  a.click();
+}
+
+
+
+
 
 
 

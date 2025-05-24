@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { PlanService } from '../../../services/plan.service';
+import { Plan } from '../../../entities/plan.entity';
 
 @Component({
   selector: 'app-ajustes',
@@ -95,46 +97,6 @@ export class AjustesComponent implements OnInit {
     },
   ];
 
-  // Planes
-  plans = [
-    {
-      id: 1,
-      name: 'Básico',
-      description: 'Plan básico con funcionalidades limitadas',
-      price: 29.99,
-      duration: 30,
-      status: 'Activo',
-      clientCount: 45,
-    },
-    {
-      id: 2,
-      name: 'Estándar',
-      description: 'Plan estándar con funcionalidades completas',
-      price: 49.99,
-      duration: 30,
-      status: 'Activo',
-      clientCount: 78,
-    },
-    {
-      id: 3,
-      name: 'Premium',
-      description:
-        'Plan premium con todas las funcionalidades y soporte prioritario',
-      price: 99.99,
-      duration: 30,
-      status: 'Activo',
-      clientCount: 23,
-    },
-    {
-      id: 4,
-      name: 'Empresarial',
-      description: 'Plan empresarial con funcionalidades personalizadas',
-      price: 199.99,
-      duration: 30,
-      status: 'Inactivo',
-      clientCount: 5,
-    },
-  ];
 
   // Control de modales
   showUserModal: boolean = false;
@@ -157,12 +119,28 @@ export class AjustesComponent implements OnInit {
   // Logo preview
   logoPreview: string | null = null;
 
-  constructor() {}
+  plans: Plan[] = [];
+
+  constructor(private planService: PlanService) {}
+
+  
 
   ngOnInit(): void {
-    // Inicializar la primera pestaña como activa
-    this.setActiveTab('general');
-  }
+  this.cargarPlanes();
+}
+
+cargarPlanes(): void {
+  this.planService.getPlanes().subscribe({
+    next: (planes) => {
+      this.plans = planes.sort((a, b) => a.id - b.id);
+      console.log('Planes cargados:', this.plans); // opcional para debug
+    },
+    error: (error) => {
+      console.error('Error al cargar los planes:', error);
+    }
+  });
+}
+
 
   // Métodos para control de pestañas
   setActiveTab(tabId: string): void {
@@ -285,11 +263,9 @@ export class AjustesComponent implements OnInit {
       const newId = Math.max(...this.plans.map((p) => p.id)) + 1;
       this.plans.push({
         id: newId,
-        name: this.currentPlan.name,
-        description: this.currentPlan.description,
-        price: this.currentPlan.price,
-        duration: this.currentPlan.duration,
-        status: this.currentPlan.status,
+        nombre: this.currentPlan.name,
+        descripcion: this.currentPlan.description,
+        precio: this.currentPlan.price,
         clientCount: 0,
       });
     }

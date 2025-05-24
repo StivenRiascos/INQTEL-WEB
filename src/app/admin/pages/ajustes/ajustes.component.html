@@ -286,23 +286,15 @@
                   <th>Nombre</th>
                   <th>Descripción</th>
                   <th>Precio</th>
-                  <th>Duración</th>
-                  <th>Estado</th>
                   <th>Clientes</th>
                   <th>Acciones</th>
                 </tr>
               </thead>
               <tbody>
                 <tr *ngFor="let plan of plans">
-                  <td>{{ plan.name }}</td>
-                  <td>{{ plan.description }}</td>
-                  <td>{{ plan.price | currency }}</td>
-                  <td>{{ plan.duration }} días</td>
-                  <td>
-                    <span [ngClass]="getPlanStatusClass(plan.status)">
-                      {{ plan.status }}
-                    </span>
-                  </td>
+                  <td>{{ plan.nombre }}</td>
+                  <td>{{ plan.descripcion }}</td>
+                  <td>{{ plan.precio | currency }}</td>
                   <td>{{ plan.clientCount }}</td>
                   <td>
                     <div class="actions">
