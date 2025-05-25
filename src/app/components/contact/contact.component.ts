@@ -9,6 +9,7 @@ import { ActivatedRoute } from '@angular/router';
 import { RouterLink } from '@angular/router';
 import { NgIf, NgClass } from '@angular/common';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { MailService } from '../../services/mail.service';
 
 @Component({
   selector: 'app-contact',
@@ -27,43 +28,52 @@ export class ContactComponent implements OnInit {
   mapUrl!: SafeResourceUrl;
 
   constructor(
-    private fb: FormBuilder,
-    private route: ActivatedRoute,
-    private sanitizer: DomSanitizer // inyectar DomSanitizer
-  ) {
-    this.contactForm = this.fb.group({
-      name: ['', [Validators.required, Validators.minLength(3)]],
-      email: ['', [Validators.required, Validators.email]],
-      phone: ['', [Validators.required, Validators.pattern(/^[0-9]{10}$/)]],
-      address: ['', Validators.required],
-      plan: [''],
-      message: ['', Validators.required],
-    });
-  }
+  private fb: FormBuilder,
+  private route: ActivatedRoute,
+  private sanitizer: DomSanitizer,
+  private mailService: MailService // inyectar el servicio correctamente en minúscula
+) {
+  this.contactForm = this.fb.group({
+    name: ['', [Validators.required, Validators.minLength(3)]],
+    email: ['', [Validators.required, Validators.email]],
+    phone: ['', [Validators.required, Validators.pattern(/^[0-9]{10}$/)]],
+    address: ['', Validators.required],
+    plan: [''],
+    message: ['', Validators.required],
+  });
+}
 
-  ngOnInit(): void {
-    this.route.queryParams.subscribe((params) => {
-      if (params['plan']) {
-        this.selectedPlan = params['plan'];
-        this.contactForm.patchValue({
-          plan: this.selectedPlan,
-        });
-      }
-    });
-  }
-
-  onSubmit(): void {
-    if (this.contactForm.valid) {
-      console.log('Form submitted:', this.contactForm.value);
-      this.formSubmitted = true;
-      // Aquí iría la lógica para enviar el formulario a un backend
-    } else {
-      Object.keys(this.contactForm.controls).forEach((key) => {
-        const control = this.contactForm.get(key);
-        control?.markAsTouched();
+ngOnInit(): void {
+  this.route.queryParams.subscribe((params) => {
+    if (params['plan']) {
+      this.selectedPlan = params['plan'];
+      this.contactForm.patchValue({
+        plan: this.selectedPlan,
       });
     }
+  });
+}
+
+onSubmit(): void {
+  if (this.contactForm.valid) {
+    this.mailService.enviarCorreo(this.contactForm.value).subscribe({
+      next: (res) => {
+        console.log('✅ Correo enviado correctamente:', res);
+        this.formSubmitted = true;
+        this.contactForm.reset(); // opcional: limpiar el formulario
+      },
+      error: (err) => {
+        console.error('❌ Error al enviar el correo:', err);
+      },
+    });
+  } else {
+    Object.keys(this.contactForm.controls).forEach((key) => {
+      const control = this.contactForm.get(key);
+      control?.markAsTouched();
+    });
   }
+}
+
 
   // Getter para acceso fácil a controles
   get f() {

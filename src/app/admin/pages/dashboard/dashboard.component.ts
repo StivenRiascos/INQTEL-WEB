@@ -49,7 +49,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       increase: 15,
       period: 'este mes',
     },
-    {
+    /*{
       title: 'Tickets de Soporte',
       value: 18,
       icon: 'fas fa-ticket-alt',
@@ -57,6 +57,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       increase: -5,
       period: 'desde el mes pasado',
     },
+    */
   ];
 
   recentClients: any[] = [];
