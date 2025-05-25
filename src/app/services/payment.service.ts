@@ -39,6 +39,10 @@ export class PaymentService {
         catchError(this.handleError)
       );
   }
+  getIngresosMensuales(): Observable<number> {
+  return this.http.get<number>('http://localhost:3000/pagos/ingresos-mensuales');
+}
+
 
   // Manejo de errores mejorado
   private handleError(error: any) {

@@ -10,6 +10,8 @@ import {
 import { CommonModule } from '@angular/common';
 import { Chart, registerables, ChartData } from 'chart.js';
 import { ClientesService } from '../../../services/client.service';
+import { PaymentService } from '../../../services/payment.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 // Registrar todos los componentes de Chart.js
 Chart.register(...registerables);
@@ -33,7 +35,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     },
     {
       title: 'Ingresos Mensuales',
-      value: '$12,580,000',
+      value: 0,
       icon: 'fas fa-dollar-sign',
       color: 'success',
       increase: 8,
@@ -105,26 +107,38 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     private cdr: ChangeDetectorRef,
     private renderer: Renderer2,
     private el: ElementRef,
-    private clientesService: ClientesService
+    private clientesService: ClientesService,
+    private paymentService: PaymentService
   ) {}
 
   ngOnInit(): void {
-    this.checkIfMobile();
+  this.checkIfMobile();
 
-    if (typeof ResizeObserver !== 'undefined') {
-      this.resizeObserver = new ResizeObserver(this.handleResizeObserver.bind(this));
-      this.resizeObserver.observe(document.body);
-    } else {
-      window.addEventListener('resize', this.handleResize.bind(this));
-    }
-
-    this.applyLayoutStyles();
-    this.loadClientData();
+  if (typeof ResizeObserver !== 'undefined') {
+    this.resizeObserver = new ResizeObserver(this.handleResizeObserver.bind(this));
+    this.resizeObserver.observe(document.body);
+  } else {
+    window.addEventListener('resize', this.handleResize.bind(this));
   }
 
-  ngAfterViewInit(): void {
+  this.applyLayoutStyles();
+  this.loadClientData();
+
+  // Aquí agregas el llamado al ingreso mensual
+  this.paymentService.getIngresosMensuales().subscribe({
+    next: (total: number) => {
+      this.statsCards[1].value = total; // sin el `$` ni `toLocaleString()`
+
+    },
+    error: (error) => {
+      console.error('Error al obtener ingresos mensuales:', error);
+    }
+  });
+}
+ngAfterViewInit(): void {
     this.initCharts();
   }
+
 
   ngOnDestroy(): void {
     if (this.resizeObserver) {
@@ -160,7 +174,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       // Contar clientes por plan para el gráfico
       const planCounts: { [plan: string]: number } = {};
       clientesMapeados.forEach(cliente => {
-        const plan = cliente.plan || 'Otro';
+        const plan = cliente.plan?.nombre || 'Otro';
         planCounts[plan] = (planCounts[plan] || 0) + 1;
       });
 
