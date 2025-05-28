@@ -70,6 +70,7 @@ $sidebar-transition: all 0.3s ease;
     border-radius: 20px;
   }
 }
+
 .custom-transparent-btn {
   background: rgba(5, 67, 150, 0.2); // #054396 con transparencia
   border: none;
@@ -321,4 +322,257 @@ $sidebar-transition: all 0.3s ease;
   @media (max-width: 767px) {
     margin-left: 0;
   }
+}
+
+// ===========================================
+// NUEVAS FUNCIONALIDADES - COLORES Y ANIMACIONES
+// ===========================================
+
+// Variables de colores por sección
+$inicio-color: #3498db;
+$inicio-color-dark: #2980b9;
+$clientes-color: #2ecc71;
+$clientes-color-dark: #27ae60;
+$facturas-color: #f39c12;
+$facturas-color-dark: #e67e22;
+$ajustes-color: #9b59b6;
+$ajustes-color-dark: #8e44ad;
+$perfil-color: #34495e;
+$perfil-color-dark: #2c3e50;
+
+// Mixin para crear estilos de sección
+@mixin sidebar-section-style(
+  $color,
+  $color-dark,
+  $animation-name,
+  $hover-transform
+) {
+  animation: #{$animation-name} 0.3s ease-out;
+  border-radius: 8px;
+  margin: 2px 8px;
+
+  &.active {
+    background: linear-gradient(135deg, $color, $color-dark) !important;
+    box-shadow: 0 4px 15px rgba($color, 0.3);
+
+    fa-icon {
+      color: white !important;
+      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+    }
+  }
+
+  &:hover:not(.active) {
+    background: rgba($color, 0.1) !important;
+
+    fa-icon {
+      color: $color !important;
+      transform: #{$hover-transform};
+      transition: all 0.3s ease;
+    }
+  }
+}
+
+// Aplicación de estilos por sección
+
+// INICIO - Azul brillante - Desliza desde izquierda - Escala del icono
+.sidebar-link[routerLink="/admin/dashboard"] {
+  @include sidebar-section-style(
+    $inicio-color,
+    $inicio-color-dark,
+    slideInFromLeft,
+    scale(1.1)
+  );
+}
+
+// CLIENTES - Verde esmeralda - Desliza desde derecha - Rotación + escala
+.sidebar-link[routerLink="/admin/clientes"] {
+  @include sidebar-section-style(
+    $clientes-color,
+    $clientes-color-dark,
+    slideInFromRight,
+    rotate(5deg) scale(1.1)
+  );
+}
+
+// FACTURAS - Naranja dorado - Desliza desde arriba - Movimiento vertical
+.sidebar-link[routerLink="/admin/facturas"] {
+  @include sidebar-section-style(
+    $facturas-color,
+    $facturas-color-dark,
+    slideInFromTop,
+    translateY(-2px) scale(1.1)
+  );
+}
+
+// AJUSTES - Púrpura - Desliza desde abajo - Rotación 90°
+.sidebar-link[routerLink="/admin/ajustes"] {
+  @include sidebar-section-style(
+    $ajustes-color,
+    $ajustes-color-dark,
+    slideInFromBottom,
+    rotate(90deg) scale(1.1)
+  );
+}
+
+// PERFIL - Azul oscuro - Fade + escala - Escala grande
+.sidebar-link[routerLink="/admin/perfil"] {
+  @include sidebar-section-style(
+    $perfil-color,
+    $perfil-color-dark,
+    fadeInScale,
+    scale(1.2)
+  );
+}
+
+// Definición de animaciones keyframes
+
+// Desliza desde izquierda (Inicio)
+@keyframes slideInFromLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+// Desliza desde derecha (Clientes)
+@keyframes slideInFromRight {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+// Desliza desde arriba (Facturas)
+@keyframes slideInFromTop {
+  from {
+    opacity: 0;
+    transform: translateY(-15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Desliza desde abajo (Ajustes)
+@keyframes slideInFromBottom {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Fade + escala (Perfil)
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+// Mejoras adicionales para enlaces
+.sidebar-link {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+
+  fa-icon {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+}
+
+// Mejora para el estado colapsado con animaciones
+.sidebar.collapsed .sidebar-link {
+  justify-content: center;
+
+  fa-icon {
+    margin-right: 0;
+    font-size: 1.3rem;
+  }
+
+  &:hover {
+    fa-icon {
+      transform: scale(1.3);
+    }
+  }
+}
+
+// Efecto especial mejorado para el enlace de cerrar sesión
+.logout-link {
+  &:hover {
+    background: rgba(220, 53, 69, 0.1) !important;
+    transform: translateX(5px);
+
+    fa-icon {
+      color: #dc3545 !important;
+      animation: shake 0.5s ease-in-out;
+    }
+  }
+}
+
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-2px);
+  }
+  75% {
+    transform: translateX(2px);
+  }
+}
+
+// Responsive: Ajustar animaciones en móvil
+@media (max-width: 767px) {
+  .sidebar-link {
+    animation-duration: 0.2s !important;
+  }
+
+  .sidebar-link:hover fa-icon {
+    transform: scale(1.05) !important;
+  }
+}
+
+// Mapa de colores para fácil mantenimiento
+$sidebar-colors: (
+  "inicio": (
+    "primary": $inicio-color,
+    "dark": $inicio-color-dark,
+  ),
+  "clientes": (
+    "primary": $clientes-color,
+    "dark": $clientes-color-dark,
+  ),
+  "facturas": (
+    "primary": $facturas-color,
+    "dark": $facturas-color-dark,
+  ),
+  "ajustes": (
+    "primary": $ajustes-color,
+    "dark": $ajustes-color-dark,
+  ),
+  "perfil": (
+    "primary": $perfil-color,
+    "dark": $perfil-color-dark,
+  ),
+);
+
+// Función helper para obtener colores
+@function get-section-color($section, $variant: "primary") {
+  @return map-get(map-get($sidebar-colors, $section), $variant);
 }

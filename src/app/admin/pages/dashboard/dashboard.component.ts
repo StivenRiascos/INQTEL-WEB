@@ -113,33 +113,33 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   ) {}
 
   ngOnInit(): void {
-  this.checkIfMobile();
+    this.checkIfMobile();
 
-  if (typeof ResizeObserver !== 'undefined') {
-    this.resizeObserver = new ResizeObserver(this.handleResizeObserver.bind(this));
-    this.resizeObserver.observe(document.body);
-  } else {
-    window.addEventListener('resize', this.handleResize.bind(this));
-  }
-
-  this.applyLayoutStyles();
-  this.loadClientData();
-
-  // Aquí agregas el llamado al ingreso mensual
-  this.paymentService.getIngresosMensuales().subscribe({
-    next: (total: number) => {
-      this.statsCards[1].value = total; // sin el `$` ni `toLocaleString()`
-
-    },
-    error: (error) => {
-      console.error('Error al obtener ingresos mensuales:', error);
+    if (typeof ResizeObserver !== 'undefined') {
+      this.resizeObserver = new ResizeObserver(
+        this.handleResizeObserver.bind(this)
+      );
+      this.resizeObserver.observe(document.body);
+    } else {
+      window.addEventListener('resize', this.handleResize.bind(this));
     }
-  });
-}
-ngAfterViewInit(): void {
+
+    this.applyLayoutStyles();
+    this.loadClientData();
+
+    // Aquí agregas el llamado al ingreso mensual
+    this.paymentService.getIngresosMensuales().subscribe({
+      next: (total: number) => {
+        this.statsCards[1].value = total; // sin el `$` ni `toLocaleString()`
+      },
+      error: (error) => {
+        console.error('Error al obtener ingresos mensuales:', error);
+      },
+    });
+  }
+  ngAfterViewInit(): void {
     this.initCharts();
   }
-
 
   ngOnDestroy(): void {
     if (this.resizeObserver) {
@@ -153,63 +153,62 @@ ngAfterViewInit(): void {
   }
 
   loadClientData(): void {
-  this.clientesService.getClientes().subscribe({
-    next: (clientes: any[]) => {
-      // Mapear clientes con las propiedades que usabas antes
-      const clientesMapeados = clientes.map(client => ({
-        ...client,
-        name: client.nombre,
-        documentType: client.tipoDocumento,
-        documentNumber: client.numeroDocumento,
-        location: client.direccion,
-        phone: client.telefono,
-        status: client.estado,
-      }));
+    this.clientesService.getClientes().subscribe({
+      next: (clientes: any[]) => {
+        // Mapear clientes con las propiedades que usabas antes
+        const clientesMapeados = clientes.map((client) => ({
+          ...client,
+          name: client.nombre,
+          documentType: client.tipoDocumento,
+          documentNumber: client.numeroDocumento,
+          location: client.direccion,
+          phone: client.telefono,
+          status: client.estado,
+        }));
 
-      // Obtener los 5 clientes más recientes (últimos 5 del array)
-      this.recentClients = clientesMapeados.slice(-5).reverse();
+        // Obtener los 5 clientes más recientes (últimos 5 del array)
+        this.recentClients = clientesMapeados.slice(-5).reverse();
 
-      // Actualizar valor total clientes
-      this.statsCards[0].value = clientesMapeados.length;
+        // Actualizar valor total clientes
+        this.statsCards[0].value = clientesMapeados.length;
 
-      // Contar clientes por plan para el gráfico
-      const planCounts: { [plan: string]: number } = {};
-      clientesMapeados.forEach(cliente => {
-        const plan = cliente.plan?.nombre || 'Otro';
-        planCounts[plan] = (planCounts[plan] || 0) + 1;
-      });
+        // Contar clientes por plan para el gráfico
+        const planCounts: { [plan: string]: number } = {};
+        clientesMapeados.forEach((cliente) => {
+          const plan = cliente.plan?.nombre || 'Otro';
+          planCounts[plan] = (planCounts[plan] || 0) + 1;
+        });
 
-      this.plansChartData = {
-        labels: Object.keys(planCounts),
-        datasets: [
-          {
-            data: Object.values(planCounts),
-            backgroundColor: [
-              '#4361ee',
-              '#4895ef',
-              '#4cc9f0',
-              '#3f37c9',
-              '#7209b7',
-              '#b5179e',
-            ],
-            borderWidth: 1,
-          },
-        ],
-      };
+        this.plansChartData = {
+          labels: Object.keys(planCounts),
+          datasets: [
+            {
+              data: Object.values(planCounts),
+              backgroundColor: [
+                '#4361ee',
+                '#4895ef',
+                '#4cc9f0',
+                '#3f37c9',
+                '#7209b7',
+                '#b5179e',
+              ],
+              borderWidth: 1,
+            },
+          ],
+        };
 
-      if (this.plansChart) {
-        this.plansChart.destroy();
-        this.createPlansChart();
-      }
+        if (this.plansChart) {
+          this.plansChart.destroy();
+          this.createPlansChart();
+        }
 
-      this.cdr.detectChanges();
-    },
-    error: (error) => {
-      console.error('Error cargando clientes en dashboard:', error);
-    }
-  });
-}
-
+        this.cdr.detectChanges();
+      },
+      error: (error) => {
+        console.error('Error cargando clientes en dashboard:', error);
+      },
+    });
+  }
 
   initCharts(): void {
     setTimeout(() => {
@@ -266,51 +265,52 @@ ngAfterViewInit(): void {
     });
   }
 
-createPlansChart(): void {
-  const canvas = document.getElementById('plansChart') as HTMLCanvasElement;
-  if (!canvas) return;
+  createPlansChart(): void {
+    const canvas = document.getElementById('plansChart') as HTMLCanvasElement;
+    if (!canvas) return;
 
-  this.plansChart?.destroy();
+    this.plansChart?.destroy();
 
-  this.plansChart = new Chart(canvas, {
-    type: 'doughnut',
-    data: this.plansChartData,
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      cutout: '70%', // directo en options
-      plugins: {
-        legend: {
-          position: 'bottom',
-          labels: {
-            padding: 20,
-            boxWidth: 12,
+    this.plansChart = new Chart(canvas, {
+      type: 'doughnut',
+      data: this.plansChartData,
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: '70%', // directo en options
+        plugins: {
+          legend: {
+            position: 'bottom',
+            labels: {
+              padding: 20,
+              boxWidth: 12,
+            },
           },
-        },
-        tooltip: {
-          callbacks: {
-            label: (context: { label?: string; parsed: number; dataset: { data: any[] } }) => {
-              const label = context.label || '';
-              const value = context.parsed as number;
-              const total = context.dataset.data
-                .filter((v): v is number => typeof v === 'number')
-                .reduce((a: number, b: number) => a + b, 0);
+          tooltip: {
+            callbacks: {
+              label: (context: {
+                label?: string;
+                parsed: number;
+                dataset: { data: any[] };
+              }) => {
+                const label = context.label || '';
+                const value = context.parsed as number;
+                const total = context.dataset.data
+                  .filter((v): v is number => typeof v === 'number')
+                  .reduce((a: number, b: number) => a + b, 0);
 
-              const percentage = total
-                ? Math.round((value * 100) / total) + '%'
-                : '0%';
+                const percentage = total
+                  ? Math.round((value * 100) / total) + '%'
+                  : '0%';
 
-              return `${label}: ${percentage}`;
+                return `${label}: ${percentage}`;
+              },
             },
           },
         },
-      },
-    } as any,
-  });
-}
-
-
-
+      } as any,
+    });
+  }
 
   getStatusClass(status: string): string {
     switch (status) {

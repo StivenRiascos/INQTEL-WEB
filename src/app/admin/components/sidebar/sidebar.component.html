@@ -64,6 +64,17 @@
         <span *ngIf="!isCollapsed || isMobile">Clientes</span>
       </a>
 
+      <!-- NUEVA OPCIÓN DE FACTURAS -->
+      <a
+        class="sidebar-link"
+        routerLink="/admin/facturas"
+        routerLinkActive="active"
+        (click)="closeSidebarOnMobile()"
+      >
+        <fa-icon [icon]="faFileInvoiceDollar"></fa-icon>
+        <span *ngIf="!isCollapsed || isMobile">Facturas</span>
+      </a>
+
       <a
         class="sidebar-link"
         routerLink="/admin/ajustes"

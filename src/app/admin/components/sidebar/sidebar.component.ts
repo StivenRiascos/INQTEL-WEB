@@ -11,6 +11,7 @@ import {
   faChevronRight,
   faChevronLeft,
   faUser,
+  faFileInvoiceDollar, // NUEVO ICONO PARA FACTURAS
 } from '@fortawesome/free-solid-svg-icons';
 import { SidebarService } from './sidebar.service';
 import { Subscription } from 'rxjs';
@@ -32,6 +33,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
   faBars = faBars;
   faTachometerAlt = faTachometerAlt;
   faUsers = faUsers;
+  faFileInvoiceDollar = faFileInvoiceDollar; // NUEVO ICONO AGREGADO
   faCog = faCog;
   faRightFromBracket = faRightFromBracket;
   faChevronRight = faChevronRight;

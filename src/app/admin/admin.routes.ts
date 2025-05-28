@@ -3,6 +3,7 @@ import { AuthGuard } from '../guards/auth.guard';
 
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { ClientesComponent } from './pages/clientes/clientes.component';
+import { FacturasComponent } from './pages/facturas/facturas.component'; // NUEVO IMPORT
 import { LoginComponent } from './pages/login/login.component';
 import { AjustesComponent } from './pages/ajustes/ajustes.component';
 import { PerfilComponent } from './pages/perfil/perfil.component';
@@ -20,6 +21,7 @@ const adminRoutes: Routes = [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       { path: 'dashboard', component: DashboardComponent },
       { path: 'clientes', component: ClientesComponent },
+      { path: 'facturas', component: FacturasComponent }, // NUEVA RUTA
       { path: 'ajustes', component: AjustesComponent },
       { path: 'perfil', component: PerfilComponent },
       // Otras rutas protegidas
