@@ -23,9 +23,9 @@
 
       <div class="hero-cards">
         <div class="speed-card" *ngFor="let plan of plans">
-          <div class="speed-value">{{ plan.name }}</div>
+          <div class="speed-value">{{ plan.nombre }}</div>
           <div class="speed-price">
-            {{ plan.price | currency : "COP" : "symbol-narrow" : "1.0-0" }}
+            {{ plan.precio | currency : "COP" : "symbol-narrow" : "1.0-0" }}
           </div>
           <div class="speed-period">Mensual</div>
         </div>
@@ -107,10 +107,10 @@
       >
         <div class="popular-badge" *ngIf="plan.popular">Más Popular</div>
         <div class="plan-header">
-          <h3>Plan {{ plan.name }}</h3>
+          <h3>Plan {{ plan.nombre }}</h3>
           <div class="plan-price">
             <span class="price">{{
-              plan.price | currency : "COP" : "symbol-narrow" : "1.0-0"
+              plan.precio | currency : "COP" : "symbol-narrow" : "1.0-0"
             }}</span>
             <span class="period">Mensual</span>
           </div>

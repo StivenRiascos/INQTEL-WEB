@@ -5,9 +5,6 @@
       <p>Administra las facturas de INQTEL</p>
     </div>
     <div class="header-actions">
-      <button class="btn btn-primary" (click)="openNewFacturaModal()">
-        <i class="fas fa-plus"></i> Nueva Factura
-      </button>
     </div>
   </div>
 
@@ -28,7 +25,7 @@
           *ngFor="let factura of facturasProximasVencer"
         >
           <span class="cliente-nombre">{{
-            getClienteNombre(factura.clienteId)
+            getClienteNombre(factura.cliente.id)
           }}</span>
           <span class="factura-valor"
             >${{ factura.valor | number : "1.0-0" }}</span
@@ -133,7 +130,7 @@
           <tbody>
             <tr *ngFor="let factura of filteredFacturas">
               <td>{{ factura.id }}</td>
-              <td>{{ getClienteNombre(factura.clienteId) }}</td>
+              <td>{{ getClienteNombre(factura.cliente.id) }}</td>
               <td>{{ factura.fecha | date : "dd/MM/yyyy" }}</td>
               <td>{{ factura.fechaLimite | date : "dd/MM/yyyy" }}</td>
               <td>${{ factura.valor | number : "1.0-0" }}</td>
@@ -146,7 +143,7 @@
               <td>
                 <span
                   [ngClass]="
-                    getDiasVencerClass(getDiasParaVencer(factura.fechaLimite))
+                  getDiasVencerClass(getDiasParaVencer(factura.fechaLimite))
                   "
                 >
                   {{ getDiasParaVencer(factura.fechaLimite) }} días
@@ -174,13 +171,6 @@
                     (click)="openEditFacturaModal(factura)"
                   >
                     <i class="fas fa-edit"></i>
-                  </button>
-                  <button
-                    class="btn btn-sm btn-icon btn-danger"
-                    title="Eliminar"
-                    (click)="openDeleteModal(factura)"
-                  >
-                    <i class="fas fa-trash"></i>
                   </button>
                 </div>
               </td>
@@ -254,7 +244,7 @@
           <div class="detail-row">
             <div class="detail-label">Cliente:</div>
             <div class="detail-value">
-              {{ getClienteNombre(facturaDetails.clienteId) }}
+              {{ getClienteNombre(facturaDetails.cliente.id) }}
             </div>
           </div>
           <div class="detail-row">
@@ -299,13 +289,18 @@
         >
           Cerrar
         </button>
-        <button
-          type="button"
-          class="btn btn-success"
-          (click)="descargarFacturaPDF(facturaDetails!.id)"
+       <tr *ngFor="let factura of facturas">
+        <td>{{ factura.id }}</td>
+        <td>
+       <button
+        type="button"
+        class="btn btn-success"
+        (click)="descargarFacturaPDF(factura.id)"
         >
-          Descargar PDF
-        </button>
+      Descargar PDF
+    </button>
+  </td>
+</tr>
       </div>
     </div>
   </div>
@@ -333,7 +328,7 @@
                 <select
                   id="clienteId"
                   class="form-control"
-                  [(ngModel)]="newFactura.clienteId"
+                  [(ngModel)]="newFactura.cliente"
                   name="clienteId"
                   required
                 >
@@ -421,41 +416,6 @@
         </button>
         <button type="button" class="btn btn-primary" (click)="saveFactura()">
           {{ isEditMode ? "Actualizar" : "Guardar" }}
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Modal de confirmación de eliminación -->
-<div class="modal" [class.show]="showDeleteModal" *ngIf="showDeleteModal">
-  <div class="modal-backdrop" (click)="closeDeleteModal()"></div>
-  <div class="modal-dialog modal-sm">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Confirmar Eliminación</h5>
-        <button type="button" class="close" (click)="closeDeleteModal()">
-          <span>&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <p>
-          ¿Está seguro que desea eliminar la factura
-          <strong>#{{ facturaToDelete?.id }}</strong
-          >?
-        </p>
-        <p class="text-danger">Esta acción no se puede deshacer.</p>
-      </div>
-      <div class="modal-footer">
-        <button
-          type="button"
-          class="btn btn-secondary"
-          (click)="closeDeleteModal()"
-        >
-          Cancelar
-        </button>
-        <button type="button" class="btn btn-danger" (click)="deleteFactura()">
-          Eliminar
         </button>
       </div>
     </div>

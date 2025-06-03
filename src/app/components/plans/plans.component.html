@@ -23,10 +23,10 @@
       >
         <div class="popular-badge" *ngIf="plan.popular">Más Popular</div>
         <div class="plan-header">
-          <h3>Plan {{ plan.name }}</h3>
+          <h3>Plan {{ plan.nombre }}</h3>
           <div class="plan-price">
             <span class="price">{{
-              plan.price | currency : "COP" : "symbol-narrow" : "1.0-0"
+              plan.precio | currency : "COP" : "symbol-narrow" : "1.0-0"
             }}</span>
             <span class="period">Mensual</span>
           </div>
@@ -41,7 +41,7 @@
         <div class="plan-footer">
           <a
             routerLink="/contacto"
-            [queryParams]="{ plan: plan.name }"
+            [queryParams]="{ plan: plan.nombre }"
             class="btn"
             [ngClass]="plan.popular ? 'btn-secondary' : 'btn-primary'"
             >Contratar Ahora</a
@@ -64,17 +64,17 @@
         <thead>
           <tr>
             <th>Características</th>
-            <th *ngFor="let plan of plans">{{ plan.name }}</th>
+            <th *ngFor="let plan of plans">{{ plan.nombre }}</th>
           </tr>
         </thead>
         <tbody>
           <tr>
             <td>Velocidad de Descarga</td>
-            <td *ngFor="let plan of plans">{{ plan.name }}</td>
+            <td *ngFor="let plan of plans">{{ plan.nombre }}</td>
           </tr>
           <tr>
             <td>Velocidad de Subida</td>
-            <td *ngFor="let plan of plans">{{ plan.name }}</td>
+            <td *ngFor="let plan of plans">{{ plan.nombre }}</td>
           </tr>
           <tr>
             <td>Fibra Óptica</td>
@@ -115,7 +115,7 @@
           <tr>
             <td>Precio Mensual</td>
             <td *ngFor="let plan of plans">
-              {{ plan.price | currency : "COP" : "symbol-narrow" : "1.0-0" }}
+              {{ plan.precio | currency : "COP" : "symbol-narrow" : "1.0-0" }}
             </td>
           </tr>
           <tr>
@@ -123,7 +123,7 @@
             <td *ngFor="let plan of plans">
               <a
                 routerLink="/contacto"
-                [queryParams]="{ plan: plan.name }"
+                [queryParams]="{ plan: plan.nombre }"
                 class="btn btn-sm"
                 [ngClass]="plan.popular ? 'btn-secondary' : 'btn-primary'"
                 >Contratar</a

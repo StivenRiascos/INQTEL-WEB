@@ -28,7 +28,7 @@ export class PlanService {
 
   // Actualizar un plan existente
   updatePlan(id: number, plan: Partial<Plan>): Observable<Plan> {
-    return this.http.put<Plan>(`${this.apiUrl}/${id}`, plan);
+    return this.http.patch<Plan>(`${this.apiUrl}/${id}`, plan);
   }
 
   // Eliminar un plan

@@ -752,31 +752,6 @@
               />
             </div>
           </div>
-          <div class="form-group mt-3">
-            <label for="planDuration">Duración (días)</label>
-            <input
-              type="number"
-              id="planDuration"
-              class="form-control"
-              [(ngModel)]="currentPlan.duration"
-              name="planDuration"
-              required
-              min="1"
-            />
-          </div>
-          <div class="form-group mt-3">
-            <label for="planStatus">Estado</label>
-            <select
-              id="planStatus"
-              class="form-control"
-              [(ngModel)]="currentPlan.status"
-              name="planStatus"
-              required
-            >
-              <option value="Activo">Activo</option>
-              <option value="Inactivo">Inactivo</option>
-            </select>
-          </div>
         </form>
       </div>
       <div class="modal-footer">

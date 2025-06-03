@@ -184,7 +184,7 @@ export class PagosComponent implements OnInit {
         alert('¡Pago realizado exitosamente!');
         this.mensajePago = response.message || 'Pago exitoso';
         this.facturaEncontrada = null;
-        this.pagoForm.reset(); // Si no usas el formulario, esta línea es opcional
+        this.pagoForm.reset();
       },
       error: (error) => {
         console.error('❌ Error al realizar el pago:', error);

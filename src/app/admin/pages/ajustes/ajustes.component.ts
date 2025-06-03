@@ -230,70 +230,94 @@ cargarPlanes(): void {
 
   // Métodos para manejo de planes
   openNewPlanModal(): void {
-    this.isEditingPlan = false;
-    this.currentPlan = {
-      name: '',
-      description: '',
-      price: 0,
-      duration: 30,
-      status: 'Activo',
-    };
-    this.showPlanModal = true;
-  }
+  this.isEditingPlan = false;
+  this.currentPlan = {
+    name: '',
+    description: '',
+    price: 0,
+  };
+  this.showPlanModal = true;
+}
 
-  editPlan(plan: any): void {
-    this.isEditingPlan = true;
-    this.currentPlan = { ...plan };
-    this.showPlanModal = true;
-  }
+editPlan(plan: any): void {
+  this.isEditingPlan = true;
+  this.currentPlan = {
+    id: plan.id,
+    name: plan.nombre,          // nombre -> name
+    description: plan.descripcion, // descripcion -> description
+    price: plan.precio          // precio -> price
+  };
+  this.showPlanModal = true;
+}
+closePlanModal(): void {
+  this.showPlanModal = false;
+}
 
-  closePlanModal(): void {
-    this.showPlanModal = false;
-  }
-
-  savePlan(): void {
-    if (this.isEditingPlan) {
-      // Actualizar plan existente
-      const index = this.plans.findIndex((p) => p.id === this.currentPlan.id);
-      if (index !== -1) {
-        this.plans[index] = { ...this.currentPlan };
+savePlan(): void {
+  if (this.isEditingPlan) {
+    // Actualizar plan existente en backend
+    this.planService.updatePlan(this.currentPlan.id, {
+      nombre: this.currentPlan.name,
+      descripcion: this.currentPlan.description,
+      precio: this.currentPlan.price,
+    }).subscribe({
+      next: (updatedPlan) => {
+        const index = this.plans.findIndex(p => p.id === updatedPlan.id);
+        if (index !== -1) {
+          this.plans[index] = updatedPlan;
+        }
+        this.closePlanModal();
+      },
+      error: (err) => {
+        console.error('Error actualizando plan', err);
+        // Mostrar mensaje de error si quieres
       }
-    } else {
-      // Crear nuevo plan
-      const newId = Math.max(...this.plans.map((p) => p.id)) + 1;
-      this.plans.push({
-        id: newId,
-        nombre: this.currentPlan.name,
-        descripcion: this.currentPlan.description,
-        precio: this.currentPlan.price,
-        clientCount: 0,
-      });
-    }
-    this.closePlanModal();
+    });
+  } else {
+    // Crear nuevo plan en backend
+    this.planService.createPlan({
+      nombre: this.currentPlan.name,
+      descripcion: this.currentPlan.description,
+      precio: this.currentPlan.price,
+    }).subscribe({
+      next: (newPlan) => {
+        this.plans.push(newPlan);
+        this.plans.sort((a, b) => a.id - b.id);
+        this.closePlanModal();
+      },
+      error: (err) => {
+        console.error('Error creando plan', err);
+        // Mostrar mensaje de error si quieres
+      }
+    });
   }
+}
 
-  deletePlan(plan: any): void {
-    this.deleteType = 'plan';
-    this.deleteItemId = plan.id;
-    this.deleteItemName = plan.name;
-    this.showDeleteModal = true;
-  }
+deletePlan(plan: any): void {
+  this.deleteType = 'plan';
+  this.deleteItemId = plan.id;
+  this.deleteItemName = plan.nombre; // Usar nombre real del plan
+  this.showDeleteModal = true;
+}
 
-  // Métodos para manejo del modal de eliminación
-  closeDeleteModal(): void {
-    this.showDeleteModal = false;
-  }
+closeDeleteModal(): void {
+  this.showDeleteModal = false;
+}
 
-  confirmDelete(): void {
-    if (this.deleteType === 'user') {
-      // Eliminar usuario
-      this.users = this.users.filter((u) => u.id !== this.deleteItemId);
-    } else if (this.deleteType === 'plan') {
-      // Eliminar plan
-      this.plans = this.plans.filter((p) => p.id !== this.deleteItemId);
-    }
-    this.closeDeleteModal();
+confirmDelete(): void {
+  if (this.deleteType === 'plan') {
+    this.planService.deletePlan(this.deleteItemId).subscribe({
+      next: () => {
+        this.plans = this.plans.filter(p => p.id !== this.deleteItemId);
+        this.closeDeleteModal();
+      },
+      error: (err) => {
+        console.error('Error eliminando plan', err);
+        // Mostrar mensaje de error si quieres
+      }
+    });
   }
+}
 
   // Métodos para manejo de clases CSS
   getUserStatusClass(status: string): string {
@@ -304,17 +328,6 @@ cargarPlanes(): void {
         return 'badge status-inactive';
       case 'Bloqueado':
         return 'badge status-blocked';
-      default:
-        return 'badge';
-    }
-  }
-
-  getPlanStatusClass(status: string): string {
-    switch (status) {
-      case 'Activo':
-        return 'badge status-active';
-      case 'Inactivo':
-        return 'badge status-inactive';
       default:
         return 'badge';
     }
