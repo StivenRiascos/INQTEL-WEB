@@ -1,0 +1,91 @@
+<!-- Modifica la estructura para mejorar la responsividad -->
+<div class="dashboard-container">
+  <div class="dashboard-header">
+    <h2>Resumen general</h2>
+    <p class="text-muted">
+      Este panel proporciona una visión general del rendimiento actual de la
+      plataforma, incluyendo métricas clave como clientes, ingresos y soporte.
+    </p>
+  </div>
+
+  <!-- Usar *ngIf para forzar reconstrucción del DOM cuando cambia forceRebuild -->
+  <ng-container *ngIf="!forceRebuild">
+    <!-- Tarjetas de estadísticas -->
+    <div class="stats-cards">
+      <div class="row">
+        <div class="col-md-3 col-sm-6" *ngFor="let card of statsCards">
+          <div class="stats-card" [ngClass]="'card-' + card.color">
+            <div class="card-icon">
+              <i [class]="card.icon"></i>
+            </div>
+            <div class="card-content">
+              <h3 class="card-title">{{ card.title }}</h3>
+              <div class="card-value">{{ card.value }}</div>
+              <div
+                class="card-change"
+                [ngClass]="{
+                  positive: card.increase > 0,
+                  negative: card.increase < 0
+                }"
+              >
+                <i
+                  [class]="
+                    card.increase > 0 ? 'fas fa-arrow-up' : 'fas fa-arrow-down'
+                  "
+                ></i>
+                {{ card.increase }}% {{ card.period }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Gráficos y tablas -->
+    <div class="dashboard-content">
+      <div class="row">
+        <!-- Gráfico de ingresos -->
+        <div class="col-lg-8">
+          <div class="card">
+            <div class="card-header">
+              <h4>Ingresos Mensuales</h4>
+              <div class="card-actions">
+                <button
+                  class="btn btn-sm btn-outline-secondary"
+                  (click)="exportData()"
+                >
+                  <i class="fas fa-download"></i> Exportar
+                </button>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="chart-container">
+                <!-- Gráfico de ingresos mensuales -->
+                <canvas id="incomeChart"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Distribución de planes -->
+        <div class="col-lg-4">
+          <div class="card">
+            <div class="card-header">
+              <h4>Distribución de Planes</h4>
+            </div>
+            <div class="card-body">
+              <div class="chart-container">
+                <!-- Gráfico de distribución de planes -->
+                <canvas id="plansChart"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row mt-4">
+        <!-- Clientes recientes -->
+      </div>
+    </div>
+  </ng-container>
+</div>

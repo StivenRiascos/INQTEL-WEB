@@ -1,0 +1,423 @@
+<div class="facturas-container">
+  <div class="page-header">
+    <div class="header-content">
+      <h2>Gestión de Facturas</h2>
+      <p>Administra las facturas de INQTEL</p>
+    </div>
+    <div class="header-actions">
+    </div>
+  </div>
+
+  <!-- Tarjeta de facturas próximas a vencer -->
+  <div class="alert-card" *ngIf="facturasProximasVencer.length > 0">
+    <div class="alert-header">
+      <i class="fas fa-exclamation-triangle"></i>
+      <h4>Facturas Próximas a Vencer</h4>
+    </div>
+    <div class="alert-content">
+      <p>
+        Tienes {{ facturasProximasVencer.length }} facturas que vencen en los
+        próximos 7 días
+      </p>
+      <div class="facturas-vencer-list">
+        <div
+          class="factura-vencer-item"
+          *ngFor="let factura of facturasProximasVencer"
+        >
+          <span class="cliente-nombre">{{
+            getClienteNombre(factura.cliente.id)
+          }}</span>
+          <span class="factura-valor"
+            >${{ factura.valor | number : "1.0-0" }}</span
+          >
+          <span class="fecha-vencimiento"
+            >Vence: {{ factura.fechaLimite | date : "dd/MM/yyyy" }}</span
+          >
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-body">
+      <!-- Filtros -->
+      <div class="filters-container">
+        <div class="row">
+          <div class="col-md-3">
+            <div class="form-group">
+              <label for="searchTerm">Buscar</label>
+              <div class="search-input">
+                <i class="fas fa-search"></i>
+                <input
+                  type="text"
+                  id="searchTerm"
+                  class="form-control"
+                  placeholder="Buscar por cliente, número..."
+                  [(ngModel)]="searchTerm"
+                  (keyup.enter)="applyFilters()"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-3">
+            <div class="form-group">
+              <label for="mesFilter">Filtrar por Mes</label>
+              <select
+                id="mesFilter"
+                class="form-control"
+                [(ngModel)]="mesFilter"
+                (change)="applyFilters()"
+              >
+                <option value="Todos">Todos los meses</option>
+                <option *ngFor="let mes of mesesOptions" [value]="mes.value">
+                  {{ mes.label }}
+                </option>
+              </select>
+            </div>
+          </div>
+
+          <div class="col-md-3">
+            <div class="form-group">
+              <label for="estadoFilter">Estado</label>
+              <select
+                id="estadoFilter"
+                class="form-control"
+                [(ngModel)]="estadoFilter"
+                (change)="applyFilters()"
+              >
+                <option *ngFor="let estado of estadosOptions" [value]="estado">
+                  {{ estado }}
+                </option>
+              </select>
+            </div>
+          </div>
+
+          <div class="col-md-3">
+            <div class="form-group">
+              <label for="yearFilter">Año</label>
+              <select
+                id="yearFilter"
+                class="form-control"
+                [(ngModel)]="yearFilter"
+                (change)="applyFilters()"
+              >
+                <option *ngFor="let year of yearsOptions" [value]="year">
+                  {{ year }}
+                </option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tabla de facturas -->
+      <div class="table-responsive">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Cliente</th>
+              <th>Fecha Emisión</th>
+              <th>Fecha Límite</th>
+              <th>Valor</th>
+              <th>Estado</th>
+              <th>Mes Facturado</th>
+              <th>Días para Vencer</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let factura of filteredFacturas">
+              <td>{{ factura.id }}</td>
+              <td>{{ getClienteNombre(factura.cliente.id) }}</td>
+              <td>{{ factura.fecha | date : "dd/MM/yyyy" }}</td>
+              <td>{{ factura.fechaLimite | date : "dd/MM/yyyy" }}</td>
+              <td>${{ factura.valor | number : "1.0-0" }}</td>
+              <td>
+                <span [ngClass]="getEstadoClass(factura.estado)">
+                  {{ factura.estado }}
+                </span>
+              </td>
+              <td>{{ getMesFacturado(factura.fecha) }}</td>
+              <td>
+                <span
+                  [ngClass]="
+                  getDiasVencerClass(getDiasParaVencer(factura.fechaLimite))
+                  "
+                >
+                  {{ getDiasParaVencer(factura.fechaLimite) }} días
+                </span>
+              </td>
+              <td>
+                <div class="actions">
+                  <button
+                    class="btn btn-sm btn-icon btn-info"
+                    title="Ver detalles"
+                    (click)="openDetailsModal(factura)"
+                  >
+                    <i class="fas fa-eye"></i>
+                  </button>
+                  <button
+                    class="btn btn-sm btn-icon btn-success"
+                    title="Descargar PDF"
+                    (click)="descargarFacturaPDF(factura.id)"
+                  >
+                    <i class="fas fa-file-pdf"></i>
+                  </button>
+                  <button
+                    class="btn btn-sm btn-icon btn-warning"
+                    title="Editar"
+                    (click)="openEditFacturaModal(factura)"
+                  >
+                    <i class="fas fa-edit"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+            <tr *ngIf="filteredFacturas.length === 0">
+              <td colspan="9" class="text-center py-4">
+                No se encontraron facturas con los filtros aplicados.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Paginación -->
+      <div class="pagination-container">
+        <div class="pagination-info">
+          Mostrando {{ filteredFacturas.length }} de
+          {{ facturas.length }} facturas
+        </div>
+        <nav aria-label="Page navigation">
+          <ul class="pagination">
+            <li class="page-item disabled">
+              <a
+                class="page-link"
+                href="javascript:void(0)"
+                aria-label="Previous"
+              >
+                <span aria-hidden="true">&laquo;</span>
+              </a>
+            </li>
+            <li class="page-item active">
+              <a class="page-link" href="javascript:void(0)">1</a>
+            </li>
+            <li class="page-item">
+              <a class="page-link" href="javascript:void(0)">2</a>
+            </li>
+            <li class="page-item">
+              <a class="page-link" href="javascript:void(0)">3</a>
+            </li>
+            <li class="page-item">
+              <a class="page-link" href="javascript:void(0)" aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal para mostrar detalles de la factura -->
+<div class="modal" [class.show]="showDetailsModal" *ngIf="showDetailsModal">
+  <div class="modal-backdrop" (click)="closeDetailsModal()"></div>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">
+          Detalles de la Factura #{{ facturaDetails?.id }}
+        </h5>
+        <button type="button" class="close" (click)="closeDetailsModal()">
+          <span>&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="factura-details" *ngIf="facturaDetails">
+          <div class="detail-row">
+            <div class="detail-label">ID:</div>
+            <div class="detail-value">{{ facturaDetails.id }}</div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Cliente:</div>
+            <div class="detail-value">
+              {{ getClienteNombre(facturaDetails.cliente.id) }}
+            </div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Fecha de Emisión:</div>
+            <div class="detail-value">
+              {{ facturaDetails.fecha | date : "dd/MM/yyyy" }}
+            </div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Fecha Límite:</div>
+            <div class="detail-value">
+              {{ facturaDetails.fechaLimite | date : "dd/MM/yyyy" }}
+            </div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Valor:</div>
+            <div class="detail-value">
+              ${{ facturaDetails.valor | number : "1.0-0" }}
+            </div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Estado:</div>
+            <div class="detail-value">
+              <span [ngClass]="getEstadoClass(facturaDetails.estado)">
+                {{ facturaDetails.estado }}
+              </span>
+            </div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Mes Facturado:</div>
+            <div class="detail-value">
+              {{ getMesFacturado(facturaDetails.fecha) }}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          (click)="closeDetailsModal()"
+        >
+          Cerrar
+        </button>
+       <tr *ngFor="let factura of facturas">
+        <td>{{ factura.id }}</td>
+        <td>
+       <button
+        type="button"
+        class="btn btn-success"
+        (click)="descargarFacturaPDF(factura.id)"
+        >
+      Descargar PDF
+    </button>
+  </td>
+</tr>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal para nueva/editar factura -->
+<div class="modal" [class.show]="showFacturaModal" *ngIf="showFacturaModal">
+  <div class="modal-backdrop" (click)="closeFacturaModal()"></div>
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">
+          {{ isEditMode ? "Editar Factura" : "Nueva Factura" }}
+        </h5>
+        <button type="button" class="close" (click)="closeFacturaModal()">
+          <span>&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="clienteId">Cliente</label>
+                <select
+                  id="clienteId"
+                  class="form-control"
+                  [(ngModel)]="newFactura.cliente"
+                  name="clienteId"
+                  required
+                >
+                  <option *ngFor="let cliente of clientes" [value]="cliente.id">
+                    {{ cliente.nombre }}
+                  </option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="valor">Valor</label>
+                <input
+                  type="number"
+                  id="valor"
+                  class="form-control"
+                  [(ngModel)]="newFactura.valor"
+                  name="valor"
+                  required
+                />
+              </div>
+            </div>
+          </div>
+
+          <div class="row mt-3">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="fecha">Fecha de Emisión</label>
+                <input
+                  type="date"
+                  id="fecha"
+                  class="form-control"
+                  [(ngModel)]="newFactura.fecha"
+                  name="fecha"
+                  required
+                />
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="fechaLimite">Fecha Límite</label>
+                <input
+                  type="date"
+                  id="fechaLimite"
+                  class="form-control"
+                  [(ngModel)]="newFactura.fechaLimite"
+                  name="fechaLimite"
+                  required
+                />
+              </div>
+            </div>
+          </div>
+
+          <div class="row mt-3">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="estado">Estado</label>
+                <select
+                  id="estado"
+                  class="form-control"
+                  [(ngModel)]="newFactura.estado"
+                  name="estado"
+                  required
+                >
+                  <option
+                    *ngFor="let estado of estadosOptions"
+                    [value]="estado"
+                    [disabled]="estado === 'Todos'"
+                  >
+                    {{ estado }}
+                  </option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          (click)="closeFacturaModal()"
+        >
+          Cancelar
+        </button>
+        <button type="button" class="btn btn-primary" (click)="saveFactura()">
+          {{ isEditMode ? "Actualizar" : "Guardar" }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

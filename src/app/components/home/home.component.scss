@@ -1,5 +1,6 @@
 @use "../../../styles/variables" as vars;
 @use "../../../styles/mixins" as mix;
+
 @use "sass:color";
 
 // Hero Section
@@ -27,6 +28,52 @@
     background-position: center;
     opacity: 0.2;
     z-index: 1;
+  }
+  .fiber-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: 0;
+
+    &::before,
+    &::after {
+      content: "";
+      position: absolute;
+      width: 200%;
+      height: 200%;
+      background: repeating-linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0.05) 0px,
+        rgba(255, 255, 255, 0.1) 2px,
+        transparent 2px,
+        transparent 4px
+      );
+      animation: fiberMove 15s linear infinite;
+      opacity: 0.2;
+    }
+
+    &::after {
+      background: repeating-linear-gradient(
+        0deg,
+        rgba(0, 255, 255, 0.05) 0px,
+        rgba(0, 255, 255, 0.1) 2px,
+        transparent 2px,
+        transparent 4px
+      );
+      animation-duration: 20s;
+    }
+  }
+
+  @keyframes fiberMove {
+    0% {
+      transform: translateX(0) translateY(0);
+    }
+    100% {
+      transform: translateX(-50%) translateY(-50%);
+    }
   }
 
   .hero-content {
@@ -241,6 +288,9 @@
     grid-template-columns: repeat(1, 1fr);
     gap: vars.$spacing-5;
     margin-top: vars.$spacing-6;
+    position: relative;
+    // Añadir padding para dar espacio a las tarjetas escaladas
+    padding: vars.$spacing-4 0;
 
     @include mix.respond-to(md) {
       grid-template-columns: repeat(2, 1fr);
@@ -254,11 +304,14 @@
   .plan-card {
     background-color: vars.$white;
     border-radius: vars.$border-radius-lg;
-    overflow: hidden;
+    overflow: visible; // Cambiado de 'hidden' a 'visible' para permitir que el badge se muestre
     @include mix.box-shadow(1);
     @include mix.transition;
     position: relative;
     border: 2px solid transparent;
+    height: 100%; // Asegurar que todas las tarjetas tengan la misma altura
+    display: flex;
+    flex-direction: column;
 
     &:hover {
       @include mix.box-shadow(2);
@@ -271,30 +324,36 @@
       transform: scale(1.05);
       z-index: 2;
 
+      // Eliminar el margin-top negativo que podría causar recortes
       @include mix.respond-to(md) {
-        margin-top: -20px;
+        margin-top: 0;
       }
 
       .plan-header {
         background: linear-gradient(
           135deg,
-          lighten(vars.$inqtel-red, 30%),
+          color.adjust(vars.$inqtel-red, $lightness: 30%),
           vars.$white
         );
+        // Asegurar que el header tenga suficiente padding para el badge
+        padding-top: calc(vars.$spacing-5 + vars.$spacing-4);
       }
     }
 
     .popular-badge {
       position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
+      top: -1px; // Ajustado para alinearse perfectamente con el borde superior
+      left: -2px; // Alineado con el borde izquierdo
+      right: -2px; // Alineado con el borde derecho
       background-color: vars.$inqtel-red;
       color: vars.$white;
       text-align: center;
       padding: vars.$spacing-1;
       font-size: 0.875rem;
       font-weight: 600;
+      z-index: 3;
+      border-top-left-radius: vars.$border-radius-lg;
+      border-top-right-radius: vars.$border-radius-lg;
     }
 
     .plan-header {
@@ -302,7 +361,7 @@
       text-align: center;
       background: linear-gradient(
         135deg,
-        lighten(vars.$inqtel-blue-light, 35%),
+        color.adjust(vars.$inqtel-blue-light, $lightness: 35%),
         vars.$white
       );
 
@@ -328,6 +387,7 @@
 
     .plan-features {
       padding: vars.$spacing-4 vars.$spacing-5;
+      flex: 1; // Hacer que esta sección ocupe el espacio disponible
 
       ul {
         list-style: none;
@@ -371,7 +431,6 @@
     }
   }
 }
-
 // Referral Program
 .referral {
   padding: vars.$spacing-8 0;

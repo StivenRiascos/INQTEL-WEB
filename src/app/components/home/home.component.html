@@ -1,5 +1,7 @@
 <!-- Hero Section -->
 <section class="hero">
+  <div class="fiber-background"></div>
+
   <div class="hero-content">
     <div class="container">
       <div class="hero-text">
@@ -21,9 +23,9 @@
 
       <div class="hero-cards">
         <div class="speed-card" *ngFor="let plan of plans">
-          <div class="speed-value">{{ plan.name }}</div>
+          <div class="speed-value">{{ plan.nombre }}</div>
           <div class="speed-price">
-            {{ plan.price | currency : "COP" : "symbol-narrow" : "1.0-0" }}
+            {{ plan.precio | currency : "COP" : "symbol-narrow" : "1.0-0" }}
           </div>
           <div class="speed-period">Mensual</div>
         </div>
@@ -105,10 +107,10 @@
       >
         <div class="popular-badge" *ngIf="plan.popular">Más Popular</div>
         <div class="plan-header">
-          <h3>Plan {{ plan.name }}</h3>
+          <h3>Plan {{ plan.nombre }}</h3>
           <div class="plan-price">
             <span class="price">{{
-              plan.price | currency : "COP" : "symbol-narrow" : "1.0-0"
+              plan.precio | currency : "COP" : "symbol-narrow" : "1.0-0"
             }}</span>
             <span class="period">Mensual</span>
           </div>
@@ -157,10 +159,13 @@
           <span>400 Mbps</span> de velocidad.
         </p>
         <p class="referral-note">Aplica condiciones y restricciones</p>
-        <a routerLink="/referidos" class="btn btn-secondary">Más Información</a>
+        <a routerLink="/contacto" class="btn btn-secondary">Más Información</a>
       </div>
       <div class="referral-image">
-        <img src="assets/images/referral-img.jpg" alt="Programa de referidos" />
+        <img
+          src="../../../assets/images/referidos.jpg"
+          alt="Programa de referidos"
+        />
       </div>
     </div>
   </div>
@@ -185,7 +190,7 @@
         </div>
         <div class="testimonial-author">
           <div class="author-avatar">
-            <img src="assets/images/avatar1.jpg" alt="Cliente" />
+            <img src="../../../assets/icons/avatar1.png" alt="Cliente" />
           </div>
           <div class="author-info">
             <h4>Carlos Rodríguez</h4>
@@ -204,7 +209,7 @@
         </div>
         <div class="testimonial-author">
           <div class="author-avatar">
-            <img src="assets/images/avatar2.jpg" alt="Cliente" />
+            <img src="../../../assets/icons/avatar2.png" alt="Cliente" />
           </div>
           <div class="author-info">
             <h4>María López</h4>

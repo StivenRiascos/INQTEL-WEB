@@ -1,6 +1,8 @@
-/* Importar variables y mixins */
+/* Importar variables, mixins y el módulo de color */
 @use "styles/_variables" as vars;
 @use "styles/_mixins" as mix;
+@use "styles/colors" as col;
+@use "sass:color";
 
 /* Importar fuentes */
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
@@ -90,7 +92,7 @@ a {
     @include mix.button-variant(
       vars.$inqtel-blue-light,
       vars.$white,
-      darken(vars.$inqtel-blue-light, 10%)
+      color.adjust(vars.$inqtel-blue-light, $lightness: -10%)
     );
   }
 
@@ -98,7 +100,7 @@ a {
     @include mix.button-variant(
       vars.$inqtel-red,
       vars.$white,
-      darken(vars.$inqtel-red, 10%)
+      color.adjust(vars.$inqtel-red, $lightness: -10%)
     );
   }
 
@@ -188,7 +190,12 @@ html,
 body {
   height: 100%;
 }
+
 body {
-  margin: 0;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-family: "Poppins", sans-serif; // Fuente principal según tu diseño
+  font-size: vars.$font-size-base;
+  line-height: 1.6;
+  color: vars.$gray-800;
+  background-color: vars.$white;
+  margin: 0; // Añadido aquí para evitar duplicado
 }

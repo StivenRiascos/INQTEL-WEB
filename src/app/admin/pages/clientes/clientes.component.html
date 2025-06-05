@@ -1,0 +1,551 @@
+<div class="clientes-container">
+  <div class="page-header">
+    <div class="header-content">
+      <h2>Gestión de Clientes</h2>
+      <p>Administra los clientes de INQTEL</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-primary" (click)="openNewClientModal()">
+        <i class="fas fa-plus"></i> Nuevo Cliente
+      </button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-body">
+      <!-- Filtros -->
+      <div class="filters-container">
+        <div class="row">
+          <div class="col-md-3">
+            <div class="form-group">
+              <label for="searchTerm">Buscar</label>
+              <div class="search-input">
+                <i class="fas fa-search"></i>
+                <input
+                  type="text"
+                  id="searchTerm"
+                  class="form-control"
+                  placeholder="Buscar por nombre, email..."
+                  [(ngModel)]="searchTerm"
+                  (keyup.enter)="applyFilters()"
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- Nueva búsqueda específica por documento -->
+          <div class="col-md-3">
+            <div class="form-group">
+              <label for="documentSearch">Buscar por Documento</label>
+              <div class="search-input">
+                <i class="fas fa-id-card"></i>
+                <input
+                  type="text"
+                  id="documentSearch"
+                  class="form-control"
+                  placeholder="Ingrese número de documento"
+                  [(ngModel)]="documentSearch"
+                  (keyup.enter)="searchByDocument()"
+                />
+                <button
+                  class="btn-search"
+                  title="Buscar por documento"
+                  (click)="searchByDocument()"
+                >
+                  <i class="fas fa-search-plus"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-3">
+            <div class="form-group">
+              <label for="statusFilter">Estado</label>
+              <select
+                id="statusFilter"
+                class="form-control"
+                [(ngModel)]="statusFilter"
+                (change)="applyFilters()"
+              >
+                <option *ngFor="let option of statusOptions" [value]="option">
+                  {{ option }}
+                </option>
+              </select>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="form-group">
+              <label for="planFilter">Plan</label>
+              <select
+              id="planFilter"
+              class="form-control"
+              [(ngModel)]="planFilter"
+              (change)="applyFilters()"
+              >
+              <option value="Todos">Todos</option>
+              <option *ngFor="let option of planOptions" [value]="option.nombre">
+              {{ option.nombre }}
+              </option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tabla de clientes con campos adicionales -->
+      <div class="table-responsive">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nombre</th>
+              <th>Tipo Doc.</th>
+              <th>Número Doc.</th>
+              <th>Email</th>
+              <th>Dirección</th>
+              <th>Teléfono</th>
+              <th>Estado</th>
+              <th>Plan</th>
+              <th>Último Pago</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let client of filteredClients">
+              <td>{{ client.id }}</td>
+              <td>{{ client.nombre }}</td>
+              <td>{{ client.tipoDocumento }}</td>
+              <td>{{ client.numeroDocumento }}</td>
+              <td>{{ client.email }}</td>
+              <td>{{ client.direccion }}</td>
+              <td>{{ client.telefono }}</td>
+              <td>
+                <span [ngClass]="getStatusClass(client.estado)">
+                  {{ client.estado }}
+                </span>
+              </td>
+              <td>
+                {{ getPlanNameById(client.plan?.id) }}
+              </td>
+
+              <td>{{ client.lastPayment }}</td>
+              
+              <td>
+                <div class="actions">
+                  <button
+                    class="btn btn-sm btn-icon btn-info"
+                    title="Ver detalles"
+                    (click)="openDetailsModal(client)"
+                  >
+                    <i class="fas fa-eye"></i>
+                  </button>
+                  <button
+                    class="btn btn-sm btn-icon btn-primary"
+                    title="Ver historial"
+                    (click)="openHistoryModal(client)"
+                  >
+                    <i class="fas fa-history"></i>
+                  </button>
+                  <button
+                    class="btn btn-sm btn-icon btn-warning"
+                    title="Editar"
+                    (click)="openEditClientModal(client)"
+                  >
+                    <i class="fas fa-edit"></i>
+                  </button>
+                  <button
+                    class="btn btn-sm btn-icon btn-danger"
+                    title="Eliminar"
+                    (click)="openDeleteModal(client)"
+                  >
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+            <tr *ngIf="filteredClients.length === 0">
+              <td colspan="11" class="text-center py-4">
+                No se encontraron clientes con los filtros aplicados.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Paginación -->
+      <div class="pagination-container">
+        <div class="pagination-info">
+          Mostrando {{ filteredClients.length }} de
+          {{ clients.length }} clientes
+        </div>
+        <nav aria-label="Page navigation">
+          <ul class="pagination">
+            <li class="page-item disabled">
+              <a
+                class="page-link"
+                href="javascript:void(0)"
+                aria-label="Previous"
+              >
+                <span aria-hidden="true">&laquo;</span>
+              </a>
+            </li>
+            <li class="page-item active">
+              <a class="page-link" href="javascript:void(0)">1</a>
+            </li>
+            <li class="page-item">
+              <a class="page-link" href="javascript:void(0)">2</a>
+            </li>
+            <li class="page-item">
+              <a class="page-link" href="javascript:void(0)">3</a>
+            </li>
+            <li class="page-item">
+              <a class="page-link" href="javascript:void(0)" aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal para mostrar detalles del cliente -->
+<div class="modal" [class.show]="showDetailsModal" *ngIf="showDetailsModal">
+  <div class="modal-backdrop" (click)="closeDetailsModal()"></div>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">
+          Detalles del Cliente: {{ clientDetails?.nombre }}
+        </h5>
+        <button type="button" class="close" (click)="closeDetailsModal()">
+          <span>&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="client-details" *ngIf="clientDetails">
+          <div class="detail-row">
+            <div class="detail-label">ID:</div>
+            <div class="detail-value">{{ clientDetails.id }}</div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Nombre:</div>
+            <div class="detail-value">{{ clientDetails.nombre }}</div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Documento:</div>
+            <div class="detail-value">
+              {{ clientDetails.tipoDocumento }} -
+              {{ clientDetails.numeroDocumento }}
+            </div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Email:</div>
+            <div class="detail-value">{{ clientDetails.email }}</div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Teléfono:</div>
+            <div class="detail-value">{{ clientDetails.telefono }}</div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Dirección:</div>
+            <div class="detail-value">{{ clientDetails.direccion }}</div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Plan:</div>
+            <div class="detail-value">
+  {{ clientDetails.plan?.nombre }} - {{ clientDetails.plan?.precio | currency:'COP ':'symbol':'1.0-0' }}
+</div>
+
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Estado:</div>
+            <div class="detail-value">
+              <span [ngClass]="getStatusClass(clientDetails.estado)">
+              {{ clientDetails.estado }}
+              </span>
+            </div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Fecha de Registro:</div>
+            <div class="detail-value">
+              {{ clientDetails.fechaRegistro | date: 'dd/MM/yyyy HH:mm' }}
+            </div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Último Pago:</div>
+            <div class="detail-value">{{ clientDetails.lastPayment }}</div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          (click)="closeDetailsModal()"
+        >
+          Cerrar
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary"
+          (click)="openEditClientModal(clientDetails!); closeDetailsModal()"
+        >
+          Editar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal para mostrar el historial del cliente -->
+<div class="modal" [class.show]="showHistoryModal" *ngIf="showHistoryModal">
+  <div class="modal-backdrop" (click)="closeHistoryModal()"></div>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">
+          Historial de Cliente: {{ selectedClient?.nombre }}
+        </h5>
+        <button type="button" class="close" (click)="closeHistoryModal()">
+          <span>&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="history-timeline" *ngIf="selectedClient">
+          <div
+            class="history-item"
+            *ngFor="let item of clientHistory"
+            [ngClass]="item.type"
+          >
+            <div class="history-date">{{ item.date }}</div>
+            <div class="history-content">
+              <div class="history-type" [ngClass]="'history-' + item.type">
+                {{ item.typeLabel }}
+              </div>
+              <div class="history-description">{{ item.description }}</div>
+              <div class="history-details" *ngIf="item.details">
+                {{ item.details }}
+              </div>
+              <button class="btn-pdf-download" (click)="descargarFacturaPDF(item)">
+                Descargar PDF
+              </button>
+            </div>
+          </div>
+
+          <div class="no-history" *ngIf="clientHistory.length === 0">
+            No hay registros de historial para este cliente.
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          (click)="closeHistoryModal()"
+        >
+          Cerrar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal para nuevo/editar cliente -->
+<div class="modal" [class.show]="showClientModal" *ngIf="showClientModal">
+  <div class="modal-backdrop" (click)="closeClientModal()"></div>
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">
+          {{ isEditMode ? "Editar Cliente" : "Nuevo Cliente" }}
+        </h5>
+        <button type="button" class="close" (click)="closeClientModal()">
+          <span>&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="clientName">Nombre Completo</label>
+                <input
+                  type="text"
+                  id="clientName"
+                  class="form-control"
+                  [(ngModel)]="newClient.nombre"
+                  name="name"
+                  required
+                />
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="form-group">
+                <label for="documentType">Tipo de Documento</label>
+                <select
+                  id="documentType"
+                  class="form-control"
+                  [(ngModel)]="newClient.tipoDocumento"
+                  name="documentType"
+                  required
+                >
+                  <option *ngFor="let type of documentTypes" [value]="type">
+                    {{ type }}
+                  </option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="form-group">
+                <label for="documentNumber">Número de Documento</label>
+                <input
+                  type="text"
+                  id="documentNumber"
+                  class="form-control"
+                  [(ngModel)]="newClient.numeroDocumento"
+                  name="documentNumber"
+                  required
+                />
+              </div>
+            </div>
+          </div>
+
+          <div class="row mt-3">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="email">Email</label>
+                <input
+                  type="email"
+                  id="email"
+                  class="form-control"
+                  [(ngModel)]="newClient.email"
+                  name="email"
+                  required
+                />
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="phone">Teléfono</label>
+                <input
+                  type="tel"
+                  id="phone"
+                  class="form-control"
+                  [(ngModel)]="newClient.telefono"
+                  name="phone"
+                  required
+                />
+              </div>
+            </div>
+          </div>
+
+          <div class="row mt-3">
+            <div class="col-md-12">
+              <div class="form-group">
+                <label for="location">Dirección</label>
+                <input
+                  type="text"
+                  id="location"
+                  class="form-control"
+                  [(ngModel)]="newClient.direccion"
+                  name="location"
+                  required
+                />
+              </div>
+            </div>
+          </div>
+
+          <div class="row mt-3">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="plan">Plan</label>
+                <select
+                id="plan"
+                class="form-control"
+                [(ngModel)]="newClient.planId"
+                name="planId"
+                required
+                >
+                <option *ngFor="let plan of planOptions" [value]="plan.id">
+                {{ plan.nombre }}
+                </option>
+                </select>
+
+
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="status">Estado</label>
+                <select
+                  id="status"
+                  class="form-control"
+                  [(ngModel)]="newClient.estado"
+                  name="status"
+                  required
+                >
+                  <option
+                    *ngFor="let status of statusOptions"
+                    [value]="status"
+                    [disabled]="status === 'Todos'"
+                  >
+                    {{ status }}
+                  </option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          (click)="closeClientModal()"
+        >
+          Cancelar
+        </button>
+        <button type="button" class="btn btn-primary" (click)="saveClient()">
+          {{ isEditMode ? "Actualizar" : "Guardar" }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de confirmación de eliminación -->
+<div class="modal" [class.show]="showDeleteModal" *ngIf="showDeleteModal">
+  <div class="modal-backdrop" (click)="closeDeleteModal()"></div>
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Confirmar Eliminación</h5>
+        <button type="button" class="close" (click)="closeDeleteModal()">
+          <span>&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>
+          ¿Está seguro que desea eliminar a este cliente se eliminaran los pagos y facturas asociados a este cliente
+          <strong>{{ clientToDelete?.nombre }}</strong
+          >?
+        </p>
+        <p class="text-danger">Esta acción no se puede deshacer.</p>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          (click)="closeDeleteModal()"
+        >
+          Cancelar
+        </button>
+        <button type="button" class="btn btn-danger" (click)="deleteClient()">
+          Eliminar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

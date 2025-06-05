@@ -1,0 +1,17 @@
+<div class="admin-container" [class.sidebar-collapsed]="isSidebarCollapsed">
+  <!-- Sidebar -->
+  <app-sidebar class="sidebar"></app-sidebar>
+
+  <!-- Toggle Button -->
+  <button class="toggle-btn" (click)="toggleSidebar()">
+    <i
+      class="bi"
+      [ngClass]="isSidebarCollapsed ? 'bi-arrow-right' : 'bi-arrow-left'"
+    ></i>
+  </button>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <router-outlet></router-outlet>
+  </div>
+</div>

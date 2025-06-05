@@ -1,0 +1,860 @@
+<div class="ajustes-container">
+  <div class="page-header">
+    <div class="header-content">
+      <h2>Configuración del Sistema</h2>
+      <p>Administra los ajustes y configuraciones de INQTEL</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-primary" (click)="saveAllSettings()">
+        <i class="fas fa-save"></i> Guardar Cambios
+      </button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-body">
+      <!-- Pestañas de configuración -->
+      <ul class="nav nav-tabs" id="settingsTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            [class.active]="activeTab === 'general'"
+            id="general-tab"
+            (click)="setActiveTab('general')"
+            type="button"
+          >
+            <i class="fas fa-cog"></i> General
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            [class.active]="activeTab === 'usuarios'"
+            id="usuarios-tab"
+            (click)="setActiveTab('usuarios')"
+            type="button"
+          >
+            <i class="fas fa-users"></i> Usuarios
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            [class.active]="activeTab === 'planes'"
+            id="planes-tab"
+            (click)="setActiveTab('planes')"
+            type="button"
+          >
+            <i class="fas fa-list"></i> Planes
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            [class.active]="activeTab === 'notificaciones'"
+            id="notificaciones-tab"
+            (click)="setActiveTab('notificaciones')"
+            type="button"
+          >
+            <i class="fas fa-bell"></i> Notificaciones
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            [class.active]="activeTab === 'seguridad'"
+            id="seguridad-tab"
+            (click)="setActiveTab('seguridad')"
+            type="button"
+          >
+            <i class="fas fa-shield-alt"></i> Seguridad
+          </button>
+        </li>
+      </ul>
+
+      <!-- Contenido de las pestañas -->
+      <div class="tab-content mt-4" id="settingsTabContent">
+        <!-- Pestaña General -->
+        <div
+          class="tab-pane fade"
+          [class.show]="activeTab === 'general'"
+          [class.active]="activeTab === 'general'"
+        >
+          <h4>Configuración General</h4>
+
+          <form>
+            <div class="row mt-3">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="companyName">Nombre de la Empresa</label>
+                  <input
+                    type="text"
+                    id="companyName"
+                    class="form-control"
+                    [(ngModel)]="settings.general.companyName"
+                    name="companyName"
+                  />
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="contactEmail">Email de Contacto</label>
+                  <input
+                    type="email"
+                    id="contactEmail"
+                    class="form-control"
+                    [(ngModel)]="settings.general.contactEmail"
+                    name="contactEmail"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div class="row mt-3">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="phoneNumber">Teléfono de Contacto</label>
+                  <input
+                    type="tel"
+                    id="phoneNumber"
+                    class="form-control"
+                    [(ngModel)]="settings.general.phoneNumber"
+                    name="phoneNumber"
+                  />
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="address">Dirección</label>
+                  <input
+                    type="text"
+                    id="address"
+                    class="form-control"
+                    [(ngModel)]="settings.general.address"
+                    name="address"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div class="row mt-3">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="timezone">Zona Horaria</label>
+                  <select
+                    id="timezone"
+                    class="form-control"
+                    [(ngModel)]="settings.general.timezone"
+                    name="timezone"
+                  >
+                    <option *ngFor="let zone of timezones" [value]="zone.value">
+                      {{ zone.label }}
+                    </option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="dateFormat">Formato de Fecha</label>
+                  <select
+                    id="dateFormat"
+                    class="form-control"
+                    [(ngModel)]="settings.general.dateFormat"
+                    name="dateFormat"
+                  >
+                    <option value="DD/MM/YYYY">DD/MM/YYYY</option>
+                    <option value="MM/DD/YYYY">MM/DD/YYYY</option>
+                    <option value="YYYY-MM-DD">YYYY-MM-DD</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="row mt-3">
+              <div class="col-md-12">
+                <div class="form-group">
+                  <label for="systemLogo">Logo del Sistema</label>
+                  <div class="custom-file">
+                    <input
+                      type="file"
+                      class="custom-file-input"
+                      id="systemLogo"
+                      (change)="onLogoChange($event)"
+                    />
+                    <label class="custom-file-label" for="systemLogo"
+                      >Seleccionar archivo</label
+                    >
+                  </div>
+                  <div class="logo-preview mt-2" *ngIf="logoPreview">
+                    <img
+                      [src]="logoPreview"
+                      alt="Logo Preview"
+                      class="img-thumbnail"
+                      style="max-height: 100px"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <!-- Pestaña Usuarios -->
+        <div
+          class="tab-pane fade"
+          [class.show]="activeTab === 'usuarios'"
+          [class.active]="activeTab === 'usuarios'"
+        >
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h4>Gestión de Usuarios</h4>
+            <button class="btn btn-sm btn-primary" (click)="openNewUserModal()">
+              <i class="fas fa-plus"></i> Nuevo Usuario
+            </button>
+          </div>
+
+          <div class="table-responsive">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th>Nombre</th>
+                  <th>Email</th>
+                  <th>Rol</th>
+                  <th>Estado</th>
+                  <th>Último Acceso</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let user of users">
+                  <td>{{ user.name }}</td>
+                  <td>{{ user.email }}</td>
+                  <td>{{ user.role }}</td>
+                  <td>
+                    <span [ngClass]="getUserStatusClass(user.status)">
+                      {{ user.status }}
+                    </span>
+                  </td>
+                  <td>{{ user.lastLogin }}</td>
+                  <td>
+                    <div class="actions">
+                      <button
+                        class="btn btn-sm btn-icon btn-warning"
+                        title="Editar"
+                        (click)="editUser(user)"
+                      >
+                        <i class="fas fa-edit"></i>
+                      </button>
+                      <button
+                        class="btn btn-sm btn-icon btn-danger"
+                        title="Eliminar"
+                        (click)="deleteUser(user)"
+                      >
+                        <i class="fas fa-trash"></i>
+                      </button>
+                      <button
+                        class="btn btn-sm btn-icon btn-secondary"
+                        title="Resetear Contraseña"
+                        (click)="resetPassword(user)"
+                      >
+                        <i class="fas fa-key"></i>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Pestaña Planes -->
+        <div
+          class="tab-pane fade"
+          [class.show]="activeTab === 'planes'"
+          [class.active]="activeTab === 'planes'"
+        >
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h4>Gestión de Planes</h4>
+            <button class="btn btn-sm btn-primary" (click)="openNewPlanModal()">
+              <i class="fas fa-plus"></i> Nuevo Plan
+            </button>
+          </div>
+
+          <div class="table-responsive">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th>Nombre</th>
+                  <th>Descripción</th>
+                  <th>Precio</th>
+                  <th>Clientes</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let plan of plans">
+                  <td>{{ plan.nombre }}</td>
+                  <td>{{ plan.descripcion }}</td>
+                  <td>{{ plan.precio | currency }}</td>
+                  <td>{{ plan.clientCount }}</td>
+                  <td>
+                    <div class="actions">
+                      <button
+                        class="btn btn-sm btn-icon btn-warning"
+                        title="Editar"
+                        (click)="editPlan(plan)"
+                      >
+                        <i class="fas fa-edit"></i>
+                      </button>
+                      <button
+                        class="btn btn-sm btn-icon btn-danger"
+                        title="Eliminar"
+                        (click)="deletePlan(plan)"
+                      >
+                        <i class="fas fa-trash"></i>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Pestaña Notificaciones -->
+        <div
+          class="tab-pane fade"
+          [class.show]="activeTab === 'notificaciones'"
+          [class.active]="activeTab === 'notificaciones'"
+        >
+          <h4>Configuración de Notificaciones</h4>
+
+          <form>
+            <div class="row mt-3">
+              <div class="col-md-12">
+                <h5>Notificaciones por Email</h5>
+              </div>
+            </div>
+
+            <div class="row mt-2">
+              <div class="col-md-6">
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="newClientNotif"
+                    [(ngModel)]="settings.notifications.email.newClient"
+                    name="newClientNotif"
+                  />
+                  <label class="form-check-label" for="newClientNotif">
+                    Nuevo cliente registrado
+                  </label>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="paymentNotif"
+                    [(ngModel)]="settings.notifications.email.payment"
+                    name="paymentNotif"
+                  />
+                  <label class="form-check-label" for="paymentNotif">
+                    Pago recibido
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div class="row mt-2">
+              <div class="col-md-6">
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="expiredPlanNotif"
+                    [(ngModel)]="settings.notifications.email.expiredPlan"
+                    name="expiredPlanNotif"
+                  />
+                  <label class="form-check-label" for="expiredPlanNotif">
+                    Plan expirado
+                  </label>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="systemAlertNotif"
+                    [(ngModel)]="settings.notifications.email.systemAlert"
+                    name="systemAlertNotif"
+                  />
+                  <label class="form-check-label" for="systemAlertNotif">
+                    Alertas del sistema
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div class="row mt-4">
+              <div class="col-md-12">
+                <h5>Plantillas de Email</h5>
+              </div>
+            </div>
+
+            <div class="row mt-2">
+              <div class="col-md-12">
+                <div class="form-group">
+                  <label for="welcomeTemplate">Plantilla de Bienvenida</label>
+                  <textarea
+                    id="welcomeTemplate"
+                    class="form-control"
+                    rows="4"
+                    [(ngModel)]="settings.notifications.templates.welcome"
+                    name="welcomeTemplate"
+                  ></textarea>
+                  <small class="form-text text-muted">
+                    Variables disponibles: {{ "{" }}nombre{{ "}" }},
+                    {{ "{" }}plan{{ "}" }}, {{ "{" }}fecha_expiracion{{ "}" }}
+                  </small>
+                </div>
+              </div>
+            </div>
+
+            <div class="row mt-3">
+              <div class="col-md-12">
+                <div class="form-group">
+                  <label for="paymentTemplate"
+                    >Plantilla de Confirmación de Pago</label
+                  >
+                  <textarea
+                    id="paymentTemplate"
+                    class="form-control"
+                    rows="4"
+                    [(ngModel)]="settings.notifications.templates.payment"
+                    name="paymentTemplate"
+                  ></textarea>
+                  <small class="form-text text-muted">
+                    Variables disponibles: {{ "{" }}nombre{{ "}" }},
+                    {{ "{" }}monto{{ "}" }}, {{ "{" }}fecha{{ "}" }},
+                    {{ "{" }}plan{{ "}" }}
+                  </small>
+
+                  >
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <!-- Pestaña Seguridad -->
+        <div
+          class="tab-pane fade"
+          [class.show]="activeTab === 'seguridad'"
+          [class.active]="activeTab === 'seguridad'"
+        >
+          <h4>Configuración de Seguridad</h4>
+
+          <form>
+            <div class="row mt-3">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="passwordPolicy">Política de Contraseñas</label>
+                  <select
+                    id="passwordPolicy"
+                    class="form-control"
+                    [(ngModel)]="settings.security.passwordPolicy"
+                    name="passwordPolicy"
+                  >
+                    <option value="basic">Básica (mínimo 8 caracteres)</option>
+                    <option value="medium">
+                      Media (mínimo 8 caracteres, incluir números)
+                    </option>
+                    <option value="strong">
+                      Fuerte (mínimo 10 caracteres, incluir números y símbolos)
+                    </option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="sessionTimeout"
+                    >Tiempo de Expiración de Sesión</label
+                  >
+                  <select
+                    id="sessionTimeout"
+                    class="form-control"
+                    [(ngModel)]="settings.security.sessionTimeout"
+                    name="sessionTimeout"
+                  >
+                    <option value="15">15 minutos</option>
+                    <option value="30">30 minutos</option>
+                    <option value="60">1 hora</option>
+                    <option value="120">2 horas</option>
+                    <option value="240">4 horas</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="row mt-3">
+              <div class="col-md-6">
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="twoFactorAuth"
+                    [(ngModel)]="settings.security.twoFactorAuth"
+                    name="twoFactorAuth"
+                  />
+                  <label class="form-check-label" for="twoFactorAuth">
+                    Habilitar autenticación de dos factores
+                  </label>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="loginAttempts"
+                    [(ngModel)]="settings.security.limitLoginAttempts"
+                    name="loginAttempts"
+                  />
+                  <label class="form-check-label" for="loginAttempts">
+                    Limitar intentos de inicio de sesión
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div class="row mt-3" *ngIf="settings.security.limitLoginAttempts">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="maxAttempts">Número máximo de intentos</label>
+                  <input
+                    type="number"
+                    id="maxAttempts"
+                    class="form-control"
+                    [(ngModel)]="settings.security.maxLoginAttempts"
+                    name="maxAttempts"
+                    min="1"
+                    max="10"
+                  />
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="lockoutTime">Tiempo de bloqueo (minutos)</label>
+                  <input
+                    type="number"
+                    id="lockoutTime"
+                    class="form-control"
+                    [(ngModel)]="settings.security.lockoutTime"
+                    name="lockoutTime"
+                    min="5"
+                    max="60"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div class="row mt-4">
+              <div class="col-md-12">
+                <h5>Registro de Actividad</h5>
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="logUserActivity"
+                    [(ngModel)]="settings.security.logUserActivity"
+                    name="logUserActivity"
+                  />
+                  <label class="form-check-label" for="logUserActivity">
+                    Registrar actividad de usuarios
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div class="row mt-3" *ngIf="settings.security.logUserActivity">
+              <div class="col-md-12">
+                <div class="form-group">
+                  <label for="logRetention"
+                    >Retención de registros (días)</label
+                  >
+                  <input
+                    type="number"
+                    id="logRetention"
+                    class="form-control"
+                    [(ngModel)]="settings.security.logRetentionDays"
+                    name="logRetention"
+                    min="7"
+                    max="365"
+                  />
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal para nuevo/editar usuario -->
+<div class="modal" [class.show]="showUserModal" *ngIf="showUserModal">
+  <div class="modal-backdrop" (click)="closeUserModal()"></div>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">
+          {{ isEditingUser ? "Editar Usuario" : "Nuevo Usuario" }}
+        </h5>
+        <button type="button" class="close" (click)="closeUserModal()">
+          <span>&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="form-group">
+            <label for="userName">Nombre Completo</label>
+            <input
+              type="text"
+              id="userName"
+              class="form-control"
+              [(ngModel)]="currentUser.name"
+              name="userName"
+              required
+            />
+          </div>
+          <div class="form-group mt-3">
+            <label for="userEmail">Email</label>
+            <input
+              type="email"
+              id="userEmail"
+              class="form-control"
+              [(ngModel)]="currentUser.email"
+              name="userEmail"
+              required
+            />
+          </div>
+          <div class="form-group mt-3">
+            <label for="userRole">Rol</label>
+            <select
+              id="userRole"
+              class="form-control"
+              [(ngModel)]="currentUser.role"
+              name="userRole"
+              required
+            >
+              <option value="Administrador">Administrador</option>
+              <option value="Operador">Operador</option>
+              <option value="Soporte">Soporte</option>
+              <option value="Visualizador">Visualizador</option>
+            </select>
+          </div>
+          <div class="form-group mt-3">
+            <label for="userStatus">Estado</label>
+            <select
+              id="userStatus"
+              class="form-control"
+              [(ngModel)]="currentUser.status"
+              name="userStatus"
+              required
+            >
+              <option value="Activo">Activo</option>
+              <option value="Inactivo">Inactivo</option>
+              <option value="Bloqueado">Bloqueado</option>
+            </select>
+          </div>
+          <div class="form-group mt-3" *ngIf="!isEditingUser">
+            <label for="userPassword">Contraseña</label>
+            <input
+              type="password"
+              id="userPassword"
+              class="form-control"
+              [(ngModel)]="currentUser.password"
+              name="userPassword"
+              required
+            />
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          (click)="closeUserModal()"
+        >
+          Cancelar
+        </button>
+        <button type="button" class="btn btn-primary" (click)="saveUser()">
+          {{ isEditingUser ? "Actualizar" : "Guardar" }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal para nuevo/editar plan -->
+<div class="modal" [class.show]="showPlanModal" *ngIf="showPlanModal">
+  <div class="modal-backdrop" (click)="closePlanModal()"></div>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">
+          {{ isEditingPlan ? "Editar Plan" : "Nuevo Plan" }}
+        </h5>
+        <button type="button" class="close" (click)="closePlanModal()">
+          <span>&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="form-group">
+            <label for="planName">Nombre del Plan</label>
+            <input
+              type="text"
+              id="planName"
+              class="form-control"
+              [(ngModel)]="currentPlan.name"
+              name="planName"
+              required
+            />
+          </div>
+          <div class="form-group mt-3">
+            <label for="planDescription">Descripción</label>
+            <textarea
+              id="planDescription"
+              class="form-control"
+              rows="3"
+              [(ngModel)]="currentPlan.description"
+              name="planDescription"
+              required
+            ></textarea>
+          </div>
+          <div class="form-group mt-3">
+            <label for="planPrice">Precio</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text">$</span>
+              </div>
+              <input
+                type="number"
+                id="planPrice"
+                class="form-control"
+                [(ngModel)]="currentPlan.price"
+                name="planPrice"
+                required
+                min="0"
+              />
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          (click)="closePlanModal()"
+        >
+          Cancelar
+        </button>
+        <button type="button" class="btn btn-primary" (click)="savePlan()">
+          {{ isEditingPlan ? "Actualizar" : "Guardar" }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de confirmación de eliminación -->
+<div class="modal" [class.show]="showDeleteModal" *ngIf="showDeleteModal">
+  <div class="modal-backdrop" (click)="closeDeleteModal()"></div>
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Confirmar Eliminación</h5>
+        <button type="button" class="close" (click)="closeDeleteModal()">
+          <span>&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>
+          ¿Está seguro que desea eliminar
+          {{ deleteType === "user" ? "al usuario" : "el plan" }}
+          <strong>{{ deleteItemName }}</strong
+          >?
+        </p>
+        <p class="text-danger">Esta acción no se puede deshacer.</p>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          (click)="closeDeleteModal()"
+        >
+          Cancelar
+        </button>
+        <button type="button" class="btn btn-danger" (click)="confirmDelete()">
+          Eliminar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de reseteo de contraseña -->
+<div
+  class="modal"
+  [class.show]="showResetPasswordModal"
+  *ngIf="showResetPasswordModal"
+>
+  <div class="modal-backdrop" (click)="closeResetPasswordModal()"></div>
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Resetear Contraseña</h5>
+        <button type="button" class="close" (click)="closeResetPasswordModal()">
+          <span>&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>
+          Está a punto de resetear la contraseña para el usuario
+          <strong>{{ resetPasswordUserName }}</strong
+          >.
+        </p>
+        <div class="form-group">
+          <label for="newPassword">Nueva Contraseña</label>
+          <input
+            type="password"
+            id="newPassword"
+            class="form-control"
+            [(ngModel)]="newPassword"
+            name="newPassword"
+            required
+          />
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          (click)="closeResetPasswordModal()"
+        >
+          Cancelar
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary"
+          (click)="confirmResetPassword()"
+        >
+          Resetear
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
