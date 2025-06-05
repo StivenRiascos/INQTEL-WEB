@@ -3,11 +3,14 @@ import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { HttpClient } from '@angular/common/http'; // Cambio aquí
 import { Router } from '@angular/router'; // Cambio aquí
 
-interface User {
+export interface User {
   id: number;
   name?: string;
   role: string;
+  avatarUrl?: string;
+
 }
+
 
 interface LoginResponse {
   access_token: string;

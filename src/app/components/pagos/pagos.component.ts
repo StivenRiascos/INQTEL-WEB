@@ -161,38 +161,45 @@ export class PagosComponent implements OnInit {
   }
 
   realizarPago(): void {
-    console.log('realizarPago() fue llamado');
-  
-    // Verificar si hay una factura seleccionada
-    if (!this.facturaEncontrada) {
-      console.warn('No se encontró ninguna factura para pagar');
-      return;
-    }
-  
-    // Obtener los datos directamente de la factura encontrada
-    const facturaId = Number(this.facturaEncontrada.id);
-    const monto = Number(this.facturaEncontrada.precio);
-    const fechaPago = new Date().toISOString().split('T')[0]; // Formato YYYY-MM-DD
-  
-    const pago = { monto, fechaPago, facturaId };
-    console.log('Datos a enviar:', pago);
-  
-    // Llamada al servicio para realizar el pago
-    this.paymentService.realizarPago(pago).subscribe({
-      next: (response) => {
-        console.log('✅ Pago realizado con éxito:', response);
-        alert('¡Pago realizado exitosamente!');
-        this.mensajePago = response.message || 'Pago exitoso';
-        this.facturaEncontrada = null;
-        this.pagoForm.reset();
-      },
-      error: (error) => {
-        console.error('❌ Error al realizar el pago:', error);
-        this.mensajePago = 'Error al procesar el pago';
-        alert('Hubo un error al procesar el pago. Por favor, inténtalo de nuevo.');
-      }
-    });
+  console.log('realizarPago() fue llamado');
+
+  // Validar que haya una factura para pagar
+  if (!this.facturaEncontrada) {
+    console.warn('⚠️ No se encontró ninguna factura para pagar');
+    return;
   }
+
+  // Obtener y validar los datos necesarios
+  const facturaId = Number(this.facturaEncontrada.id);
+  const monto = Number(this.facturaEncontrada.precio);
+  const fechaPago = new Date().toISOString().split('T')[0]; // Fecha en formato YYYY-MM-DD
+
+  // Armar el objeto de pago
+  const pago = {
+    monto,
+    fechaPago,
+    facturaId
+  };
+
+  console.log('📤 Datos a enviar al backend:', pago);
+
+  // Enviar el pago al backend
+  this.paymentService.realizarPago(pago).subscribe({
+    next: (response) => {
+      console.log('✅ Pago realizado con éxito:', response);
+      alert('¡Pago realizado exitosamente!');
+      this.mensajePago = response.message || 'Pago exitoso';
+      this.facturaEncontrada = null;
+      this.pagoForm.reset();
+    },
+    error: (error) => {
+      console.error('❌ Error al realizar el pago:', error);
+      this.mensajePago = 'Error al procesar el pago';
+      alert('Hubo un error al procesar el pago. Por favor, inténtalo de nuevo.');
+    }
+  });
+}
+
   
   
   

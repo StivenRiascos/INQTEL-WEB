@@ -23,7 +23,7 @@
               <div class="col-md-6">
                 <div class="form-group">
                   <label for="fullName">Nombre Completo</label>
-                  <input type="text" id="fullName" class="form-control" [(ngModel)]="profile.fullName" name="fullName">
+                  <input type="text" id="fullName" class="form-control" [(ngModel)]="profile.nombre" name="fullName">
                 </div>
               </div>
               <div class="col-md-6">
@@ -39,25 +39,17 @@
               <div class="col-md-6">
                 <div class="form-group">
                   <label for="phone">Teléfono</label>
-                  <input type="tel" id="phone" class="form-control" [(ngModel)]="profile.phone" name="phone">
+                  <input type="tel" id="phone" class="form-control" [(ngModel)]="profile.telefono" name="phone">
                 </div>
               </div>
               <div class="col-md-6">
                 <div class="form-group">
                   <label for="position">Cargo</label>
-                  <input type="text" id="position" class="form-control" [(ngModel)]="profile.position" name="position">
+                  <input type="text" id="position" class="form-control" [(ngModel)]="profile.rol" name="position">
                 </div>
               </div>
             </div>
 
-            <div class="row mt-3">
-              <div class="col-md-12">
-                <div class="form-group">
-                  <label for="bio">Biografía</label>
-                  <textarea id="bio" class="form-control" rows="3" [(ngModel)]="profile.bio" name="bio"></textarea>
-                </div>
-              </div>
-            </div>
 
             <h4 class="mt-4">Cambiar Contraseña</h4>
             
@@ -102,98 +94,6 @@
           </form>
         </div>
       </div>
-
-      <div class="card mt-4">
-        <div class="card-body">
-          <h4 class="card-title">Preferencias</h4>
-          
-          <form>
-            <div class="row mt-3">
-              <div class="col-md-6">
-                <div class="form-group">
-                  <label for="language">Idioma</label>
-                  <select id="language" class="form-control" [(ngModel)]="profile.preferences.language" name="language">
-                    <option value="es">Español</option>
-                    <option value="en">Inglés</option>
-                    <option value="pt">Portugués</option>
-                  </select>
-                </div>
-              </div>
-              <div class="col-md-6">
-                <div class="form-group">
-                  <label for="timezone">Zona Horaria</label>
-                  <select id="timezone" class="form-control" [(ngModel)]="profile.preferences.timezone" name="timezone">
-                    <option *ngFor="let zone of timezones" [value]="zone.value">{{ zone.label }}</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-
-            <div class="row mt-3">
-              <div class="col-md-6">
-                <div class="form-group">
-                  <label for="dateFormat">Formato de Fecha</label>
-                  <select id="dateFormat" class="form-control" [(ngModel)]="profile.preferences.dateFormat" name="dateFormat">
-                    <option value="DD/MM/YYYY">DD/MM/YYYY</option>
-                    <option value="MM/DD/YYYY">MM/DD/YYYY</option>
-                    <option value="YYYY-MM-DD">YYYY-MM-DD</option>
-                  </select>
-                </div>
-              </div>
-              <div class="col-md-6">
-                <div class="form-group">
-                  <label for="theme">Tema</label>
-                  <select id="theme" class="form-control" [(ngModel)]="profile.preferences.theme" name="theme">
-                    <option value="light">Claro</option>
-                    <option value="dark">Oscuro</option>
-                    <option value="system">Sistema</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-
-            <h5 class="mt-4">Notificaciones</h5>
-
-            <div class="row mt-2">
-              <div class="col-md-6">
-                <div class="form-check">
-                  <input class="form-check-input" type="checkbox" id="emailNotif" [(ngModel)]="profile.preferences.notifications.email" name="emailNotif">
-                  <label class="form-check-label" for="emailNotif">
-                    Recibir notificaciones por email
-                  </label>
-                </div>
-              </div>
-              <div class="col-md-6">
-                <div class="form-check">
-                  <input class="form-check-input" type="checkbox" id="browserNotif" [(ngModel)]="profile.preferences.notifications.browser" name="browserNotif">
-                  <label class="form-check-label" for="browserNotif">
-                    Recibir notificaciones en el navegador
-                  </label>
-                </div>
-              </div>
-            </div>
-
-            <div class="row mt-2">
-              <div class="col-md-6">
-                <div class="form-check">
-                  <input class="form-check-input" type="checkbox" id="systemNotif" [(ngModel)]="profile.preferences.notifications.system" name="systemNotif">
-                  <label class="form-check-label" for="systemNotif">
-                    Recibir alertas del sistema
-                  </label>
-                </div>
-              </div>
-              <div class="col-md-6">
-                <div class="form-check">
-                  <input class="form-check-input" type="checkbox" id="marketingNotif" [(ngModel)]="profile.preferences.notifications.marketing" name="marketingNotif">
-                  <label class="form-check-label" for="marketingNotif">
-                    Recibir información de marketing
-                  </label>
-                </div>
-              </div>
-            </div>
-          </form>
-        </div>
-      </div>
     </div>
 
     <!-- Columna derecha - Foto de perfil y actividad -->
@@ -211,8 +111,8 @@
           </div>
           <input type="file" #fileInput style="display: none" (change)="onAvatarChange($event)" accept="image/*">
           
-          <h4 class="mt-3">{{ profile.fullName }}</h4>
-          <p class="text-muted">{{ profile.position }}</p>
+          <h4 class="mt-3">{{ profile.nombre }}</h4>
+          <p class="text-muted">{{ profile.rol }}</p>
           
           <div class="user-info mt-4">
             <div class="info-item">
@@ -221,11 +121,11 @@
             </div>
             <div class="info-item">
               <i class="fas fa-phone"></i>
-              <span>{{ profile.phone || 'No especificado' }}</span>
+              <span>{{ profile.telefono || 'No especificado' }}</span>
             </div>
             <div class="info-item">
               <i class="fas fa-user-shield"></i>
-              <span>{{ profile.role }}</span>
+              <span>{{ profile.rol }}</span>
             </div>
           </div>
         </div>

@@ -11,10 +11,12 @@ import {
   faChevronRight,
   faChevronLeft,
   faUser,
-  faFileInvoiceDollar, // NUEVO ICONO PARA FACTURAS
+  faFileInvoiceDollar,
 } from '@fortawesome/free-solid-svg-icons';
 import { SidebarService } from './sidebar.service';
 import { Subscription } from 'rxjs';
+import { UserService, ClientProfile } from '../../../services/user.service';
+import { AuthService, User } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -29,18 +31,24 @@ export class SidebarComponent implements OnInit, OnDestroy {
   isMobile = false;
   private subscription: Subscription = new Subscription();
 
+  currentUser: ClientProfile | null = null;
+
   // Icons
   faBars = faBars;
   faTachometerAlt = faTachometerAlt;
   faUsers = faUsers;
-  faFileInvoiceDollar = faFileInvoiceDollar; // NUEVO ICONO AGREGADO
+  faFileInvoiceDollar = faFileInvoiceDollar;
   faCog = faCog;
   faRightFromBracket = faRightFromBracket;
   faChevronRight = faChevronRight;
   faChevronLeft = faChevronLeft;
   faUser = faUser;
 
-  constructor(public sidebarService: SidebarService) {}
+  constructor(
+    public sidebarService: SidebarService,
+    private userService: UserService,
+    private authService: AuthService
+  ) {}
 
   ngOnInit(): void {
     this.checkScreenSize();
@@ -56,6 +64,20 @@ export class SidebarComponent implements OnInit, OnDestroy {
         this.isCollapsed = isCollapsed;
       })
     );
+
+    const currentUser: User | null = this.authService.currentUserValue;
+    if (currentUser) {
+      this.userService.getUserById(currentUser.id).subscribe({
+        next: (user) => {
+          console.log('Usuario cargado en sidebar:', user);
+          this.currentUser = user;
+        },
+        error: (err) => {
+          console.error('Error cargando usuario en sidebar:', err);
+          this.currentUser = null;
+        },
+      });
+    }
   }
 
   ngOnDestroy(): void {

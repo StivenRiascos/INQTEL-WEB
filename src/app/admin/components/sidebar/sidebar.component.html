@@ -96,25 +96,28 @@
       </a>
     </div>
 
-    <div class="sidebar-footer">
-      <div class="user-info" [class.collapsed-user]="isCollapsed && !isMobile">
-        <img
-          src="../../../../assets/icons/avatar.png"
-          alt="Avatar"
-          class="user-avatar"
-        />
-        <div class="user-details" *ngIf="!isCollapsed || isMobile">
-          <span class="user-role">Administrador</span>
-        </div>
-      </div>
-      <a
-        class="sidebar-link text-danger logout-link"
-        routerLink="/logout"
-        (click)="closeSidebarOnMobile()"
-      >
-        <fa-icon [icon]="faRightFromBracket"></fa-icon>
-        <span *ngIf="!isCollapsed || isMobile">Cerrar sesion</span>
-      </a>
+   <div class="sidebar-footer">
+  <div class="user-info" [class.collapsed-user]="isCollapsed && !isMobile">
+    <img
+      [src]="currentUser?.avatarUrl || '../../../../assets/icons/avatar.png'"
+      alt="Avatar"
+      class="user-avatar"
+    />
+    <div class="user-details" *ngIf="!isCollapsed || isMobile">
+      <span class="user-role">{{ currentUser?.rol || 'Invitado' }}</span>
+      <span class="user-name">{{ currentUser?.nombre || 'Sin usuario' }}</span>
     </div>
+  </div>
+  <a
+    class="sidebar-link text-danger logout-link"
+    routerLink="/logout"
+    (click)="closeSidebarOnMobile()"
+  >
+    <fa-icon [icon]="faRightFromBracket"></fa-icon>
+    <span *ngIf="!isCollapsed || isMobile">Cerrar sesión</span>
+  </a>
+</div>
+
+
   </div>
 </div>
