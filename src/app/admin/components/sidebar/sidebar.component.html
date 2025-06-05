@@ -1,25 +1,32 @@
-<!-- Overlay para cerrar el sidebar en móvil -->
 <div
   class="sidebar-overlay"
   [ngClass]="{ active: isSidebarOpen && isMobile }"
   (click)="toggleSidebar()"
 ></div>
 
-<!-- Botón para abrir el sidebar en móvil -->
 <button class="sidebar-toggle custom-transparent-btn" (click)="toggleSidebar()">
   <fa-icon [icon]="faBars"></fa-icon>
 </button>
 
-<!-- Sidebar -->
 <div
   class="sidebar"
   [ngClass]="{ open: isSidebarOpen, collapsed: isCollapsed && !isMobile }"
 >
   <div class="sidebar-header">
-    <div class="logo-container" *ngIf="!isCollapsed || isMobile">
+    <div
+      class="logo-container"
+      *ngIf="!isCollapsed || isMobile"
+      (click)="navigateToHome()"
+      style="cursor: pointer;"
+      title="Ir al sitio principal"
+      role="link"
+      tabindex="0"
+      (keydown.enter)="navigateToHome()"
+      (keydown.space)="navigateToHome()"
+    >
       <img
         src="../../../../assets/images/logo.jpg"
-        alt="Logo"
+        alt="Logo INQTEL - Ir al sitio principal"
         class="logo-img"
       />
       <span class="logo-text">
@@ -32,6 +39,7 @@
       class="collapse-toggle"
       *ngIf="!isMobile"
       (click)="toggleCollapse()"
+      aria-label="Colapsar o expandir menú lateral"
     >
       <fa-icon [icon]="isCollapsed ? faChevronRight : faChevronLeft"></fa-icon>
     </button>
@@ -49,6 +57,7 @@
         routerLink="/admin/dashboard"
         routerLinkActive="active"
         (click)="closeSidebarOnMobile()"
+        title="Ir al Dashboard"
       >
         <fa-icon [icon]="faTachometerAlt"></fa-icon>
         <span *ngIf="!isCollapsed || isMobile">Inicio</span>
@@ -59,17 +68,18 @@
         routerLink="/admin/clientes"
         routerLinkActive="active"
         (click)="closeSidebarOnMobile()"
+        title="Gestionar Clientes"
       >
         <fa-icon [icon]="faUsers"></fa-icon>
         <span *ngIf="!isCollapsed || isMobile">Clientes</span>
       </a>
 
-      <!-- NUEVA OPCIÓN DE FACTURAS -->
       <a
         class="sidebar-link"
         routerLink="/admin/facturas"
         routerLinkActive="active"
         (click)="closeSidebarOnMobile()"
+        title="Gestionar Facturas"
       >
         <fa-icon [icon]="faFileInvoiceDollar"></fa-icon>
         <span *ngIf="!isCollapsed || isMobile">Facturas</span>
@@ -80,6 +90,7 @@
         routerLink="/admin/ajustes"
         routerLinkActive="active"
         (click)="closeSidebarOnMobile()"
+        title="Ir a Ajustes"
       >
         <fa-icon [icon]="faCog"></fa-icon>
         <span *ngIf="!isCollapsed || isMobile">Ajustes</span>
@@ -90,34 +101,38 @@
         routerLink="/admin/perfil"
         routerLinkActive="active"
         (click)="closeSidebarOnMobile()"
+        title="Ver Perfil"
       >
         <fa-icon [icon]="faUser"></fa-icon>
         <span *ngIf="!isCollapsed || isMobile">Perfil</span>
       </a>
     </div>
 
-   <div class="sidebar-footer">
-  <div class="user-info" [class.collapsed-user]="isCollapsed && !isMobile">
-    <img
-      [src]="currentUser?.avatarUrl || '../../../../assets/icons/avatar.png'"
-      alt="Avatar"
-      class="user-avatar"
-    />
-    <div class="user-details" *ngIf="!isCollapsed || isMobile">
-      <span class="user-role">{{ currentUser?.rol || 'Invitado' }}</span>
-      <span class="user-name">{{ currentUser?.nombre || 'Sin usuario' }}</span>
+    <div class="sidebar-footer">
+      <div class="user-info" [class.collapsed-user]="isCollapsed && !isMobile">
+        <img
+          [src]="currentUser?.avatarUrl || '../../../../assets/icons/avatar.png'"
+          alt="Avatar de {{ currentUser?.nombre || 'usuario' }}"
+          class="user-avatar"
+        />
+        <div class="user-details" *ngIf="!isCollapsed || isMobile">
+          <span class="user-role">{{ currentUser?.rol || 'Invitado' }}</span>
+          <span class="user-name">{{ currentUser?.nombre || 'Sin usuario' }}</span>
+        </div>
+      </div>
+      <a
+        class="sidebar-link text-danger logout-link"
+        (click)="logout()"
+        style="cursor: pointer;"
+        title="Cerrar sesión"
+        role="button"
+        tabindex="0"
+        (keydown.enter)="logout()"
+        (keydown.space)="logout()"
+      >
+        <fa-icon [icon]="faRightFromBracket"></fa-icon>
+        <span *ngIf="!isCollapsed || isMobile">Cerrar sesión</span>
+      </a>
     </div>
-  </div>
-  <a
-    class="sidebar-link text-danger logout-link"
-    routerLink="/logout"
-    (click)="closeSidebarOnMobile()"
-  >
-    <fa-icon [icon]="faRightFromBracket"></fa-icon>
-    <span *ngIf="!isCollapsed || isMobile">Cerrar sesión</span>
-  </a>
-</div>
-
-
   </div>
 </div>

@@ -1,6 +1,6 @@
 import { Component, HostListener, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router'; // Importar Router
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import {
   faTachometerAlt,
@@ -12,6 +12,8 @@ import {
   faChevronLeft,
   faUser,
   faFileInvoiceDollar,
+  // Puedes considerar añadir faHome si decides un botón explícito,
+  // pero para el logo no es necesario un nuevo icono aquí.
 } from '@fortawesome/free-solid-svg-icons';
 import { SidebarService } from './sidebar.service';
 import { Subscription } from 'rxjs';
@@ -37,7 +39,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
   faBars = faBars;
   faTachometerAlt = faTachometerAlt;
   faUsers = faUsers;
-  faFileInvoiceDollar = faFileInvoiceDollar;
+  faFileInvoiceDollar = faFileInvoiceDollar; // Ya estaba
   faCog = faCog;
   faRightFromBracket = faRightFromBracket;
   faChevronRight = faChevronRight;
@@ -47,7 +49,8 @@ export class SidebarComponent implements OnInit, OnDestroy {
   constructor(
     public sidebarService: SidebarService,
     private userService: UserService,
-    private authService: AuthService
+    private authService: AuthService,
+    private router: Router // Inyectar Router
   ) {}
 
   ngOnInit(): void {
@@ -65,16 +68,16 @@ export class SidebarComponent implements OnInit, OnDestroy {
       })
     );
 
-    const currentUser: User | null = this.authService.currentUserValue;
-    if (currentUser) {
-      this.userService.getUserById(currentUser.id).subscribe({
-        next: (user) => {
-          console.log('Usuario cargado en sidebar:', user);
-          this.currentUser = user;
+    const currentUserAuth: User | null = this.authService.currentUserValue;
+    if (currentUserAuth) {
+      this.userService.getUserById(currentUserAuth.id).subscribe({
+        next: (userProfile) => {
+          console.log('Usuario cargado en sidebar:', userProfile);
+          this.currentUser = userProfile;
         },
         error: (err) => {
           console.error('Error cargando usuario en sidebar:', err);
-          this.currentUser = null;
+          this.currentUser = null; // Asegúrate de manejar el caso de error
         },
       });
     }
@@ -92,8 +95,11 @@ export class SidebarComponent implements OnInit, OnDestroy {
   checkScreenSize(): void {
     this.isMobile = window.innerWidth < 768;
     if (this.isMobile && this.isCollapsed) {
-      this.sidebarService.setCollapsed(false);
+      this.sidebarService.setCollapsed(false); // Si es móvil, no debería estar colapsado en el sentido de 'minimizado'
     }
+    // Si no es móvil y el sidebar estaba cerrado (isExpanded = false), mantenlo cerrado
+    // Si es móvil y el sidebar estaba abierto, el toggle lo manejará.
+    // Este servicio ya maneja la expansión en base al tamaño de la pantalla inicialmente.
   }
 
   toggleSidebar(): void {
@@ -101,12 +107,27 @@ export class SidebarComponent implements OnInit, OnDestroy {
   }
 
   toggleCollapse(): void {
-    this.sidebarService.toggleCollapsed();
+    if (!this.isMobile) { // Solo permitir colapsar en escritorio
+      this.sidebarService.toggleCollapsed();
+    }
   }
 
   closeSidebarOnMobile(): void {
     if (this.isMobile) {
       this.sidebarService.closeSidebar();
     }
+  }
+
+  // Nuevo método para navegar al home del sitio público
+  navigateToHome(): void {
+    this.router.navigate(['/']);
+    this.closeSidebarOnMobile();
+  }
+
+  // Nuevo método para cerrar sesión
+  logout(): void {
+    this.authService.logout(); // El servicio AuthService ya se encarga de redirigir
+    this.closeSidebarOnMobile();
+    // No es necesario un this.router.navigate aquí si AuthService ya lo hace.
   }
 }

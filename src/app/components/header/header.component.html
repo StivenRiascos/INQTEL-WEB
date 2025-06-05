@@ -8,11 +8,7 @@
     </div>
 
     <nav class="nav-links" [ngClass]="{ active: isMenuOpen }">
-      <a
-        routerLink="/"
-        routerLinkActive="active"
-        [routerLinkActiveOptions]="{ exact: true }"
-      >
+      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
         Inicio
       </a>
       <a routerLink="/planes" routerLinkActive="active">Planes</a>
@@ -25,28 +21,21 @@
     <div class="header-actions">
       <a routerLink="/contacto" class="btn btn-secondary">Contáctanos</a>
 
-      <!-- Botón de inicio de sesión (visible cuando NO está logueado) -->
-      <a
-        *ngIf="!authService.isLoggedIn()"
-        class="admin-login-btn"
-        routerLink="/admin/login"
-        aria-label="Iniciar sesión administrativo"
-      >
+      <a *ngIf="authService.isLoggedIn()" class="admin-login-btn" routerLink="/admin/dashboard"
+        aria-label="Ir al panel administrativo" title="Panel Administrativo">
+        <i class="fas fa-tachometer-alt"></i> </a>
+
+      <button *ngIf="authService.isLoggedIn()" class="admin-login-btn" (click)="logout()" aria-label="Cerrar sesión"
+        title="Cerrar sesión">
+        <i class="fas fa-sign-out-alt"></i>
+      </button>
+
+      <a *ngIf="!authService.isLoggedIn()" class="admin-login-btn" routerLink="/admin/login"
+        aria-label="Iniciar sesión administrativo" title="Login Administrativo">
         <i class="fas fa-user-lock"></i>
       </a>
 
-      <!-- Botón de cerrar sesión (visible solo cuando está logueado) -->
-      <button
-        *ngIf="authService.isLoggedIn()"
-        class="logout-btn"
-        (click)="logout()"
-        aria-label="Cerrar sesión"
-      >
-        <i class="fas fa-sign-out-alt"></i>
-        <span class="logout-text">Cerrar sesión</span>
-      </button>
-
-      <button class="menu-toggle" (click)="toggleMenu()">
+      <button class="menu-toggle" (click)="toggleMenu()" aria-label="Abrir o cerrar menú de navegación">
         <span></span>
         <span></span>
         <span></span>
