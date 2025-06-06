@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { HttpClient } from '@angular/common/http'; // Cambio aquí
 import { Router } from '@angular/router'; // Cambio aquí
-import { environment } from '../../environments/environment.prod';
+import { environment } from '../../environments/environment';
 
 export interface User {
   id: number;

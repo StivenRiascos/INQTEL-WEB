@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Client } from '../entities/client.entity'; // Asegúrate que esta ruta es correcta
-import { environment } from '../../environments/environment.prod';
+import { environment } from '../../environments/environment';
 
 // DTO para crear cliente (opcional, si quieres mejor tipado)
 export interface CreateClientDto {

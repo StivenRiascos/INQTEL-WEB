@@ -1,6 +1,6 @@
 @use "sass:color";
 
-// Variables (reutilizando las mismas del componente clientes)
+// Variables locales para este componente
 $primary-color: #3498db;
 $primary-dark: #2980b9;
 $secondary-color: #2ecc71;
@@ -16,8 +16,10 @@ $gray-medium: #e9ecef;
 $gray-dark: #343a40;
 $text-color: #333;
 $border-radius: 0.5rem;
+$box-shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.075);
 $box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 $transition-speed: 0.3s;
+
 
 // Estilos específicos para facturas
 .facturas-container {
@@ -157,6 +159,75 @@ $transition-speed: 0.3s;
   }
 }
 
+// Estilos para la vista de tarjetas en móvil
+.mobile-cards-container {
+  margin-top: 1.5rem;
+}
+
+.factura-card {
+  background-color: #fff;
+  border-radius: $border-radius;
+  border: 1px solid $gray-medium;
+  margin-bottom: 1rem;
+  box-shadow: $box-shadow-sm;
+  transition: all $transition-speed ease;
+
+  &:hover {
+    box-shadow: $box-shadow;
+    transform: translateY(-3px);
+  }
+
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    background-color: $gray-light;
+    border-bottom: 1px solid $gray-medium;
+
+    h5 {
+      margin: 0;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: $gray-dark;
+    }
+  }
+
+  .card-body {
+    padding: 1rem;
+
+    .card-field {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.5rem 0;
+      font-size: 0.9rem;
+      border-bottom: 1px solid #f0f0f0;
+
+      &:last-child {
+        border-bottom: none;
+      }
+
+      strong {
+        color: $gray-dark;
+        font-weight: 600;
+      }
+
+      span {
+        color: #6c757d;
+        text-align: right;
+      }
+    }
+  }
+
+  .card-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    background-color: $gray-light;
+    border-top: 1px solid $gray-medium;
+  }
+}
 // Filtros (reutilizando estilos del componente clientes)
 .filters-container {
   background-color: $gray-light;

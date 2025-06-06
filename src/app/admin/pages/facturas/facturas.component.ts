@@ -20,6 +20,12 @@ export class FacturasComponent implements OnInit {
   facturasProximasVencer: Factura[] = [];
   clientes: Client[] = [];
 
+  // --- Propiedades para paginación ---
+  currentPage: number = 1;
+  itemsPerPage: number = 10;
+  totalPages: number = 0;
+  paginatedFacturas: Factura[] = [];
+
   // Filtros
   searchTerm: string = '';
   mesFilter: string = 'Todos';
@@ -82,23 +88,23 @@ export class FacturasComponent implements OnInit {
   }
 
   fetchFacturasFromBackend(): void {
-  this.facturaService.getFacturas().subscribe({
-    next: (data) => {
-      // Ordenar facturas por días para vencer (de menor a mayor)
-      this.facturas = data.sort((a, b) => {
-        const diasA = this.getDiasParaVencer(a.fechaLimite);
-        const diasB = this.getDiasParaVencer(b.fechaLimite);
-        return diasA - diasB;
-      });
+    this.facturaService.getFacturas().subscribe({
+      next: (data) => {
+        // Ordenar facturas por días para vencer (de menor a mayor)
+        this.facturas = data.sort((a, b) => {
+          const diasA = this.getDiasParaVencer(a.fechaLimite);
+          const diasB = this.getDiasParaVencer(b.fechaLimite);
+          return diasA - diasB;
+        });
 
-      this.calcularFacturasProximasVencer();
-      this.applyFilters();
-    },
-    error: (err) => {
-      console.error('Error al cargar facturas:', err);
-    },
-  });
-}
+        this.calcularFacturasProximasVencer();
+        this.applyFilters();
+      },
+      error: (err) => {
+        console.error('Error al cargar facturas:', err);
+      },
+    });
+  }
 
   fetchClientesFromBackend(): void {
     this.clientesService.getClientes().subscribe({
@@ -112,50 +118,52 @@ export class FacturasComponent implements OnInit {
   }
 
   getEmptyClient(): Client {
-  return {
-    id: 0,
-    nombre: '',
-    tipoDocumento: '',
-    numeroDocumento: '',
-    email: '',
-    direccion: '',
-    telefono: '',
-    estado: 'activo', // o el valor por defecto que uses
-    planId: 0,
-    fechaRegistro: new Date().toISOString(),
-    lastPayment: undefined,
-    plan: undefined
-  };
-}
+    return {
+      id: 0,
+      nombre: '',
+      tipoDocumento: '',
+      numeroDocumento: '',
+      email: '',
+      direccion: '',
+      telefono: '',
+      estado: 'activo', // o el valor por defecto que uses
+      planId: 0,
+      fechaRegistro: new Date().toISOString(),
+      lastPayment: undefined,
+      plan: undefined,
+    };
+  }
 
   // Inicializa una factura vacía
- getEmptyFactura(): Factura {
-  return {
-    id: 0,
-    concepto: '', // Agregado porque es requerido en la entidad
-    valor: 0,
-    fecha: new Date().toISOString().split('T')[0],
-    fechaLimite: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
-    cliente: this.getEmptyClient(),
-    estado: EstadoFactura.PENDIENTE,
-    pagos: [] // Agregado porque es requerido en la entidad
-  };
-}
+  getEmptyFactura(): Factura {
+    return {
+      id: 0,
+      concepto: '', // Agregado porque es requerido en la entidad
+      valor: 0,
+      fecha: new Date().toISOString().split('T')[0],
+      fechaLimite: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+      cliente: this.getEmptyClient(),
+      estado: EstadoFactura.PENDIENTE,
+      pagos: [], // Agregado porque es requerido en la entidad
+    };
+  }
   // Calcula facturas próximas a vencer (próximos 7 días)
- calcularFacturasProximasVencer(): void {
-  const hoy = new Date();
-  const proximosSieteDias = new Date(hoy.getTime() + 7 * 24 * 60 * 60 * 1000);
+  calcularFacturasProximasVencer(): void {
+    const hoy = new Date();
+    const proximosSieteDias = new Date(hoy.getTime() + 7 * 24 * 60 * 60 * 1000);
 
-  this.facturasProximasVencer = this.facturas.filter((factura) => {
-    // CAMBIAR ESTO:
-    const fechaLimite = factura.fechaLimite ? new Date(factura.fechaLimite) : new Date();
-    return (
-      fechaLimite >= hoy &&
-      fechaLimite <= proximosSieteDias &&
-      factura.estado === 'pendiente'
-    );
-  });
-}
+    this.facturasProximasVencer = this.facturas.filter((factura) => {
+      // CAMBIAR ESTO:
+      const fechaLimite = factura.fechaLimite
+        ? new Date(factura.fechaLimite)
+        : new Date();
+      return (
+        fechaLimite >= hoy &&
+        fechaLimite <= proximosSieteDias &&
+        factura.estado === 'pendiente'
+      );
+    });
+  }
 
   // Aplica filtros a la lista de facturas
   applyFilters(): void {
@@ -182,6 +190,44 @@ export class FacturasComponent implements OnInit {
 
       return searchMatch && estadoMatch && mesMatch && yearMatch;
     });
+    // Reiniciar la paginación
+    this.currentPage = 1;
+    this.totalPages = Math.ceil(
+      this.filteredFacturas.length / this.itemsPerPage
+    );
+    this.updatePaginatedFacturas();
+  }
+
+  // --- Nuevas funciones para paginación de facturas ---
+  updatePaginatedFacturas(): void {
+    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+    const endIndex = startIndex + this.itemsPerPage;
+    this.paginatedFacturas = this.filteredFacturas.slice(startIndex, endIndex);
+  }
+
+  goToPage(page: number): void {
+    if (page >= 1 && page <= this.totalPages) {
+      this.currentPage = page;
+      this.updatePaginatedFacturas();
+    }
+  }
+
+  nextPage(): void {
+    if (this.currentPage < this.totalPages) {
+      this.currentPage++;
+      this.updatePaginatedFacturas();
+    }
+  }
+
+  previousPage(): void {
+    if (this.currentPage > 1) {
+      this.currentPage--;
+      this.updatePaginatedFacturas();
+    }
+  }
+
+  getPages(): number[] {
+    return Array.from({ length: this.totalPages }, (_, i) => i + 1);
   }
 
   // Obtiene el nombre del cliente por ID
@@ -215,13 +261,13 @@ export class FacturasComponent implements OnInit {
 
   // Calcula días para vencer
   getDiasParaVencer(fechaLimite: Date | undefined): number {
-  if (!fechaLimite) return 0;
-  
-  const hoy = new Date();
-  const limite = new Date(fechaLimite); // Por si acaso viene como string
-  const diferencia = limite.getTime() - hoy.getTime();
-  return Math.ceil(diferencia / (1000 * 3600 * 24));
-}
+    if (!fechaLimite) return 0;
+
+    const hoy = new Date();
+    const limite = new Date(fechaLimite); // Por si acaso viene como string
+    const diferencia = limite.getTime() - hoy.getTime();
+    return Math.ceil(diferencia / (1000 * 3600 * 24));
+  }
   // Retorna clase CSS según días para vencer
   getDiasVencerClass(dias: number): string {
     if (dias < 0) return 'dias-vencido';
@@ -240,7 +286,7 @@ export class FacturasComponent implements OnInit {
     this.showDetailsModal = false;
     this.facturaDetails = null;
   }
-  
+
   // Modal de nueva/editar factura
   openNewFacturaModal(): void {
     this.isEditMode = false;
@@ -294,20 +340,17 @@ export class FacturasComponent implements OnInit {
     }
   }
 
-
   descargarFacturaPDF(facturaId: number): void {
-  if (!facturaId) {
-    console.error('ID de factura no encontrado');
-    return;
+    if (!facturaId) {
+      console.error('ID de factura no encontrado');
+      return;
+    }
+
+    const url = `http://localhost:3000/facturas/pdf/${facturaId}`;
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `factura_${facturaId}.pdf`;
+    a.target = '_blank';
+    a.click();
   }
-
-  const url = `http://localhost:3000/facturas/pdf/${facturaId}`;
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `factura_${facturaId}.pdf`;
-  a.target = '_blank';
-  a.click();
-}
-
-
 }
