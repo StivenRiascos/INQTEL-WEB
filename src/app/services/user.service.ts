@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import { environment } from '../../environments/environment.prod';
 
 export interface ClientProfile {
   id: number;
@@ -25,7 +26,7 @@ export interface ChangePasswordResponse {
   providedIn: 'root',
 })
 export class UserService {
-  private baseUrl = 'http://localhost:3000/clientes'; // o la URL que uses en backend
+  private baseUrl = environment.apiUrl + 'clientes'; // o la URL que uses en backend
 
   constructor(private http: HttpClient) {}
 

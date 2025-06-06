@@ -2,12 +2,12 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-
+import { environment } from '../../environments/environment.prod';
 @Injectable({
   providedIn: 'root',
 })
 export class FacturaService {
-  private apiUrl = 'http://localhost:3000/facturas'; // URL del backend
+  private apiUrl = environment.apiUrl + 'facturas'; // URL del backend
 
   constructor(private http: HttpClient) {}
 

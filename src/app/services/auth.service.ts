@@ -2,15 +2,14 @@ import { inject, Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { HttpClient } from '@angular/common/http'; // Cambio aquí
 import { Router } from '@angular/router'; // Cambio aquí
+import { environment } from '../../environments/environment.prod';
 
 export interface User {
   id: number;
   name?: string;
   role: string;
   avatarUrl?: string;
-
 }
-
 
 interface LoginResponse {
   access_token: string;
@@ -22,7 +21,7 @@ interface LoginResponse {
 export class AuthService {
   private tokenKey = 'auth_token';
   private userKey = 'currentUser';
- 
+
   private currentUserSubject = new BehaviorSubject<User | null>(null);
   public currentUser = this.currentUserSubject.asObservable();
 
@@ -36,7 +35,7 @@ export class AuthService {
 
   login(numeroDocumento: string, password: string): Observable<LoginResponse> {
     return this.https
-      .post<LoginResponse>('http://localhost:3000/auth/login', {
+      .post<LoginResponse>(environment.apiUrl + 'login', {
         numeroDocumento,
         password,
       })
