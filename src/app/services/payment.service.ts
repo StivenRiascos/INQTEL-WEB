@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, catchError, throwError } from 'rxjs';
+import { environment } from '../../environments/environment.prod';
 
 // Interface para respuestas
 export interface PaymentResponse {
@@ -13,7 +14,7 @@ export interface PaymentResponse {
   providedIn: 'root',
 })
 export class PaymentService {
-  private baseUrl = 'http://localhost:3000'; // Mantenemos tu estructura actual
+  private baseUrl = environment.apiUrl; // Mantenemos tu estructura actual
 
   constructor(private http: HttpClient) {}
 
@@ -23,10 +24,9 @@ export class PaymentService {
     monto: number;
     fechaPago: string;
   }): Observable<PaymentResponse> {
-    return this.http.post<PaymentResponse>(`${this.baseUrl}/pagos`, pagoData)
-      .pipe(
-        catchError(this.handleError)
-      );
+    return this.http
+      .post<PaymentResponse>(`${this.baseUrl}/pagos`, pagoData)
+      .pipe(catchError(this.handleError));
   }
 
   // Método para buscar facturas (POST a /facturas/buscar)
@@ -34,26 +34,26 @@ export class PaymentService {
     tipoDocumento: string;
     numeroDocumento: string;
   }): Observable<PaymentResponse> {
-    return this.http.post<PaymentResponse>(`${this.baseUrl}/facturas/buscar`, params)
-      .pipe(
-        catchError(this.handleError)
-      );
+    return this.http
+      .post<PaymentResponse>(`${this.baseUrl}/facturas/buscar`, params)
+      .pipe(catchError(this.handleError));
   }
   getIngresosMensuales(): Observable<number> {
-  return this.http.get<number>('http://localhost:3000/pagos/ingresos-mensuales');
-}
-
+    return this.http.get<number>(environment.apiUrl + 'ingresos-mensuales');
+  }
 
   // Manejo de errores mejorado
   private handleError(error: any) {
     let errorMessage = 'Error desconocido';
-    
+
     if (error.error instanceof ErrorEvent) {
       // Error del cliente
       errorMessage = `Error: ${error.error.message}`;
     } else if (error.status) {
       // Error del servidor
-      errorMessage = `Código ${error.status}: ${error.error?.message || error.statusText}`;
+      errorMessage = `Código ${error.status}: ${
+        error.error?.message || error.statusText
+      }`;
     }
 
     console.error('Error en el servicio:', errorMessage);
