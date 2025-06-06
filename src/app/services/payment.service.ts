@@ -39,7 +39,9 @@ export class PaymentService {
       .pipe(catchError(this.handleError));
   }
   getIngresosMensuales(): Observable<number> {
-    return this.http.get<number>(environment.apiUrl + 'ingresos-mensuales');
+    return this.http.get<number>(
+      environment.apiUrl + 'pagos/ingresos-mensuales'
+    );
   }
 
   // Manejo de errores mejorado

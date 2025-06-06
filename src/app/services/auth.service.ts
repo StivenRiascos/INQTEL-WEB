@@ -35,7 +35,7 @@ export class AuthService {
 
   login(numeroDocumento: string, password: string): Observable<LoginResponse> {
     return this.https
-      .post<LoginResponse>(environment.apiUrl + 'login', {
+      .post<LoginResponse>(environment.apiUrl + 'auth/login', {
         numeroDocumento,
         password,
       })
