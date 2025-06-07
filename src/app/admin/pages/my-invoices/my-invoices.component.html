@@ -1,0 +1,74 @@
+<div class="my-invoices-container">
+  <div class="page-header">
+    <div class="header-content">
+      <h2>Mis Facturas</h2>
+      <p>Aquí puedes ver y descargar tu historial de facturación.</p>
+    </div>
+  </div>
+
+  <div class="filter-container">
+    <div class="filter-group">
+      <label for="yearFilter">Filtrar por año:</label>
+      <select id="yearFilter" class="form-control" [(ngModel)]="selectedYear" (change)="filterInvoices()">
+        <option value="todos">Todos los años</option>
+        <option *ngFor="let year of availableYears" [value]="year">{{ year }}</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <label for="monthFilter">Filtrar por mes:</label>
+      <select id="monthFilter" class="form-control" [(ngModel)]="selectedMonth" (change)="filterInvoices()">
+        <option *ngFor="let month of months" [value]="month.value">{{ month.name }}</option>
+      </select>
+    </div>
+  </div>
+
+  <div *ngIf="isLoading" class="loading-indicator">
+    <div class="spinner"></div>
+    <p>Cargando facturas...</p>
+  </div>
+
+  <div *ngIf="error" class="error-alert">
+    <p>{{ error }}</p>
+  </div>
+
+  <div *ngIf="!isLoading && !error && filteredInvoices.length > 0" class="invoices-list">
+    <div class="invoice-card" *ngFor="let invoice of filteredInvoices">
+      <div class="invoice-header">
+        <div class="invoice-id">Factura #{{ invoice.id }}</div>
+        <div class="invoice-status" [ngClass]="getStatusClass(invoice.estado)">
+          {{ invoice.estado }}
+        </div>
+      </div>
+      <div class="invoice-body">
+        <div class="invoice-detail">
+          <strong>Fecha de Emisión:</strong>
+          <span>{{ invoice.fecha | date: 'dd/MM/yyyy' }}</span>
+        </div>
+        <div class="invoice-detail">
+          <strong>Fecha Límite:</strong>
+          <span>{{ invoice.fechaLimite | date: 'dd/MM/yyyy' }}</span>
+        </div>
+        <div class="invoice-detail">
+          <strong>Concepto:</strong>
+          <span>{{ invoice.concepto }}</span>
+        </div>
+        <div class="invoice-detail price">
+          <strong>Valor:</strong>
+          <span>{{ invoice.valor | currency: 'COP':'symbol-narrow':'1.0-0' }}</span>
+        </div>
+      </div>
+      <div class="invoice-footer">
+        <button class="btn btn-primary" (click)="downloadInvoice(invoice.id)">
+          <i class="fas fa-download"></i> Descargar PDF
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!isLoading && !error && filteredInvoices.length === 0" class="no-invoices">
+    <i class="fas fa-file-invoice-dollar"></i>
+    <h3>No se encontraron facturas</h3>
+    <p>{{ selectedMonth !== 'todos' || selectedYear !== 'todos' ? 'No hay facturas que coincidan con los filtros
+      seleccionados.' : 'Aún no se han generado facturas para tu cuenta.' }}</p>
+  </div>
+</div>

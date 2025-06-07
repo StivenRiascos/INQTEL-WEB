@@ -12,6 +12,7 @@ import {
   faChevronLeft,
   faUser,
   faFileInvoiceDollar,
+  faWifi,
   // Puedes considerar añadir faHome si decides un botón explícito,
   // pero para el logo no es necesario un nuevo icono aquí.
 } from '@fortawesome/free-solid-svg-icons';
@@ -45,11 +46,12 @@ export class SidebarComponent implements OnInit, OnDestroy {
   faChevronRight = faChevronRight;
   faChevronLeft = faChevronLeft;
   faUser = faUser;
+  faWifi = faWifi;
 
   constructor(
     public sidebarService: SidebarService,
     private userService: UserService,
-    private authService: AuthService,
+    public authService: AuthService,
     private router: Router // Inyectar Router
   ) {}
 
@@ -107,7 +109,8 @@ export class SidebarComponent implements OnInit, OnDestroy {
   }
 
   toggleCollapse(): void {
-    if (!this.isMobile) { // Solo permitir colapsar en escritorio
+    if (!this.isMobile) {
+      // Solo permitir colapsar en escritorio
       this.sidebarService.toggleCollapsed();
     }
   }

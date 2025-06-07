@@ -9,10 +9,8 @@
 $ajustes-primary: #9b59b6;
 $ajustes-primary-dark: #8e44ad;
 $ajustes-secondary: #ecf0f1;
-$ajustes-success: #27ae60;
 $ajustes-warning: #f39c12;
 $ajustes-danger: #e74c3c;
-$ajustes-info: #3498db;
 
 $border-radius: 8px;
 $box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
@@ -72,34 +70,6 @@ $transition: all 0.3s ease;
       font-size: 1rem;
     }
   }
-
-  .header-actions {
-    .btn {
-      padding: 0.75rem 1.5rem;
-      font-weight: 600;
-      border-radius: $border-radius;
-      transition: $transition;
-
-      &.btn-primary {
-        background: linear-gradient(
-          135deg,
-          $ajustes-primary,
-          $ajustes-primary-dark
-        );
-        border: none;
-        box-shadow: 0 4px 15px rgba($ajustes-primary, 0.3);
-
-        &:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 6px 20px rgba($ajustes-primary, 0.4);
-        }
-      }
-
-      i {
-        margin-right: 0.5rem;
-      }
-    }
-  }
 }
 
 // ===========================================
@@ -123,7 +93,7 @@ $transition: all 0.3s ease;
 }
 
 // ===========================================
-// NAVEGACIÓN POR PESTAÑAS
+// NAVEGACIÓN POR PESTAÑAS (AUNQUE SEA UNA SOLA)
 // ===========================================
 
 .nav-tabs {
@@ -177,24 +147,10 @@ $transition: all 0.3s ease;
       }
     }
   }
-
-  @media (max-width: 576px) {
-    flex-wrap: wrap;
-
-    .nav-item {
-      flex: 1 1 50%;
-
-      .nav-link {
-        text-align: center;
-        padding: 0.5rem;
-        font-size: 0.8rem;
-      }
-    }
-  }
 }
 
 // ===========================================
-// CONTENIDO DE LAS PESTAÑAS
+// CONTENIDO DE PESTAÑAS
 // ===========================================
 
 .tab-content {
@@ -213,18 +169,11 @@ $transition: all 0.3s ease;
       padding-bottom: 0.5rem;
       border-bottom: 2px solid #ecf0f1;
     }
-
-    h5 {
-      color: #34495e;
-      font-weight: 600;
-      margin-bottom: 1rem;
-      margin-top: 2rem;
-    }
   }
 }
 
 // ===========================================
-// FORMULARIOS
+// FORMULARIOS (DENTRO DEL MODAL)
 // ===========================================
 
 .form-group {
@@ -255,75 +204,12 @@ $transition: all 0.3s ease;
     }
   }
 
-  select.form-control {
-    cursor: pointer;
-  }
-
   textarea.form-control {
     resize: vertical;
     min-height: 100px;
   }
-
-  .form-text {
-    font-size: 0.875rem;
-    color: #7f8c8d;
-    margin-top: 0.5rem;
-  }
 }
 
-.form-check {
-  margin-bottom: 1rem;
-
-  .form-check-input {
-    margin-top: 0.3rem;
-
-    &:checked {
-      background-color: $ajustes-primary;
-      border-color: $ajustes-primary;
-    }
-
-    &:focus {
-      box-shadow: 0 0 0 0.2rem rgba($ajustes-primary, 0.25);
-    }
-  }
-
-  .form-check-label {
-    font-weight: 500;
-    color: #2c3e50;
-    cursor: pointer;
-  }
-}
-
-// Custom file input
-.custom-file {
-  .custom-file-input {
-    &:focus ~ .custom-file-label {
-      border-color: $ajustes-primary;
-      box-shadow: 0 0 0 0.2rem rgba($ajustes-primary, 0.25);
-    }
-  }
-
-  .custom-file-label {
-    border: 2px solid #ecf0f1;
-    border-radius: $border-radius;
-    padding: 0.75rem 1rem;
-    transition: $transition;
-
-    &:hover {
-      border-color: #bdc3c7;
-    }
-  }
-}
-
-.logo-preview {
-  .img-thumbnail {
-    border: 2px solid #ecf0f1;
-    border-radius: $border-radius;
-    padding: 0.5rem;
-  }
-}
-
-// Input group
 .input-group {
   .input-group-prepend .input-group-text {
     background: $ajustes-primary;
@@ -338,7 +224,7 @@ $transition: all 0.3s ease;
 }
 
 // ===========================================
-// TABLAS
+// TABLAS Y RESPONSIVIDAD
 // ===========================================
 
 .table-responsive {
@@ -387,36 +273,89 @@ $transition: all 0.3s ease;
   }
 }
 
-// Status badges
-.badge {
-  &.badge-success {
-    background: $ajustes-success;
+// --- INICIO DE ESTILOS RESPONSIVOS PARA LA TABLA ---
+@media (max-width: 768px) {
+  .table-responsive {
+    box-shadow: none;
+    border-radius: 0;
   }
 
-  &.badge-warning {
-    background: $ajustes-warning;
+  .table {
+
+    // Ocultar cabecera de la tabla en móvil
+    thead {
+      display: none;
+    }
+
+    // Convertir cada fila en una tarjeta
+    tr {
+      display: block;
+      margin-bottom: 1rem;
+      border-radius: $border-radius;
+      box-shadow: $box-shadow;
+      border: 1px solid #ddd;
+      overflow: hidden;
+
+      &:hover {
+        transform: translateY(0); // Desactivar efecto hover de la tabla
+        box-shadow: $box-shadow;
+      }
+    }
+
+    td {
+      display: block;
+      text-align: right; // Alinear el valor a la derecha
+      padding-left: 50% !important; // Dejar espacio para la etiqueta
+      position: relative;
+      border-bottom: 1px solid #eee !important;
+
+      &:last-child {
+        border-bottom: none !important;
+      }
+
+      // Añadir la etiqueta (label) antes de cada celda
+      &::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 1rem;
+        width: calc(50% - 2rem);
+        text-align: left;
+        font-weight: 600;
+        color: #333;
+        text-transform: uppercase;
+        font-size: 0.8rem;
+      }
+
+      // Asignar etiquetas a cada columna
+      &:nth-of-type(1)::before {
+        content: "Nombre";
+      }
+
+      &:nth-of-type(2)::before {
+        content: "Descripción";
+      }
+
+      &:nth-of-type(3)::before {
+        content: "Precio";
+      }
+
+      &:nth-of-type(4)::before {
+        content: "Clientes";
+      }
+
+      &:nth-of-type(5)::before {
+        content: "Acciones";
+      }
+    }
+
+    .actions {
+      justify-content: flex-end; // Alinear botones a la derecha
+      gap: 0.75rem;
+    }
   }
-
-  &.badge-danger {
-    background: $ajustes-danger;
-  }
 }
 
-// User status classes
-.status-activo {
-  color: $ajustes-success;
-  font-weight: 600;
-}
-
-.status-inactivo {
-  color: $ajustes-warning;
-  font-weight: 600;
-}
-
-.status-bloqueado {
-  color: $ajustes-danger;
-  font-weight: 600;
-}
+// --- FIN DE ESTILOS RESPONSIVOS PARA LA TABLA ---
 
 // ===========================================
 // BOTONES DE ACCIÓN
@@ -436,6 +375,7 @@ $transition: all 0.3s ease;
     justify-content: center;
     border-radius: 50%;
     transition: $transition;
+    color: white;
 
     &:hover {
       transform: translateY(-2px);
@@ -458,16 +398,6 @@ $transition: all 0.3s ease;
       &:hover {
         background: color.adjust($ajustes-danger, $lightness: -10%);
         box-shadow: 0 4px 15px rgba($ajustes-danger, 0.4);
-      }
-    }
-
-    &.btn-secondary {
-      background: #95a5a6;
-      border-color: #95a5a6;
-
-      &:hover {
-        background: color.adjust(#95a5a6, $lightness: -10%);
-        box-shadow: 0 4px 15px rgba(#95a5a6, 0.4);
       }
     }
   }
@@ -530,11 +460,9 @@ $transition: all 0.3s ease;
 
   .modal-header {
     padding: 1.5rem;
-    background: linear-gradient(
-      135deg,
-      $ajustes-primary,
-      $ajustes-primary-dark
-    );
+    background: linear-gradient(135deg,
+        $ajustes-primary,
+        $ajustes-primary-dark );
     color: white;
     display: flex;
     justify-content: space-between;
@@ -598,11 +526,9 @@ $transition: all 0.3s ease;
       }
 
       &.btn-primary {
-        background: linear-gradient(
-          135deg,
-          $ajustes-primary,
-          $ajustes-primary-dark
-        );
+        background: linear-gradient(135deg,
+            $ajustes-primary,
+            $ajustes-primary-dark );
         border: none;
 
         &:hover {
@@ -645,11 +571,10 @@ $transition: all 0.3s ease;
   border: none;
 
   &.btn-primary {
-    background: linear-gradient(
-      135deg,
-      $ajustes-primary,
-      $ajustes-primary-dark
-    );
+    background: linear-gradient(135deg,
+        $ajustes-primary,
+        $ajustes-primary-dark );
+    color: white; // Asegurar que el texto sea blanco
 
     &:hover {
       transform: translateY(-2px);
@@ -676,6 +601,7 @@ $transition: all 0.3s ease;
     opacity: 0;
     transform: translateY(30px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -686,6 +612,7 @@ $transition: all 0.3s ease;
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
@@ -696,6 +623,7 @@ $transition: all 0.3s ease;
     opacity: 0;
     transform: translateY(-50px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -703,107 +631,9 @@ $transition: all 0.3s ease;
 }
 
 // ===========================================
-// RESPONSIVE DESIGN
-// ===========================================
-
-@media (max-width: 992px) {
-  .ajustes-container {
-    padding: 1.5rem;
-  }
-
-  .page-header {
-    padding: 1rem;
-  }
-
-  .card .card-body {
-    padding: 1.5rem;
-  }
-}
-
-@media (max-width: 768px) {
-  .nav-tabs .nav-item .nav-link {
-    padding: 0.5rem 0.75rem;
-    font-size: 0.875rem;
-  }
-
-  .table-responsive {
-    font-size: 0.875rem;
-  }
-
-  .actions {
-    flex-direction: column;
-    gap: 0.25rem;
-
-    .btn-icon {
-      width: 30px;
-      height: 30px;
-    }
-  }
-}
-
-@media (max-width: 576px) {
-  .ajustes-container {
-    padding: 1rem;
-  }
-
-  .page-header {
-    .header-content h2 {
-      font-size: 1.25rem;
-    }
-  }
-
-  .tab-content .tab-pane {
-    padding: 1rem 0;
-  }
-
-  .form-group {
-    margin-bottom: 1rem;
-  }
-
-  .table-responsive {
-    .table {
-      thead th,
-      tbody td {
-        padding: 0.5rem;
-        font-size: 0.8rem;
-      }
-    }
-  }
-}
-
-// ===========================================
-// UTILIDADES ADICIONALES
+// UTILIDADES
 // ===========================================
 
 .text-danger {
   color: $ajustes-danger !important;
-}
-
-.text-success {
-  color: $ajustes-success !important;
-}
-
-.text-warning {
-  color: $ajustes-warning !important;
-}
-
-.text-info {
-  color: $ajustes-info !important;
-}
-
-// Espaciado adicional
-.mt-4 {
-  margin-top: 2rem !important;
-}
-
-.mb-3 {
-  margin-bottom: 1.5rem !important;
-}
-
-.mt-3 {
-  margin-top: 1.5rem !important;
-}
-
-.mt-2 {
-  margin-top: 1rem !important;
 }
