@@ -25,7 +25,7 @@ export class PaymentService {
     fechaPago: string;
   }): Observable<PaymentResponse> {
     return this.http
-      .post<PaymentResponse>(`${this.baseUrl}/pagos`, pagoData)
+      .post<PaymentResponse>(`${this.baseUrl}pagos`, pagoData)
       .pipe(catchError(this.handleError));
   }
 
