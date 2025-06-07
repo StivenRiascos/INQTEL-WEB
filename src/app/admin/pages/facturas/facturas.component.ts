@@ -19,6 +19,7 @@ export class FacturasComponent implements OnInit {
   filteredFacturas: Factura[] = [];
   facturasProximasVencer: Factura[] = [];
   clientes: Client[] = [];
+  isLoading = true;
 
   // --- Propiedades para paginación ---
   currentPage: number = 1;
@@ -99,9 +100,11 @@ export class FacturasComponent implements OnInit {
 
         this.calcularFacturasProximasVencer();
         this.applyFilters();
+        this.isLoading = false;
       },
       error: (err) => {
         console.error('Error al cargar facturas:', err);
+        this.isLoading = false;
       },
     });
   }
