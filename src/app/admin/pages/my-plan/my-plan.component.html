@@ -1,0 +1,47 @@
+<div class="my-plan-container">
+  <div class="page-header">
+    <div class="header-content">
+      <h2>Mi Plan Actual</h2>
+      <p>Consulta los detalles y beneficios de tu plan de internet.</p>
+    </div>
+  </div>
+
+  <div *ngIf="isLoading" class="loading-indicator">
+    <div class="spinner"></div>
+    <p>Cargando tu plan...</p>
+  </div>
+
+  <div *ngIf="error" class="error-alert">
+    <p>{{ error }}</p>
+  </div>
+
+  <div *ngIf="!isLoading && !error && currentPlan" class="plan-card">
+    <div class="plan-header">
+      <div class="plan-icon"><i class="fas fa-wifi"></i></div>
+      <h3>{{ currentPlan.nombre }}</h3>
+      <div class="plan-price">
+        {{ currentPlan.precio | currency: 'COP':'symbol-narrow':'1.0-0' }}
+        <span>/ Mes</span>
+      </div>
+    </div>
+    <div class="plan-body">
+      <p class="plan-description">{{ currentPlan.descripcion }}</p>
+      <ul class="plan-features">
+        <li><i class="fas fa-check-circle"></i> Velocidad Simétrica</li>
+        <li><i class="fas fa-check-circle"></i> Fibra Óptica Directa</li>
+        <li><i class="fas fa-check-circle"></i> Soporte Técnico Incluido</li>
+        <li><i class="fas fa-check-circle"></i> Instalación Gratuita</li>
+      </ul>
+    </div>
+    <div class="plan-footer">
+      <p>¿Necesitas más velocidad? <a routerLink="/planes">Explora otros planes</a>.</p>
+    </div>
+  </div>
+
+  <div *ngIf="!isLoading && !error && !currentPlan" class="no-plan">
+    <i class="fas fa-search"></i>
+    <h3>No tienes un plan asignado</h3>
+    <p>Ponte en contacto con nosotros para contratar un plan de internet.</p>
+    <a routerLink="/contacto" class="btn btn-primary">Contactar</a>
+  </div>
+</div>

@@ -40,11 +40,11 @@
               </thead>
               <tbody>
                 <tr *ngFor="let plan of plans">
-                  <td>{{ plan.nombre }}</td>
-                  <td>{{ plan.descripcion }}</td>
-                  <td>{{ plan.precio | currency }}</td>
-                  <td>{{ plan.clientCount }}</td>
-                  <td>
+                  <td data-label="Nombre">{{ plan.nombre }}</td>
+                  <td data-label="Descripción">{{ plan.descripcion }}</td>
+                  <td data-label="Precio">{{ plan.precio | currency }}</td>
+                  <td data-label="Clientes">{{ plan.clientCount }}</td>
+                  <td data-label="Acciones">
                     <div class="actions">
                       <button class="btn btn-sm btn-icon btn-warning" title="Editar" (click)="editPlan(plan)">
                         <i class="fas fa-edit"></i>
@@ -54,8 +54,7 @@
                       </button>
                     </div>
                   </td>
-                </tr>
-              </tbody>
+                </tr>      </tbody>s
             </table>
           </div>
         </div>

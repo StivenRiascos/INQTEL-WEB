@@ -340,17 +340,28 @@ export class FacturasComponent implements OnInit {
     }
   }
 
+  // --- MÉTODO CORREGIDO ---
   descargarFacturaPDF(facturaId: number): void {
     if (!facturaId) {
       console.error('ID de factura no encontrado');
       return;
     }
 
-    const url = `http://localhost:3000/facturas/pdf/${facturaId}`;
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `factura_${facturaId}.pdf`;
-    a.target = '_blank';
-    a.click();
+    this.facturaService.descargarFacturaPDF(facturaId).subscribe({
+      next: (blob: Blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `factura_${facturaId}.pdf`;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+      },
+      error: (err) => {
+        console.error('Error al descargar el PDF:', err);
+        alert('No se pudo descargar la factura. Por favor, intente de nuevo.');
+      },
+    });
   }
 }
