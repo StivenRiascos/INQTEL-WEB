@@ -10,6 +10,8 @@
       </button>
     </div>
   </div>
+  
+  
 
   <div class="card">
     <div class="card-body">
@@ -62,6 +64,17 @@
         </div>
       </div>
 
+      <div *ngIf="isLoading" class="loading-indicator">
+        <div class="spinner"></div>
+        <p>Cargando clientes...</p>
+      </div>
+      
+      <div class="card" *ngIf="!isLoading">
+        <div class="card-body">
+        </div>
+      </div>
+
+
       <div class="table-responsive d-none d-md-block">
         <table class="table table-hover">
           <thead>
@@ -76,10 +89,15 @@
               <th>Estado</th>
               <th>Plan</th>
               <th>Último Pago</th>
-              <th>Acciones</th>
+              <th class="text-center">Acciones</th>
             </tr>
           </thead>
           <tbody>
+            <tr *ngIf="paginatedClients.length === 0">
+              <td colspan="11" class="text-center py-4">
+                No se encontraron clientes con los filtros aplicados.
+              </td>
+            </tr>
             <tr *ngFor="let client of paginatedClients">
               <td>{{ client.id }}</td>
               <td>{{ client.nombre }}</td>
@@ -89,18 +107,17 @@
               <td>{{ client.direccion }}</td>
               <td>{{ client.telefono }}</td>
               <td>
-                <span [ngClass]="getStatusClass(client.estado)">
-                  {{ client.estado }}
-                </span>
+                <span [ngClass]="getStatusClass(client.estado)">{{ client.estado }}</span>
               </td>
               <td>{{ getPlanNameById(client.plan?.id) }}</td>
-              <td>{{ client.lastPayment }}</td>
+              <td>{{ client.lastPayment | date: 'dd/MM/yyyy' }}</td>
               <td>
                 <div class="actions">
                   <button class="btn btn-sm btn-icon btn-info" title="Ver detalles" (click)="openDetailsModal(client)">
                     <i class="fas fa-eye"></i>
                   </button>
-                  <button class="btn btn-sm btn-icon btn-primary" title="Ver historial" (click)="openHistoryModal(client)">
+                  <button class="btn btn-sm btn-icon btn-primary" title="Ver historial"
+                    (click)="openHistoryModal(client)">
                     <i class="fas fa-history"></i>
                   </button>
                   <button class="btn btn-sm btn-icon btn-warning" title="Editar" (click)="openEditClientModal(client)">
@@ -112,64 +129,16 @@
                 </div>
               </td>
             </tr>
-            <tr *ngIf="filteredClients.length === 0">
-              <td colspan="11" class="text-center py-4">
-                No se encontraron clientes con los filtros aplicados.
-              </td>
-            </tr>
           </tbody>
         </table>
       </div>
-      
+
       <div class="mobile-cards-container d-md-none">
-        <div *ngIf="filteredClients.length > 0; else noClientsMobile">
+        <ng-container *ngIf="paginatedClients.length > 0; else noClientsMobile">
           <div class="client-card" *ngFor="let client of paginatedClients">
             <div class="card-header">
               <h5>{{ client.nombre }}</h5>
-              <span [ngClass]="getStatusClass(client.estado)">
-                {{ client.estado }}
-              </span>
-            </div>
-            <div class="card-body">
-              <div class="card-field">
-                <strong>Documento:</strong>
-                <span>{{ client.tipoDocumento }} - {{ client.numeroDocumento }}</span>
-              </div>
-              <div class="card-field">
-                <strong>Plan:</strong>
-                <span>{{ getPlanNameById(client.plan?.id) }}</span>
-              </div>
-              <div class="card-field">
-                <strong>Email:</strong>
-                <span>{{ client.email }}</span>
-              </div>
-              <div class="card-field">
-                <strong>Teléfono:</strong>
-                <span>{{ client.telefono }}</span>
-              </div>
-            </div>
-            <div class="card-actions">
-            </div>
-          </div>
-        </div>
-        <ng-template #noClientsMobile>
-          <div class="text-center py-4">
-            No se encontraron clientes.
-          </div>
-        </ng-template>
-      </div>
-      
-      <div class="pagination-container" *ngIf="totalPages > 1">
-      </div>
-
-      <div class="mobile-cards-container d-md-none">
-        <div *ngIf="filteredClients.length > 0; else noClientsMobile">
-          <div class="client-card" *ngFor="let client of filteredClients">
-            <div class="card-header">
-              <h5>{{ client.nombre }}</h5>
-              <span [ngClass]="getStatusClass(client.estado)">
-                {{ client.estado }}
-              </span>
+              <span [ngClass]="getStatusClass(client.estado)">{{ client.estado }}</span>
             </div>
             <div class="card-body">
               <div class="card-field">
@@ -204,36 +173,14 @@
               </button>
             </div>
           </div>
-        </div>
+        </ng-container>
         <ng-template #noClientsMobile>
           <div class="text-center py-4">
-            No se encontraron clientes.
+            No se encontraron clientes con los filtros aplicados.
           </div>
         </ng-template>
       </div>
 
-      <div class="table-responsive d-none d-md-block">
-        <table class="table table-hover">
-          <thead>
-          </thead>
-          <tbody>
-            <tr *ngFor="let client of paginatedClients">
-            </tr>
-            <tr *ngIf="filteredClients.length === 0">
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      
-      <div class="mobile-cards-container d-md-none">
-        <div *ngIf="filteredClients.length > 0; else noClientsMobile">
-          <div class="client-card" *ngFor="let client of paginatedClients">
-          </div>
-        </div>
-        <ng-template #noClientsMobile>
-        </ng-template>
-      </div>
-      
       <div class="pagination-container" *ngIf="totalPages > 1">
         <div class="pagination-info">
           Mostrando {{ paginatedClients.length }} de {{ filteredClients.length }} clientes

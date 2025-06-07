@@ -31,6 +31,7 @@ export class ClientesComponent implements OnInit {
   itemsPerPage: number = 10;
   totalPages: number = 0;
   paginatedClients: Client[] = [];
+  isLoading = true;
 
   // Datos de clientes
   clients: Client[] = [];
@@ -81,8 +82,12 @@ export class ClientesComponent implements OnInit {
       next: (data) => {
         this.clients = data;
         this.applyFilters();
+        this.isLoading = false; // <-- AÑADIR AQUÍ
       },
-      error: (err) => console.error('Error al cargar clientes:', err),
+      error: (err) => {
+        console.error('Error al cargar clientes:', err);
+        this.isLoading = false; // <-- AÑADIR AQUÍ
+      },
     });
   }
 
