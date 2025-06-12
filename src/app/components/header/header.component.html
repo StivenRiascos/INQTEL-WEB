@@ -1,4 +1,4 @@
-<header class="header" [class.scrolled]="isScrolled">
+<header class="header" [class.scrolled]="isScrolled" *ngIf="!isPaymentPage">
   <div class="container">
     <div class="logo">
       <span class="logo-in">IN</span>
@@ -8,7 +8,11 @@
     </div>
 
     <nav class="nav-links" [ngClass]="{ active: isMenuOpen }">
-      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+      <a
+        routerLink="/"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+      >
         Inicio
       </a>
       <a routerLink="/planes" routerLinkActive="active">Planes</a>
@@ -21,21 +25,41 @@
     <div class="header-actions">
       <a routerLink="/contacto" class="btn btn-secondary">Contáctanos</a>
 
-      <a *ngIf="authService.isLoggedIn()" class="admin-login-btn" routerLink="/admin/dashboard"
-        aria-label="Ir al panel administrativo" title="Panel Administrativo">
-        <i class="fas fa-tachometer-alt"></i> </a>
+      <a
+        *ngIf="authService.isLoggedIn()"
+        class="admin-login-btn"
+        routerLink="/admin/dashboard"
+        aria-label="Ir al panel administrativo"
+        title="Panel Administrativo"
+      >
+        <i class="fas fa-tachometer-alt"></i>
+      </a>
 
-      <button *ngIf="authService.isLoggedIn()" class="admin-login-btn" (click)="logout()" aria-label="Cerrar sesión"
-        title="Cerrar sesión">
+      <button
+        *ngIf="authService.isLoggedIn()"
+        class="admin-login-btn"
+        (click)="logout()"
+        aria-label="Cerrar sesión"
+        title="Cerrar sesión"
+      >
         <i class="fas fa-sign-out-alt"></i>
       </button>
 
-      <a *ngIf="!authService.isLoggedIn()" class="admin-login-btn" routerLink="/admin/login"
-        aria-label="Iniciar sesión administrativo" title="Login Administrativo">
+      <a
+        *ngIf="!authService.isLoggedIn()"
+        class="admin-login-btn"
+        routerLink="/admin/login"
+        aria-label="Iniciar sesión administrativo"
+        title="Login Administrativo"
+      >
         <i class="fas fa-user-lock"></i>
       </a>
 
-      <button class="menu-toggle" (click)="toggleMenu()" aria-label="Abrir o cerrar menú de navegación">
+      <button
+        class="menu-toggle"
+        (click)="toggleMenu()"
+        aria-label="Abrir o cerrar menú de navegación"
+      >
         <span></span>
         <span></span>
         <span></span>
