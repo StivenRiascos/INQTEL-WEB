@@ -1,9 +1,13 @@
-// header.component.ts
-import { Component, HostListener } from '@angular/core';
+import { Component, HostListener, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink, RouterLinkActive, Router } from '@angular/router';
+import {
+  RouterLink,
+  RouterLinkActive,
+  Router,
+  NavigationEnd,
+} from '@angular/router';
 import { AuthService } from '../../services/auth.service';
-// Ajusta la ruta según tu estructura
+import { Subject, takeUntil, filter } from 'rxjs';
 
 @Component({
   selector: 'app-header',
@@ -12,11 +16,33 @@ import { AuthService } from '../../services/auth.service';
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss'],
 })
-export class HeaderComponent {
+export class HeaderComponent implements OnInit, OnDestroy {
   isMenuOpen = false;
   isScrolled = false;
+  isPaymentPage = false;
+  private destroy$ = new Subject<void>();
 
   constructor(public authService: AuthService, private router: Router) {}
+
+  ngOnInit(): void {
+    this.router.events
+      .pipe(
+        filter((event) => event instanceof NavigationEnd),
+        takeUntil(this.destroy$)
+      )
+      .subscribe((event: NavigationEnd) => {
+        // Verificar si estamos en la página de pasarela
+        this.isPaymentPage = event.url.includes('/pasarela');
+      });
+
+    // Verificar la ruta inicial
+    this.isPaymentPage = this.router.url.includes('/pasarela');
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
 
   toggleMenu(): void {
     this.isMenuOpen = !this.isMenuOpen;
@@ -29,6 +55,6 @@ export class HeaderComponent {
 
   logout(): void {
     this.authService.logout();
-    this.router.navigate(['/']); // Redirige al inicio después de cerrar sesión
+    this.router.navigate(['/']);
   }
 }

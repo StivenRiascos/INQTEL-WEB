@@ -5,10 +5,11 @@ import { ServicesComponent } from './components/servicios/servicios.component';
 import { NosotrosComponent } from './components/nosotros/nosotrosl.component';
 import { PagosComponent } from './components/pagos/pagos.component';
 import { ContactComponent } from './components/contact/contact.component';
+import { PasarelaComponent } from './components/pasarela/pasarela.component';
 import { AdminComponent } from './admin/admin.component';
 
 export const routes: Routes = [
-  // Public routes with header and footer
+  // Rutas públicas con header y footer
   {
     path: '',
     children: [
@@ -18,15 +19,17 @@ export const routes: Routes = [
       { path: 'nosotros', component: NosotrosComponent },
       { path: 'pagos', component: PagosComponent },
       { path: 'contacto', component: ContactComponent },
+      { path: 'pasarela', component: PasarelaComponent }, // 👈 Ruta agregada
     ],
   },
 
-  // Admin routes with its own layout
+  // Ruta de administración
   {
     path: 'admin',
-    component: AdminComponent, // This will be the layout component for admin
+    component: AdminComponent,
     loadChildren: () => import('./admin/admin.routes').then((m) => m.default),
   },
 
+  // Redirección en caso de rutas no encontradas
   { path: '**', redirectTo: '' },
 ];

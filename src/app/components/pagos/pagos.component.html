@@ -44,322 +44,202 @@
       </div>
     </div>
 
-    <div class="pagos-content" *ngIf="metodoSeleccionado">
-      <div class="instrucciones-pago">
-        <h3>Instrucciones para pago con {{ getMetodoActual()?.nombre }}</h3>
+    <section class="faq-section">
+      <div class="container">
+        <div class="section-title">
+          <h2>Preguntas Frecuentes sobre Pagos</h2>
+          <p>Respuestas a las dudas más comunes</p>
+        </div>
 
-        <ul class="instrucciones-lista">
-          <li *ngFor="let instruccion of getMetodoActual()?.instrucciones">
-            <i class="fas fa-check-circle"></i>
-            <span>{{ instruccion }}</span>
-          </li>
-        </ul>
+        <div class="faq-grid">
+          <div class="faq-item">
+            <div class="faq-question">
+              <h3>¿Cuál es la fecha límite de pago?</h3>
+              <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="faq-answer">
+              <p>
+                La fecha límite de pago es el día 5 de cada mes. Después de esta
+                fecha, se aplicará un recargo por pago tardío.
+              </p>
+            </div>
+          </div>
 
-        <div class="cuentas-bancarias" *ngIf="getMetodoActual()?.cuentas">
-          <h4>Cuentas Bancarias</h4>
-          <div class="cuentas-grid">
-            <div
-              class="cuenta-card"
-              *ngFor="let cuenta of getMetodoActual()?.cuentas"
-            >
-              <h5>{{ cuenta.tipo }}</h5>
-              <p><strong>Número:</strong> {{ cuenta.numero }}</p>
-              <p><strong>Titular:</strong> {{ cuenta.titular }}</p>
-              <p *ngIf="cuenta.documento">
-                <strong>Documento:</strong> {{ cuenta.documento }}
+          <div class="faq-item">
+            <div class="faq-question">
+              <h3>¿Qué hago si no recibí mi factura?</h3>
+              <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="faq-answer">
+              <p>
+                Puedes solicitar una copia de tu factura llamando a nuestro
+                número de atención al cliente o enviando un mensaje a nuestro
+                WhatsApp.
+              </p>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <div class="faq-question">
+              <h3>¿Cuánto tiempo tarda en reflejarse mi pago?</h3>
+              <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="faq-answer">
+              <p>
+                Los pagos en efectivo se reflejan inmediatamente. Los pagos por
+                transferencia, Nequi o Daviplata pueden tardar hasta 24 horas
+                hábiles en ser procesados.
+              </p>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <div class="faq-question">
+              <h3>¿Qué sucede si me atraso en el pago?</h3>
+              <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="faq-answer">
+              <p>
+                Si te atrasas en el pago, se aplicará un recargo por mora y,
+                después de 5 días de vencimiento, el servicio podría ser
+                suspendido temporalmente hasta que se regularice el pago.
               </p>
             </div>
           </div>
         </div>
       </div>
+    </section>
 
-      <div class="formulario-pago">
-        <h3>Reportar Pago</h3>
-
-        <div *ngIf="formSubmitted" class="form-success">
-          <i class="fas fa-check-circle"></i>
-          <h4>¡Pago Reportado!</h4>
+    <section class="contact-cta">
+      <div class="container">
+        <div class="cta-content">
+          <h2>¿Necesitas ayuda con tu pago?</h2>
           <p>
-            Gracias por reportar tu pago. Verificaremos la información y
-            actualizaremos tu estado de cuenta.
+            Nuestro equipo está listo para asistirte con cualquier duda sobre tu
+            factura o proceso de pago.
           </p>
+          <div class="cta-buttons">
+            <a routerLink="/contacto" class="btn btn-secondary">Contáctanos</a>
+            <a
+              href="https://wa.me/573112293427"
+              target="_blank"
+              class="btn btn-outline"
+            >
+              <i class="fab fa-whatsapp"></i> WhatsApp
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Modal para buscar y pagar factura -->
+    <div class="modal-overlay" *ngIf="mostrarModal" (click)="cerrarModal()">
+      <div class="modal-container" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <div class="modal-logo">
+            <span class="logo-in">IN</span><span class="logo-q">Q</span>
+            <span class="logo-tel">TEL</span>
+            <span class="logo-sas">S.A.S</span>
+          </div>
+          <button class="modal-close" (click)="cerrarModal()">
+            <i class="fas fa-times"></i>
+          </button>
         </div>
 
-        <form
-          [formGroup]="pagoForm"
-          (ngSubmit)="onSubmit()"
-          *ngIf="!formSubmitted"
-        >
-          <div class="form-group">
-            <label for="nombre">Nombre Completo *</label>
-            <input
-              type="text"
-              id="nombre"
-              formControlName="nombre"
-              [ngClass]="{
-                invalid: f['nombre'].touched && f['nombre'].invalid
-              }"
-            />
-            <div
-              class="error-message"
-              *ngIf="f['nombre'].touched && f['nombre'].invalid"
-            >
-              <span *ngIf="f['nombre'].errors?.['required']"
-                >El nombre es requerido.</span
+        <div class="modal-body">
+          <h2>Consulta tu Factura</h2>
+          <p>Ingresa tus datos para consultar y pagar tu factura</p>
+
+          <form [formGroup]="busquedaForm" (ngSubmit)="buscarFactura()">
+            <div class="form-group">
+              <label for="tipoDocumento">Tipo de búsqueda</label>
+              <select
+                id="tipoDocumento"
+                formControlName="tipoDocumento"
+                [ngClass]="{
+                  invalid:
+                    b['tipoDocumento'].touched && b['tipoDocumento'].invalid
+                }"
               >
-              <span *ngIf="f['nombre'].errors?.['minlength']"
-                >El nombre debe tener al menos 3 caracteres.</span
-              >
+                <option *ngFor="let tipo of tiposDocumento" [value]="tipo.id">
+                  {{ tipo.nombre }}
+                </option>
+              </select>
             </div>
+
+            <div class="form-group">
+              <label for="numeroDocumento">Búsqueda</label>
+              <input
+                type="text"
+                id="numeroDocumento"
+                formControlName="numeroDocumento"
+                placeholder="Ingresa tu número de documento"
+                [ngClass]="{
+                  invalid:
+                    b['numeroDocumento'].touched && b['numeroDocumento'].invalid
+                }"
+              />
+              <div
+                class="error-message"
+                *ngIf="
+                  b['numeroDocumento'].touched && b['numeroDocumento'].invalid
+                "
+              >
+                <span *ngIf="b['numeroDocumento'].errors?.['required']">
+                  Este campo es requerido.
+                </span>
+                <span *ngIf="b['numeroDocumento'].errors?.['minlength']">
+                  Ingrese al menos 5 caracteres.
+                </span>
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block">
+              <i class="fas fa-search"></i> Buscar
+            </button>
+          </form>
+
+          <!-- Mostrar mensaje de error si no se encuentra la factura -->
+          <div *ngIf="mensajeError" class="alert alert-danger mt-4">
+            {{ mensajeError }}
           </div>
 
-          <div class="form-group">
-            <label for="contrato">Número de Contrato *</label>
-            <input
-              type="text"
-              id="contrato"
-              formControlName="contrato"
-              [ngClass]="{
-                invalid: f['contrato'].touched && f['contrato'].invalid
-              }"
-            />
-            <div
-              class="error-message"
-              *ngIf="f['contrato'].touched && f['contrato'].invalid"
-            >
-              <span *ngIf="f['contrato'].errors?.['required']"
-                >El número de contrato es requerido.</span
-              >
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label for="monto">Monto Pagado (COP) *</label>
-            <input
-              type="number"
-              id="monto"
-              formControlName="monto"
-              [ngClass]="{ invalid: f['monto'].touched && f['monto'].invalid }"
-            />
-            <div
-              class="error-message"
-              *ngIf="f['monto'].touched && f['monto'].invalid"
-            >
-              <span *ngIf="f['monto'].errors?.['required']"
-                >El monto es requerido.</span
-              >
-              <span *ngIf="f['monto'].errors?.['min']"
-                >El monto debe ser mayor a 0.</span
-              >
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label for="comprobante">Número de Comprobante/Referencia *</label>
-            <input
-              type="text"
-              id="comprobante"
-              formControlName="comprobante"
-              [ngClass]="{
-                invalid: f['comprobante'].touched && f['comprobante'].invalid
-              }"
-            />
-            <div
-              class="error-message"
-              *ngIf="f['comprobante'].touched && f['comprobante'].invalid"
-            >
-              <span *ngIf="f['comprobante'].errors?.['required']"
-                >El número de comprobante es requerido.</span
-              >
-            </div>
-          </div>
-
-          <button type="submit" class="btn btn-secondary">Reportar Pago</button>
-        </form>
-      </div>
-    </div>
-
-    <div class="pagos-placeholder" *ngIf="!metodoSeleccionado">
-      <div class="placeholder-content">
-        <i class="fas fa-hand-pointer"></i>
-        <h3>Selecciona un método de pago</h3>
-        <p>
-          Haz clic en una de las opciones de arriba para ver las instrucciones
-          de pago
-        </p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="faq-section">
-  <div class="container">
-    <div class="section-title">
-      <h2>Preguntas Frecuentes sobre Pagos</h2>
-      <p>Respuestas a las dudas más comunes</p>
-    </div>
-
-    <div class="faq-grid">
-      <div class="faq-item">
-        <div class="faq-question">
-          <h3>¿Cuál es la fecha límite de pago?</h3>
-          <i class="fas fa-chevron-down"></i>
-        </div>
-        <div class="faq-answer">
-          <p>
-            La fecha límite de pago es el día 5 de cada mes. Después de esta
-            fecha, se aplicará un recargo por pago tardío.
-          </p>
-        </div>
-      </div>
-
-      <div class="faq-item">
-        <div class="faq-question">
-          <h3>¿Qué hago si no recibí mi factura?</h3>
-          <i class="fas fa-chevron-down"></i>
-        </div>
-        <div class="faq-answer">
-          <p>
-            Puedes solicitar una copia de tu factura llamando a nuestro número
-            de atención al cliente o enviando un mensaje a nuestro WhatsApp.
-          </p>
-        </div>
-      </div>
-
-      <div class="faq-item">
-        <div class="faq-question">
-          <h3>¿Cuánto tiempo tarda en reflejarse mi pago?</h3>
-          <i class="fas fa-chevron-down"></i>
-        </div>
-        <div class="faq-answer">
-          <p>
-            Los pagos en efectivo se reflejan inmediatamente. Los pagos por
-            transferencia, Nequi o Daviplata pueden tardar hasta 24 horas
-            hábiles en ser procesados.
-          </p>
-        </div>
-      </div>
-
-      <div class="faq-item">
-        <div class="faq-question">
-          <h3>¿Qué sucede si me atraso en el pago?</h3>
-          <i class="fas fa-chevron-down"></i>
-        </div>
-        <div class="faq-answer">
-          <p>
-            Si te atrasas en el pago, se aplicará un recargo por mora y, después
-            de 5 días de vencimiento, el servicio podría ser suspendido
-            temporalmente hasta que se regularice el pago.
-          </p>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="contact-cta">
-  <div class="container">
-    <div class="cta-content">
-      <h2>¿Necesitas ayuda con tu pago?</h2>
-      <p>
-        Nuestro equipo está listo para asistirte con cualquier duda sobre tu
-        factura o proceso de pago.
-      </p>
-      <div class="cta-buttons">
-        <a routerLink="/contacto" class="btn btn-secondary">Contáctanos</a>
-        <a
-          href="https://wa.me/573112293427"
-          target="_blank"
-          class="btn btn-outline"
-        >
-          <i class="fab fa-whatsapp"></i> WhatsApp
-        </a>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- Modal para buscar y pagar factura -->
-<div class="modal-overlay" *ngIf="mostrarModal" (click)="cerrarModal()">
-  <div class="modal-container" (click)="$event.stopPropagation()">
-    <div class="modal-header">
-      <div class="modal-logo">
-        <span class="logo-in">IN</span><span class="logo-q">Q</span>
-        <span class="logo-tel">TEL</span>
-        <span class="logo-sas">S.A.S</span>
-      </div>
-      <button class="modal-close" (click)="cerrarModal()">
-        <i class="fas fa-times"></i>
-      </button>
-    </div>
-
-    <div class="modal-body">
-      <h2>Consulta tu Factura</h2>
-      <p>Ingresa tus datos para consultar y pagar tu factura</p>
-    
-      <form [formGroup]="busquedaForm" (ngSubmit)="buscarFactura()">
-        <div class="form-group">
-          <label for="tipoDocumento">Tipo de búsqueda</label>
-          <select
-            id="tipoDocumento"
-            formControlName="tipoDocumento"
-            [ngClass]="{
-              invalid: b['tipoDocumento'].touched && b['tipoDocumento'].invalid
-            }"
-          >
-            <option *ngFor="let tipo of tiposDocumento" [value]="tipo.id">
-              {{ tipo.nombre }}
-            </option>
-          </select>
-        </div>
-    
-        <div class="form-group">
-          <label for="numeroDocumento">Búsqueda</label>
-          <input
-            type="text"
-            id="numeroDocumento"
-            formControlName="numeroDocumento"
-            placeholder="Ingresa tu número de documento"
-            [ngClass]="{
-              invalid:
-                b['numeroDocumento'].touched && b['numeroDocumento'].invalid
-            }"
-          />
+          <!-- Mostrar la factura encontrada -->
           <div
-            class="error-message"
-            *ngIf="b['numeroDocumento'].touched && b['numeroDocumento'].invalid"
+            *ngIf="facturaEncontrada"
+            class="factura-resultado mt-4 p-3 border rounded bg-light"
           >
-            <span *ngIf="b['numeroDocumento'].errors?.['required']">
-              Este campo es requerido.
-            </span>
-            <span *ngIf="b['numeroDocumento'].errors?.['minlength']">
-              Ingrese al menos 5 caracteres.
-            </span>
+            <h3 class="mb-3">Factura Encontrada</h3>
+            <p><strong>Cliente:</strong> {{ facturaEncontrada.nombre }}</p>
+            <p><strong>Concepto:</strong> {{ facturaEncontrada.plan }}</p>
+            <!-- Cambiar 'concepto' por 'plan' -->
+            <p>
+              <strong>Monto a Pagar:</strong> ${{ facturaEncontrada.precio }}
+            </p>
+            <!-- Cambiar 'valor' por 'precio' -->
+            <p>
+              <strong>Fecha Límite:</strong>
+              {{ facturaEncontrada.fechaLimite || "No disponible" }}
+            </p>
+
+            <button type="button" class="btn btn-success btn-lg px-5 py-3 rounded-pill shadow-sm" (click)="realizarPago()"
+              [disabled]="isRedirecting">
+            
+              <ng-container *ngIf="!isRedirecting">
+                <i class="fas fa-credit-card mr-2"></i> Pagar Ahora
+              </ng-container>
+            
+              <ng-container *ngIf="isRedirecting">
+                Redireccionando<span class="loading-dots"></span>
+              </ng-container>
+            
+            </button>
           </div>
         </div>
-    
-        <button type="submit" class="btn btn-primary btn-block">
-          <i class="fas fa-search"></i> Buscar
-        </button>
-      </form>
-    
-      <!-- Mostrar mensaje de error si no se encuentra la factura -->
-      <div *ngIf="mensajeError" class="alert alert-danger mt-4">
-        {{ mensajeError }}
+        <!-- Cierra modal-body -->
       </div>
-    
-      <!-- Mostrar la factura encontrada -->
-      <div *ngIf="facturaEncontrada" class="factura-resultado mt-4 p-3 border rounded bg-light">
-        <h3 class="mb-3">Factura Encontrada</h3>
-        <p><strong>Cliente:</strong> {{ facturaEncontrada.nombre }}</p>
-        <p><strong>Concepto:</strong> {{ facturaEncontrada.plan }}</p> <!-- Cambiar 'concepto' por 'plan' -->
-        <p><strong>Monto a Pagar:</strong> ${{ facturaEncontrada.precio }}</p> <!-- Cambiar 'valor' por 'precio' -->
-        <p><strong>Fecha Límite:</strong> {{ facturaEncontrada.fechaLimite || 'No disponible' }}</p>
-        
-        <button class="btn btn-success btn-lg px-5 py-3 rounded-pill shadow-sm" (click)="realizarPago()">
-          <i class="fas fa-credit-card mr-2"></i> Pagar Ahora
-        </button>
-      </div>
-    </div> <!-- Cierra modal-body -->
-  </div> <!-- Cierra modal-container -->
-</div> <!-- Cierra modal-overlay -->
+      <!-- Cierra modal-container -->
+    </div>
+    <!-- Cierra modal-overlay -->
+  </div>
+</section>

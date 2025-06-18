@@ -1,0 +1,294 @@
+<div class="container">
+  <div class="header">
+    <h1><i></i> Pasarela</h1>
+    <p>Sistema de Pagos en Línea - Seguro y Confiable</p>
+  </div>
+
+  <div class="main-content">
+    <div class="payment-section">
+      <h2 class="section-title">
+        <i class="fas fa-credit-card"></i> Realizar Pago
+      </h2>
+
+      <div class="payment-details">
+        <h3><i class="fas fa-file-invoice-dollar"></i> Detalle del Pago</h3>
+        <div class="detail-row">
+          <span>Subtotal:</span>
+          <span>{{ formattedSubtotal }}</span>
+        </div>
+        <div class="detail-row">
+          <span>Impuestos (IVA):</span>
+          <span>{{ formattedTaxes }}</span>
+        </div>
+        <div class="detail-row">
+          <span>TOTAL A PAGAR:</span>
+          <span>{{ formattedTotalAmount }}</span>
+        </div>
+      </div>
+
+      <div class="terms-container">
+        <label>
+          <input
+            type="checkbox"
+            [(ngModel)]="acceptTerms"
+            (change)="onTermsChange()"
+          />
+          <span>
+            Acepto los <a href="#" class="link">términos y condiciones</a>
+            y autorizo el tratamiento de mis datos personales conforme a la
+            <a href="#" class="link">política de privacidad</a>.
+          </span>
+        </label>
+      </div>
+
+      <div class="payment-methods" *ngIf="!isProcessing">
+        <!-- PSE Payment Method -->
+        <div
+          class="payment-method"
+          [class.active]="selectedPaymentMethod === 'pse'"
+          (click)="selectPaymentMethod('pse')"
+        >
+          <div class="method-header">
+            <div class="method-icon pse-icon">
+              <i class="fas fa-university"></i>
+            </div>
+            <div>
+              <h3>Débito y Corriente PSE</h3>
+              <p>Pago directo desde tu cuenta bancaria</p>
+            </div>
+          </div>
+          <div
+            class="method-content"
+            [class.active]="selectedPaymentMethod === 'pse'"
+          >
+            <p class="method-description">
+              <strong>{{ customerName.split(" ")[0] }}</strong
+              >, ingresa los datos para tu pago PSE. <br /><small
+                >(El débito se realizará desde tu cuenta corriente o de
+                ahorros)</small
+              >
+            </p>
+
+            <div class="radio-group">
+              <div class="radio-item">
+                <input
+                  type="radio"
+                  name="personType"
+                  value="natural"
+                  [(ngModel)]="personType"
+                  (change)="validateForm()"
+                />
+                <label>Persona Natural</label>
+              </div>
+              <div class="radio-item">
+                <input
+                  type="radio"
+                  name="personType"
+                  value="juridica"
+                  [(ngModel)]="personType"
+                  (change)="validateForm()"
+                />
+                <label>Persona Jurídica</label>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="bankSelect">Seleccione su banco:</label>
+              <select
+                class="form-control"
+                [(ngModel)]="selectedBank"
+                (change)="onBankChange()"
+                [class.error]="hasError('bank')"
+              >
+                <option value="">-- Seleccione su banco --</option>
+                <option *ngFor="let bank of banks" [value]="bank.id">
+                  {{ bank.name }}
+                </option>
+              </select>
+              <div class="error-message" *ngIf="hasError('bank')">
+                {{ getError("bank") }}
+              </div>
+            </div>
+
+            <button
+              class="btn-primary"
+              [disabled]="!canProceedPSE()"
+              (click)="processPSEPayment()"
+            >
+              <i class="fas fa-lock"></i>
+              <span *ngIf="!isProcessing">Pagar con PSE</span>
+              <span *ngIf="isProcessing">Procesando...</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Credit Card Payment Method -->
+        <div
+          class="payment-method"
+          [class.active]="selectedPaymentMethod === 'card'"
+          (click)="selectPaymentMethod('card')"
+        >
+          <div class="method-header">
+            <div class="method-icon card-icon">
+              <i class="fas fa-credit-card"></i>
+            </div>
+            <div>
+              <h3>Tarjetas de Crédito y Débito</h3>
+              <p>Visa, Mastercard, Diners, American Express</p>
+              <div class="card-logos">
+                <div class="card-logo">VISA</div>
+                <div class="card-logo">MC</div>
+                <div class="card-logo">DINERS</div>
+                <div class="card-logo">AMEX</div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="method-content"
+            [class.active]="selectedPaymentMethod === 'card'"
+          >
+            <div class="form-group">
+              <label for="cardNumber">Número de tarjeta:</label>
+              <input
+                type="text"
+                class="form-control"
+                [(ngModel)]="cardDetails.number"
+                (input)="formatCardNumber($event)"
+                (blur)="validateField('cardNumber')"
+                placeholder="1234 5678 9012 3456"
+                maxlength="23"
+                [class.error]="hasError('cardNumber')"
+              />
+              <div class="error-message" *ngIf="hasError('cardNumber')">
+                {{ getError("cardNumber") }}
+              </div>
+            </div>
+
+            <div class="card-row">
+              <div class="form-group">
+                <label for="cardExpiry">Fecha de vencimiento:</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  [(ngModel)]="cardDetails.expiry"
+                  (input)="formatExpiry($event)"
+                  (blur)="validateField('expiry')"
+                  placeholder="MM/AA"
+                  maxlength="5"
+                  [class.error]="hasError('expiry')"
+                />
+                <div class="error-message" *ngIf="hasError('expiry')">
+                  {{ getError("expiry") }}
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="cardCVV">CVV:</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  [(ngModel)]="cardDetails.cvv"
+                  (input)="formatCVV($event)"
+                  (blur)="validateField('cvv')"
+                  placeholder="123"
+                  [maxlength]="isAmexCard() ? 4 : 3"
+                  [class.error]="hasError('cvv')"
+                />
+                <div class="error-message" *ngIf="hasError('cvv')">
+                  {{ getError("cvv") }}
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="cardName">Nombre del titular:</label>
+              <input
+                type="text"
+                class="form-control"
+                [(ngModel)]="cardDetails.name"
+                (blur)="validateField('cardName')"
+                placeholder="Como aparece en la tarjeta"
+                [class.error]="hasError('cardName')"
+              />
+              <div class="error-message" *ngIf="hasError('cardName')">
+                {{ getError("cardName") }}
+              </div>
+            </div>
+
+            <button
+              class="btn-primary"
+              [disabled]="!canProceedCard()"
+              (click)="processCardPayment()"
+            >
+              <i class="fas fa-shield-alt"></i>
+              <span *ngIf="!isProcessing">Pagar con Tarjeta</span>
+              <span *ngIf="isProcessing">Procesando...</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="loading" *ngIf="isProcessing">
+        <div class="spinner"></div>
+        <p>{{ loadingMessage }}</p>
+      </div>
+    </div>
+
+    <div class="info-section">
+      <h2 class="section-title">
+        <i class="fas fa-info-circle"></i> Información del Pago
+      </h2>
+
+      <div class="info-card">
+        <h4><i class="fas fa-user"></i> Datos del Cliente</h4>
+        <div class="info-item"><strong>Nombre:</strong> {{ customerName }}</div>
+        <div class="info-item">
+          <strong>Documento:</strong> C.C. {{ customerID }}
+        </div>
+        <div class="info-item">
+          <strong>Teléfono:</strong> {{ customerPhone }}
+        </div>
+        <div class="info-item"><strong>Email:</strong> {{ customerEmail }}</div>
+      </div>
+
+      <div class="info-card">
+        <h4><i class="fas fa-file-alt"></i> Detalles de la Transacción</h4>
+        <div class="info-item">
+          <strong>Concepto:</strong> {{ paymentConcept }}
+        </div>
+        <div class="info-item">
+          <strong>Factura No.:</strong> {{ invoiceNumber }}
+        </div>
+        <div class="info-item">
+          <strong>Total:</strong> {{ formattedTotalAmount }}
+        </div>
+        <div class="info-item"><strong>IVA:</strong> {{ formattedTaxes }}</div>
+      </div>
+
+      <div class="info-card">
+        <h4><i class="fas fa-certificate"></i> Certificaciones</h4>
+        <div class="certification-content">
+          <div class="pse-certification">
+            <i class="fas fa-university"></i>
+            <div class="cert-title">PSE</div>
+          </div>
+          <small>Certificado por ACH Colombia</small>
+        </div>
+      </div>
+
+      <div class="security-badges">
+        <div class="security-badge">
+          <i class="fas fa-shield-alt"></i>
+          <div>Conexión<br />Segura</div>
+        </div>
+        <div class="security-badge">
+          <i class="fas fa-lock"></i>
+          <div>Datos<br />Protegidos</div>
+        </div>
+        <div class="security-badge">
+          <i class="fas fa-check-circle"></i>
+          <div>Verificado<br />SSL</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
