@@ -222,11 +222,17 @@
               {{ facturaEncontrada.fechaLimite || "No disponible" }}
             </p>
 
-            <button
-              class="btn btn-success btn-lg px-5 py-3 rounded-pill shadow-sm"
-              (click)="realizarPago()"
-            >
-              <i class="fas fa-credit-card mr-2"></i> Pagar Ahora
+            <button type="button" class="btn btn-success btn-lg px-5 py-3 rounded-pill shadow-sm" (click)="realizarPago()"
+              [disabled]="isRedirecting">
+            
+              <ng-container *ngIf="!isRedirecting">
+                <i class="fas fa-credit-card mr-2"></i> Pagar Ahora
+              </ng-container>
+            
+              <ng-container *ngIf="isRedirecting">
+                Redireccionando<span class="loading-dots"></span>
+              </ng-container>
+            
             </button>
           </div>
         </div>
