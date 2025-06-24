@@ -43,7 +43,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     },
     {
       title: 'Nuevos Clientes',
-      value: 24,
+      value: 6,
       icon: 'fas fa-user-plus',
       color: 'info',
       increase: 15,
@@ -63,21 +63,6 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   recentClients: any[] = [];
 
   // Datos iniciales para los gráficos con estructura válida
-  incomeChartData: ChartData<'line'> = {
-    labels: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio'],
-    datasets: [
-      {
-        label: 'Ingresos',
-        data: [1200000, 1500000, 1800000, 1300000, 1700000, 1900000],
-        borderColor: '#4361ee',
-        backgroundColor: 'rgba(67, 97, 238, 0.2)',
-        fill: true,
-        tension: 0.4,
-        pointRadius: 4,
-        pointHoverRadius: 6,
-      },
-    ],
-  };
 
   plansChartData: ChartData<'doughnut'> = {
     labels: ['Plan Básico', 'Plan Premium', 'Plan Pro'],
@@ -212,57 +197,8 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
 
   initCharts(): void {
     setTimeout(() => {
-      this.createIncomeChart();
       this.createPlansChart();
     }, 100);
-  }
-
-  createIncomeChart(): void {
-    const canvas = document.getElementById('incomeChart') as HTMLCanvasElement;
-    if (!canvas) return;
-
-    this.incomeChart?.destroy();
-
-    this.incomeChart = new Chart(canvas, {
-      type: 'line',
-      data: this.incomeChartData,
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: { display: false },
-          tooltip: {
-            mode: 'index',
-            intersect: false,
-            callbacks: {
-              label: (context) => {
-                const label = context.dataset.label || '';
-                const value = context.parsed.y;
-                return `${label}: ${new Intl.NumberFormat('es-CO', {
-                  style: 'currency',
-                  currency: 'COP',
-                  maximumFractionDigits: 0,
-                }).format(value)}`;
-              },
-            },
-          },
-        },
-        scales: {
-          y: {
-            beginAtZero: false,
-            ticks: {
-              callback: (value) =>
-                new Intl.NumberFormat('es-CO', {
-                  style: 'currency',
-                  currency: 'COP',
-                  notation: 'compact',
-                  maximumFractionDigits: 0,
-                }).format(value as number),
-            },
-          },
-        },
-      },
-    });
   }
 
   createPlansChart(): void {
